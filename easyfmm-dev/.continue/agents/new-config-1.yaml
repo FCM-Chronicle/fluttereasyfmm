@@ -1,0 +1,16 @@
+# This is an example configuration file
+# To learn more, see the full config.yaml reference: https://docs.continue.dev/reference
+
+name: concon
+version: 1.0.0
+schema: v1
+
+# Define which models can be used
+# https://docs.continue.dev/customization/models
+models:
+  - title: NVIDIA GLM 5.2
+    provider: openai
+    model: "z-ai/glm-5.2"
+    apiKey: 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
+    apiBase: "https://integrate.api.nvidia.com/v1"
+

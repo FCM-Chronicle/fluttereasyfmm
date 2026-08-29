@@ -1,0 +1,3952 @@
+/* ==================== 기본 설정 ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.sns-comments-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+}
+
+.sns-comments-btn:hover {
+    opacity: 0.7;
+}
+
+.sns-comments-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sns-comment {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+}
+
+.sns-comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.85em;
+}
+
+.sns-comment-author {
+    font-weight: bold;
+    color: #4a9eff;
+}
+
+.sns-comment-time {
+    opacity: 0.6;
+    font-size: 0.9em;
+}
+
+.sns-comment-text {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+.sns-comment-likes {
+    font-size: 0.85em;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+:root {
+    /* 기본 색상 팔레트 */
+    --bg-primary: #12122b;
+    --bg-secondary: #1f1f45;
+    --bg-container: rgba(31, 31, 69, 0.8);
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --accent-primary: #a46dff;
+    --accent-secondary: #7c4dff;
+    --border-color: rgba(164, 109, 255, 0.3);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+
+    /* 팀 색상 변수 (동적으로 변경됨) */
+    --team-primary: var(--accent-primary);
+    --team-secondary: var(--accent-secondary);
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a3e 50%, #252550 100%);
+    min-height: 100vh;
+    color: var(--text-primary);
+    overflow-x: hidden;
+    transition: background 0.8s ease;
+}
+
+/* ==================== 화면 전환 시스템 ==================== */
+.screen {
+    display: none;
+    min-height: 100vh;
+    padding: 20px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== 유리 효과 (Glassmorphism) ==================== */
+.glass {
+    background: var(--bg-container);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px var(--shadow-color);
+    transition: all 0.3s ease;
+}
+
+.glass:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ==================== 팀 선택 화면 ==================== */
+#teamSelection h1 {
+    text-align: center;
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.league-section {
+    margin-bottom: 50px;
+}
+
+.league-title {
+    text-align: center;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin-bottom: 30px;
+    color: var(--team-primary);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.team-card {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.team-card:hover::before {
+    transform: scaleX(1);
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(164, 109, 255, 0.3);
+    border-color: var(--accent-primary);
+}
+
+.team-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.team-card p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: var(--text-secondary);
+}
+
+.team-rating {
+    font-size: 1.2rem;
+    color: var(--team-primary);
+    font-weight: 600;
+}
+
+/* ==================== 로비 화면 ==================== */
+.lobby-header {
+    text-align: center;
+    margin-bottom: 40px;
+    background: var(--bg-container);
+    backdrop-filter: blur(15px);
+    border-radius: 30px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.lobby-header h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    margin-bottom: 30px;
+    letter-spacing: -1px;
+}
+
+.team-info {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.info-item:hover {
+    transform: none;
+    background: none;
+}
+
+.info-item .label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    color: var(--text-muted);
+}
+
+.info-item span:last-child {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--team-primary);
+}
+
+/* ==================== 대시보드 (Bento UI) ==================== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+    animation: fadeIn 0.5s ease;
+}
+
+@media (min-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+        /* 4열 그리드로 변경 */
+        grid-auto-rows: minmax(150px, auto);
+        /* 행 높이 자동 조절 */
+    }
+
+    /* Bento Layout: 카드 크기 다양화 */
+    #dashboard-match {
+        grid-column: span 2;
+        grid-row: span 2;
+    }
+
+    /* 다음 경기 (2x2) */
+    #dashboard-league {
+        grid-column: span 2;
+    }
+
+    /* 리그 순위 (2x1) */
+    #dashboard-squad {
+        grid-column: span 1;
+    }
+
+    /* 스쿼드 (1x1) */
+    #dashboard-transfer {
+        grid-column: span 1;
+    }
+
+    /* 이적 시장 (1x1) */
+    #dashboard-tactics {
+        grid-column: span 2;
+    }
+
+    /* 전술 (2x1) */
+    #dashboard-records {
+        grid-column: span 1;
+    }
+
+    /* [추가] 기록 (1x1) */
+    #dashboard-sns {
+        grid-column: span 1;
+    }
+
+    /* [추가] SNS (1x1) */
+    #dashboard-transfer_news {
+        grid-column: span 2;
+    }
+
+    /* [추가] 이적 뉴스 (2x1) */
+    #dashboard-mail {
+        grid-column: span 2;
+    }
+
+    /* 메일함 (2x1) */
+    #dashboard-settings {
+        grid-column: span 4;
+    }
+
+    /* 설정 (4x1) */
+}
+
+.dashboard-card {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    /* Bento 스타일 둥근 모서리 */
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card:hover {
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-card h3 {
+    color: var(--team-primary);
+    margin-top: 0;
+    font-size: 1.3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+/* ==================== 탭 시스템 ==================== */
+.lobby-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    background: var(--bg-container);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 14px 26px;
+    min-height: 48px;
+    border-radius: 26px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.tab-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(164, 109, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.tab-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.tab-btn:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border-color: var(--accent-primary);
+    box-shadow: 0 5px 20px rgba(164, 109, 255, 0.4);
+}
+
+.tab-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* ==================== 포메이션 필드 ==================== */
+.formation-container {
+    background: var(--bg-container);
+    backdrop-filter: blur(15px);
+    border-radius: 30px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    max-width: 1100px;
+    margin: 0 auto 30px auto;
+}
+
+.field {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: 600px;
+    background: linear-gradient(to bottom, #2ecc71 0%, #27ae60 100%);
+    border-radius: 10px;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    margin: 0 auto;
+    overflow: hidden;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.2);
+}
+
+/* 경기장 애니메이션 */
+.field::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 70%);
+    animation: fieldShine 6s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes fieldShine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+}
+
+.field-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-50%);
+}
+
+.center-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.penalty-box {
+    position: absolute;
+    left: 50%;
+    width: 200px;
+    height: 80px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    transform: translateX(-50%);
+}
+
+.penalty-box-top {
+    top: 0;
+    border-top: none;
+}
+
+.penalty-box-bottom {
+    bottom: 0;
+    border-bottom: none;
+}
+
+/* ==================== 선수 포지션 ==================== */
+.position {
+    position: absolute;
+    z-index: 10;
+}
+
+.gk {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.df-1 {
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-340px);
+}
+
+.df-2 {
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-150px);
+}
+
+.df-3 {
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(60px);
+}
+
+.df-4 {
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(240px);
+}
+
+.mf-1 {
+    bottom: 250px;
+    left: 50%;
+    transform: translateX(-270px);
+}
+
+.mf-2 {
+    bottom: 250px;
+    left: 50%;
+    transform: translateX(-60px);
+}
+
+.mf-3 {
+    bottom: 250px;
+    left: 50%;
+    transform: translateX(160px);
+}
+
+.fw-1 {
+    bottom: 380px;
+    left: 50%;
+    transform: translateX(-270px);
+}
+
+.fw-2 {
+    bottom: 380px;
+    left: 50%;
+    transform: translateX(-60px);
+}
+
+.fw-3 {
+    bottom: 380px;
+    left: 50%;
+    transform: translateX(160px);
+}
+
+/* ==================== 선수 슬롯 ==================== */
+.player-slot {
+    width: 120px;
+    height: 75px;
+    background: rgba(164, 109, 255, 0.2);
+    border: 2px solid rgba(164, 109, 255, 0.5);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    font-size: 1.05rem;
+    font-weight: bold;
+    padding: 3px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.player-slot:hover {
+    background: rgba(164, 109, 255, 0.4);
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(164, 109, 255, 0.4);
+}
+
+.player-slot.filled {
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.9), rgba(39, 174, 96, 0.9));
+    color: white;
+    flex-direction: column;
+    font-size: 0.975rem;
+    padding: 4.5px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.player-slot.filled div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* ==================== 선수 목록 ==================== */
+.team-players {
+    background: var(--bg-container);
+    backdrop-filter: blur(15px);
+    border-radius: 30px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.team-players h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--team-primary);
+}
+
+#playerList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.player-card {
+    background: var(--bg-container);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    position: relative;
+}
+
+.player-card:hover {
+    background: rgba(164, 109, 255, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(164, 109, 255, 0.3);
+}
+
+.player-card:not(.used):hover::after {
+    content: '우클릭: 방출';
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 0.7rem;
+    color: var(--team-primary);
+    opacity: 0.9;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.player-card.used {
+    opacity: 0.5;
+    background: rgba(128, 128, 128, 0.2);
+    cursor: not-allowed;
+}
+
+.player-card.injured {
+    background: rgba(231, 76, 60, 0.1);
+    border-color: #e74c3c;
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+.player-card.injured:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.player-card .name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.player-card .details {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    color: var(--text-secondary);
+}
+
+/* 선수 카드 이미지 스타일 */
+.player-card-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.player-card-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    /* 이미지가 잘리지 않고 비율에 맞게 표시되도록 수정 */
+    flex-shrink: 0;
+}
+
+.player-info-text {
+    flex: 1;
+}
+
+/* ==================== 버튼 스타일 ==================== */
+.btn {
+    background: var(--bg-container);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 15px 30px;
+    min-height: 50px;
+    border-radius: 28px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    font-size: 1rem;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(164, 109, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(164, 109, 255, 0.3);
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border-color: var(--accent-primary);
+}
+
+.btn.primary:hover {
+    box-shadow: 0 5px 20px rgba(164, 109, 255, 0.5);
+}
+
+/* ==================== SNS 탭 스타일 ==================== */
+#sns {
+    padding: 20px;
+    max-height: 600px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    /* 이 부분은 의도된 디자인으로 유지 */
+    border-radius: 15px;
+}
+
+.sns-header {
+    margin-bottom: 20px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(164, 109, 255, 0.4);
+}
+
+.sns-header h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.sns-description {
+    margin: 0;
+    opacity: 0.95;
+    font-size: 1rem;
+}
+
+.sns-feed {
+    max-width: 100%;
+}
+
+.sns-empty {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-secondary);
+    font-style: italic;
+    background: var(--bg-container);
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+    margin: 20px 0;
+}
+
+.sns-post {
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: var(--bg-container);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sns-post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(164, 109, 255, 0.2);
+}
+
+/* 포스트 타입별 좌측 컬러 바 */
+.sns-post-match_result::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #4CAF50, #45a049);
+}
+
+.sns-post-transfer_confirmed::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #2196F3, #1976D2);
+}
+
+.sns-post-transfer_rumor::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #FF9800, #F57C00);
+}
+
+.sns-post-match_preview::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #9C27B0, #7B1FA2);
+}
+
+.sns-post-content {
+    margin-bottom: 15px;
+    line-height: 1.7;
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 400;
+}
+
+.sns-post-hashtags {
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.hashtag {
+    background: rgba(164, 109, 255, 0.3);
+    color: #c9b3ff;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(164, 109, 255, 0.4);
+    backdrop-filter: blur(5px);
+}
+
+.hashtag:hover {
+    background: rgba(164, 109, 255, 0.5);
+    transform: scale(1.05);
+    color: #e0d4ff;
+}
+
+.sns-post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 12px;
+}
+
+.sns-time {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.sns-interactions {
+    display: flex;
+    gap: 15px;
+}
+
+.sns-interactions span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    background: rgba(164, 109, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(164, 109, 255, 0.3);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.sns-interactions span:hover {
+    background: rgba(164, 109, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.sns-likes {
+    color: #e91e63 !important;
+}
+
+.sns-comments {
+    color: #2196f3 !important;
+}
+
+.sns-shares {
+    color: #4caf50 !important;
+}
+
+/* ==================== 경기 화면 ==================== */
+.match-header {
+    text-align: center;
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.score {
+    font-size: 2rem;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+.time {
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+.match-events {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px;
+    height: 400px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 20px;
+}
+
+.event-card {
+    background: var(--bg-container);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    animation: slideIn 0.5s ease-out;
+}
+
+.event-card.foul {
+    background: rgba(231, 76, 60, 0.3);
+    border-color: rgba(231, 76, 60, 0.5);
+}
+
+.event-card.injury {
+    background: rgba(231, 76, 60, 0.3);
+    border-color: rgba(231, 76, 60, 0.5);
+}
+
+.event-card.kickoff-ready {
+    background: rgba(52, 152, 219, 0.3);
+    border-color: rgba(52, 152, 219, 0.5);
+    text-align: center;
+}
+
+.event-card.kickoff {
+    background: rgba(46, 204, 113, 0.3);
+    border-color: rgba(46, 204, 113, 0.5);
+    font-weight: bold;
+}
+
+/* CM 스타일 텍스트 매치 이벤트 */
+.event-card.preGoalSuspense {
+    animation: pulseSuspense 1.2s ease-in-out infinite !important;
+    background: rgba(80, 0, 0, 0.75);
+    border: 2px solid rgba(255, 80, 80, 0.6);
+    box-shadow: 0 0 20px rgba(255, 50, 50, 0.35);
+    font-size: 1.15rem;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+}
+
+.event-card.goal {
+    background: rgba(46, 204, 113, 0.35);
+    border-color: rgba(46, 204, 113, 0.65);
+    font-weight: bold;
+}
+
+.event-card.save,
+.event-card.block {
+    background: rgba(52, 152, 219, 0.28);
+    border-color: rgba(52, 152, 219, 0.55);
+}
+
+.event-card.miss {
+    background: rgba(149, 165, 166, 0.25);
+    border-color: rgba(149, 165, 166, 0.45);
+}
+
+.event-card.pass,
+.event-card.throughpass,
+.event-card.dribble,
+.event-card.tackle {
+    background: rgba(0, 0, 0, 0.45);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.event-card.final {
+    background: rgba(241, 196, 15, 0.22);
+    border-color: rgba(241, 196, 15, 0.55);
+    font-weight: bold;
+}
+
+.event-card .event-time {
+    color: #ffd700;
+    font-weight: bold;
+    white-space: nowrap;
+    min-width: 45px;
+}
+
+.event-card .event-desc {
+    color: #fff;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* CM 경기 화면 레이아웃 */
+#matchVisualizerContainer {
+    width: 100%;
+    height: 680px;
+    position: relative;
+    background: #27ae60;
+    margin: 20px 0 10px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+#matchScreen.cm-match-layout .match-header {
+    margin-bottom: 8px;
+}
+
+#matchScreen.cm-match-layout #matchVisualizerContainer {
+    height: 700px;
+    margin: 12px 0 8px 0;
+}
+
+#matchScreen.cm-match-layout .match-events.cm-feed {
+    min-height: 88px;
+    height: auto;
+    max-height: 140px;
+    overflow: hidden;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#matchScreen.cm-match-layout #eventList {
+    width: 100%;
+    max-width: 800px;
+}
+
+#matchScreen.cm-match-layout .event-card {
+    animation: none !important;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 12px;
+}
+
+#matchScreen.cm-match-layout .match-hint-bar {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.82rem;
+    margin-top: 6px;
+}
+
+#matchScreen.cm-match-layout .match-hint-bar kbd {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: #f1c40f;
+}
+
+@keyframes pulseSuspense {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 12px rgba(255, 60, 60, 0.25);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 24px rgba(255, 80, 80, 0.55);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.event-time {
+    font-weight: bold;
+    color: var(--team-primary);
+    margin-bottom: 5px;
+}
+
+/* ==================== 인터뷰 화면 ==================== */
+.interview-container {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.interview-container h2 {
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+#interviewQuestion {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.interview-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.interview-btn {
+    background: var(--bg-container);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+.interview-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(164, 109, 255, 0.3), transparent);
+    transform: rotate(45deg);
+    transition: all 0.6s;
+    opacity: 0;
+}
+
+.interview-btn:hover::before {
+    animation: shine 0.6s ease-in-out;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+        opacity: 0;
+    }
+}
+
+.interview-btn:hover {
+    background: rgba(164, 109, 255, 0.2);
+    transform: translateX(10px);
+}
+
+/* ==================== 경기 탭 ==================== */
+.match-info {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.match-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--team-primary);
+}
+
+.opponent-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(164, 109, 255, 0.05);
+    border-radius: 10px;
+}
+
+#opponentName {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.opponent-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.opponent-name {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.match-details {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.match-type {
+    background: rgba(46, 204, 113, 0.2);
+    padding: 3px 8px;
+    border-radius: 5px;
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.match-time {
+    background: rgba(52, 152, 219, 0.2);
+    padding: 3px 8px;
+    border-radius: 5px;
+    color: #3498db;
+}
+
+.tactic-selection {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.tactic-selection h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: var(--team-primary);
+}
+
+.tactic-info {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(164, 109, 255, 0.05);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.tactic-tip {
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(164, 109, 255, 0.1);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--team-primary);
+}
+
+#tacticSelect {
+    width: 100%;
+    background: var(--bg-container);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    font-size: 1rem;
+}
+
+#tacticSelect option {
+    background: var(--bg-primary);
+    color: white;
+}
+
+/* ==================== 스폰서 ==================== */
+.sponsor-header {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.sponsor-header h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: var(--team-primary);
+}
+
+.sponsor-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.current-sponsor-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(164, 109, 255, 0.05);
+    border-radius: 10px;
+}
+
+.info-label {
+    font-weight: bold;
+    color: var(--team-primary);
+}
+
+.current-sponsor-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+#sponsorList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.sponsor-card {
+    background: var(--bg-container);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.sponsor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sponsor-card:hover::before {
+    opacity: 1;
+}
+
+.sponsor-card:hover {
+    background: rgba(164, 109, 255, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(164, 109, 255, 0.1);
+}
+
+.sponsor-card h4 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    color: var(--team-primary);
+}
+
+.sponsor-card p {
+    margin-bottom: 15px;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.sponsor-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.sponsor-detail {
+    background: rgba(164, 109, 255, 0.05);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.sponsor-detail strong {
+    color: var(--team-primary);
+}
+
+.sponsor-requirements {
+    background: rgba(164, 109, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border-left: 3px solid var(--accent-primary);
+}
+
+.sponsor-card.available {
+    border-color: rgba(46, 204, 113, 0.5);
+}
+
+.sponsor-card.available::before {
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+}
+
+.sponsor-card.unavailable {
+    opacity: 0.6;
+    cursor: not-allowed;
+    border-color: rgba(231, 76, 60, 0.3);
+}
+
+.sponsor-card.unavailable::before {
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+}
+
+.sponsor-card.contracted {
+    background: rgba(46, 204, 113, 0.2);
+    border-color: rgba(46, 204, 113, 0.5);
+}
+
+/* ==================== 설정 ==================== */
+.settings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.settings-section {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.settings-section h4 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: var(--team-primary);
+    text-align: center;
+}
+
+.settings-section .btn {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.settings-section .btn:last-child {
+    margin-bottom: 0;
+}
+
+/* ==================== 이적 시장 ==================== */
+.transfer-controls {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.search-filters {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.search-filters input,
+.search-filters select {
+    background: var(--bg-container);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+}
+
+.search-filters select option {
+    background: var(--bg-primary);
+    color: white;
+}
+
+.search-filters input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#transferPlayers {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.transfer-player {
+    background: var(--bg-container);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.transfer-player:hover {
+    background: rgba(164, 109, 255, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(164, 109, 255, 0.1);
+}
+
+.transfer-player .player-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.transfer-player .player-position {
+    background: rgba(46, 204, 113, 0.6);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+/* 이적 시장 선수 가격은 항상 흰색으로 고정 */
+.transfer-price {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ffffff !important;
+    margin-top: 10px;
+}
+
+/* ==================== 리그 테이블 ==================== */
+#leagueTable {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow-x: auto;
+}
+
+.league-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.league-table th,
+.league-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.league-table th {
+    background: rgba(164, 109, 255, 0.1);
+    font-weight: bold;
+}
+
+.league-table tr:hover {
+    background: rgba(164, 109, 255, 0.1);
+}
+
+.league-table .user-team {
+    background: rgba(46, 204, 113, 0.3) !important;
+}
+
+/* ==================== 모달 ==================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: var(--bg-container);
+    backdrop-filter: blur(15px);
+    margin: 5% auto;
+    padding: 40px;
+    border-radius: 30px;
+    width: 90%;
+    max-width: 600px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.close,
+.close-btn {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    background: rgba(164, 109, 255, 0.2);
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close:hover,
+.close-btn:hover {
+    color: #ff6b6b;
+    background: rgba(164, 109, 255, 0.3);
+    transform: scale(1.1);
+}
+
+#modalPlayerList {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+/* 선수 교체 모달 */
+.substitution-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.substitution-section h4 {
+    color: var(--team-primary);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.substitution-player {
+    background: var(--bg-container);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.substitution-player:hover {
+    background: rgba(164, 109, 255, 0.2);
+    transform: translateX(5px);
+}
+
+.substitution-player.selected {
+    background: var(--accent-primary);
+    border-color: var(--accent-secondary);
+    transform: translateX(5px);
+}
+
+.substitution-player.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(128, 128, 128, 0.2);
+}
+
+/* 유스 시스템 */
+.youth-header {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+}
+
+.youth-header h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: var(--team-primary);
+}
+
+#youthPlayerList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+
+
+/* ==================== 선수 성장 ==================== */
+.position-header {
+    color: var(--team-primary);
+    margin: 25px 0 15px 0;
+    font-size: 18px;
+    font-weight: bold;
+    border-left: 4px solid var(--accent-primary);
+    padding-left: 10px;
+}
+
+.player-growth-card {
+    background: var(--bg-container);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.player-growth-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.player-growth-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.player-basic-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: var(--team-primary);
+}
+
+.player-details {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.position-badge,
+.rating-badge,
+.age-badge,
+.stage-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+.position-badge.gk {
+    background: #E74C3C;
+}
+
+.position-badge.df {
+    background: #3498DB;
+}
+
+.position-badge.mf {
+    background: #2ECC71;
+}
+
+.position-badge.fw {
+    background: #F39C12;
+}
+
+.rating-badge {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+}
+
+.age-badge {
+    background: rgba(164, 109, 255, 0.2);
+}
+
+.growth-summary {
+    text-align: right;
+}
+
+.growth-rate {
+    background: rgba(164, 109, 255, 0.2);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--accent-primary);
+}
+
+.growth-label {
+    display: block;
+    font-size: 12px;
+    color: var(--team-primary);
+    margin-bottom: 2px;
+}
+
+.growth-value {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
+
+.player-growth-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.stat-item {
+    background: rgba(164, 109, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.stat-value {
+    font-weight: bold;
+    color: var(--team-primary);
+}
+
+.growth-potential {
+    margin-top: 15px;
+}
+
+.potential-bar {
+    background: rgba(164, 109, 255, 0.2);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.potential-fill {
+    background: linear-gradient(90deg, #4ECDC4, #44A08D);
+    height: 100%;
+    transition: width 0.5s ease;
+}
+
+.potential-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ==================== 개인기록 ==================== */
+.records-header {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.records-header h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: var(--team-primary);
+}
+
+.records-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.league-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.league-tab-btn {
+    background: var(--bg-container);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 14px 24px;
+    min-height: 48px;
+    border-radius: 26px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.league-tab-btn:hover {
+    background: rgba(164, 109, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.league-tab-btn.active {
+    background: rgba(164, 109, 255, 0.3);
+    box-shadow: 0 5px 15px rgba(164, 109, 255, 0.2);
+}
+
+.records-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+.records-section {
+    background: var(--bg-container);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.records-section h4 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: var(--team-primary);
+    text-align: center;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ranking-item {
+    background: rgba(164, 109, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.ranking-item:hover {
+    background: rgba(164, 109, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.ranking-item.user-player {
+    background: rgba(46, 204, 113, 0.3);
+    border-color: rgba(46, 204, 113, 0.5);
+}
+
+.player-rank {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--team-primary);
+    min-width: 30px;
+}
+
+.player-info {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.player-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.player-team {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    color: var(--team-primary);
+}
+
+.player-stats {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.records-section.full-width {
+    grid-column: 1 / -1;
+}
+
+.best11-pitch {
+    background: linear-gradient(to bottom, #2ecc71, #27ae60);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 10px;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.2);
+}
+
+.best11-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.best11-player {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 12px 8px;
+    text-align: center;
+    width: 140px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.2s;
+}
+
+.best11-player:hover {
+    transform: scale(1.05);
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10;
+}
+
+.best11-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    /* 이미지가 잘리지 않고 비율에 맞게 표시되도록 수정 */
+    margin: 0 auto 5px auto;
+    display: block;
+}
+
+/*************  ✨ Windsurf Command ⭐  *************/
+.team-selector-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    gap: 20px;
+    background: rgb(20, 24, 28);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.team-selector-container>div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.team-selector-container>div>h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.team-selector-container>div>p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.team-selector-container>div>h4 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.team-selector-container>div>p.team-description {
+    min-height: 150px;
+    text-align: center;
+}
+
+.best11-player.user-player {
+    border-color: #ffd700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.best11-rating {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.best11-name {
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin: 3px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.best11-team {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ==================== 역대 기록 스타일 ==================== */
+.history-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.history-header h4 {
+    color: #ffd700;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.history-poty {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    text-align: center;
+}
+
+.history-label {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+.history-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.history-league-section {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.history-league-section h5 {
+    color: var(--team-primary);
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.history-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.history-stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-stat .label {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.history-stat .value {
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+/* ==================== 반응형 디자인 ==================== */
+@media (max-width: 768px) {
+    .teams-grid {
+        grid-template-columns: 1fr;
+        padding: 0 10px;
+    }
+
+    /* 모바일에서는 Bento Grid 해제 */
+    .team-card:nth-child(n) {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .team-info {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .lobby-tabs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .league-tabs {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .field {
+        height: 400px;
+    }
+
+    .player-slot {
+        width: 85px;
+        height: 55px;
+        font-size: 0.75rem;
+    }
+
+    .player-slot.filled {
+        font-size: 0.7rem;
+        padding: 5px;
+        line-height: 1.3;
+    }
+
+    .search-filters {
+        flex-direction: column;
+    }
+
+    .interview-options {
+        gap: 10px;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-height: 80vh;
+        overflow-y: auto;
+        margin: 10% auto;
+        padding: 20px;
+    }
+
+    .sponsor-details {
+        grid-template-columns: 1fr;
+    }
+
+    #sponsorList {
+        grid-template-columns: 1fr;
+    }
+
+    .opponent-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .player-growth-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .player-growth-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .records-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .ranking-item {
+        padding: 12px;
+    }
+
+    .player-rank {
+        font-size: 1.2rem;
+        min-width: 25px;
+    }
+
+    .player-name {
+        font-size: 1rem;
+    }
+
+    .player-stats {
+        font-size: 1.1rem;
+    }
+
+    #sns {
+        padding: 15px;
+    }
+
+    .sns-header {
+        padding: 15px;
+    }
+
+    .sns-header h3 {
+        font-size: 20px;
+    }
+
+    .sns-post {
+        padding: 15px;
+        margin-bottom: 12px;
+    }
+
+    .sns-post-content {
+        font-size: 14px;
+    }
+
+    .sns-post-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .sns-interactions {
+        gap: 12px;
+    }
+
+    .hashtag {
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+}
+
+/* ==================== 스크롤바 스타일 ==================== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--accent-secondary), var(--accent-primary));
+}
+
+#sns::-webkit-scrollbar {
+    width: 6px;
+}
+
+#sns::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 10px;
+}
+
+#sns::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 10px;
+}
+
+#sns::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+}
+
+/* ==================== 로딩 애니메이션 ==================== */
+.loading,
+.sns-loading {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(164, 109, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--accent-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+.sns-loading {
+    text-align: center;
+    padding: 20px;
+}
+
+.sns-loading::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(164, 109, 255, 0.3);
+    border-top: 3px solid var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==================== 팀별 테마 색상 ==================== */
+
+/* 바르셀로나 - 블라우그라나 (블루&레드) */
+body.team-바르셀로나 {
+    --primary-color: rgba(0, 79, 159, 0.1);
+    --primary-border: rgba(0, 79, 159, 0.3);
+    --accent-color: #004f9f;
+    --secondary-accent: #dc143c;
+    --team-primary: #004f9f;
+    --team-secondary: #dc143c;
+}
+
+/* 레알 마드리드 - 화이트&골드 */
+body.team-레알_마드리드 {
+    --primary-color: rgba(255, 215, 0, 0.1);
+    --primary-border: rgba(255, 215, 0, 0.3);
+    --accent-color: #ffd700;
+    --secondary-accent: #ffffff;
+    --team-primary: #ffd700;
+    --team-secondary: #ffffff;
+}
+
+/* 맨체스터 시티 - 스카이 블루 */
+body.team-맨체스터_시티 {
+    --primary-color: rgba(107, 205, 255, 0.1);
+    --primary-border: rgba(107, 205, 255, 0.3);
+    --accent-color: #6bcdff;
+    --secondary-accent: #ffffff;
+    --team-primary: #6bcdff;
+    --team-secondary: #ffffff;
+}
+
+/* 리버풀 - 레드 */
+body.team-리버풀 {
+    --primary-color: rgba(200, 16, 46, 0.1);
+    --primary-border: rgba(200, 16, 46, 0.3);
+    --accent-color: #c8102e;
+    --secondary-accent: #f6eb61;
+    --team-primary: #c8102e;
+    --team-secondary: #f6eb61;
+}
+
+/* 첼시 - 블루 */
+body.team-첼시 {
+    --primary-color: rgba(3, 70, 148, 0.1);
+    --primary-border: rgba(3, 70, 148, 0.3);
+    --accent-color: #034694;
+    --secondary-accent: #ffffff;
+    --team-primary: #034694;
+    --team-secondary: #ffffff;
+}
+
+/* 아스널 - 레드&골드 */
+body.team-아스널 {
+    --primary-color: rgba(239, 1, 7, 0.1);
+    --primary-border: rgba(239, 1, 7, 0.3);
+    --accent-color: #ef0107;
+    --secondary-accent: #9c824a;
+    --team-primary: #ef0107;
+    --team-secondary: #9c824a;
+}
+
+/* 토트넘 - 네이비&화이트 */
+body.team-토트넘_홋스퍼 {
+    --primary-color: rgba(19, 34, 87, 0.1);
+    --primary-border: rgba(19, 34, 87, 0.3);
+    --accent-color: #132257;
+    --secondary-accent: #ffffff;
+    --team-primary: #132257;
+    --team-secondary: #ffffff;
+}
+
+/* 맨체스터 유나이티드 - 레드 */
+body.team-맨체스터_유나이티드 {
+    --primary-color: rgba(218, 41, 28, 0.1);
+    --primary-border: rgba(218, 41, 28, 0.3);
+    --accent-color: #da291c;
+    --secondary-accent: #ffd700;
+    --team-primary: #da291c;
+    --team-secondary: #ffd700;
+}
+
+/* 파리 생제르맹 - 네이비&레드 */
+body.team-파리_생제르맹 {
+    --primary-color: rgba(22, 22, 102, 0.1);
+    --primary-border: rgba(22, 22, 102, 0.3);
+    --accent-color: #161666;
+    --secondary-accent: #e31837;
+    --team-primary: #161666;
+    --team-secondary: #e31837;
+}
+
+/* AC 밀란 - 레드&블랙 */
+body.team-AC_밀란 {
+    --primary-color: rgba(251, 25, 25, 0.1);
+    --primary-border: rgba(251, 25, 25, 0.3);
+    --accent-color: #fb1919;
+    --secondary-accent: #000000;
+    --team-primary: #fb1919;
+    --team-secondary: #000000;
+}
+
+/* 인터 밀란 - 블루&블랙 */
+body.team-인터_밀란 {
+    --primary-color: rgba(0, 104, 179, 0.1);
+    --primary-border: rgba(0, 104, 179, 0.3);
+    --accent-color: #0068b3;
+    --secondary-accent: #000000;
+    --team-primary: #0068b3;
+    --team-secondary: #000000;
+}
+
+/* 바이에른 뮌헨 - 레드&화이트 */
+body.team-바이에른_뮌헨 {
+    --primary-color: rgba(220, 36, 31, 0.1);
+    --primary-border: rgba(220, 36, 31, 0.3);
+    --accent-color: #dc241f;
+    --secondary-accent: #ffffff;
+    --team-primary: #dc241f;
+    --team-secondary: #ffffff;
+}
+
+/* 아틀레티코 마드리드 - 레드&화이트 */
+body.team-아틀레티코_마드리드 {
+    --primary-color: rgba(206, 17, 65, 0.1);
+    --primary-border: rgba(206, 17, 65, 0.3);
+    --accent-color: #ce1141;
+    --secondary-accent: #ffffff;
+    --team-primary: #ce1141;
+    --team-secondary: #ffffff;
+}
+
+/* 도르트문트 - 옐로우&블랙 */
+body.team-도르트문트 {
+    --primary-color: rgba(254, 225, 22, 0.1);
+    --primary-border: rgba(254, 225, 22, 0.3);
+    --accent-color: #fee116;
+    --secondary-accent: #000000;
+    --team-primary: #fee116;
+    --team-secondary: #000000;
+}
+
+/* 유벤투스 - 블랙&화이트 */
+body.team-유벤투스 {
+    --primary-color: rgba(255, 255, 255, 0.15);
+    --primary-border: rgba(255, 255, 255, 0.3);
+    --accent-color: #ffffff;
+    --secondary-accent: #000000;
+    --team-primary: #ffffff;
+    --team-secondary: #000000;
+}
+
+/* 나폴리 - 스카이 블루 */
+body.team-나폴리 {
+    --primary-color: rgba(0, 172, 237, 0.1);
+    --primary-border: rgba(0, 172, 237, 0.3);
+    --accent-color: #00aced;
+    --secondary-accent: #ffffff;
+    --team-primary: #00aced;
+    --team-secondary: #ffffff;
+}
+
+/* 뉴캐슬 유나이티드 - 블랙&화이트 */
+body.team-뉴캐슬_유나이티드 {
+    --primary-color: rgba(45, 41, 38, 0.1);
+    --primary-border: rgba(45, 41, 38, 0.3);
+    --accent-color: #2d2926;
+    --secondary-accent: #ffffff;
+    --team-primary: #2d2926;
+    --team-secondary: #ffffff;
+}
+
+/* 아스톤 빌라 - 클라렛&블루 */
+body.team-아스톤_빌라 {
+    --primary-color: rgba(150, 61, 151, 0.1);
+    --primary-border: rgba(150, 61, 151, 0.3);
+    --accent-color: #963d97;
+    --secondary-accent: #95bfe5;
+    --team-primary: #963d97;
+    --team-secondary: #95bfe5;
+}
+
+/* 라이프치히 - 레드&화이트 */
+body.team-라이프치히 {
+    --primary-color: rgba(220, 36, 31, 0.1);
+    --primary-border: rgba(220, 36, 31, 0.3);
+    --accent-color: #dc241f;
+    --secondary-accent: #ffffff;
+    --team-primary: #dc241f;
+    --team-secondary: #ffffff;
+}
+
+/* 세비야 - 화이트&레드 */
+body.team-세비야 {
+    --primary-color: rgba(246, 41, 12, 0.1);
+    --primary-border: rgba(246, 41, 12, 0.3);
+    --accent-color: #f6290c;
+    --secondary-accent: #ffffff;
+    --team-primary: #f6290c;
+    --team-secondary: #ffffff;
+}
+
+/* 아약스 - 레드&화이트 */
+body.team-아약스 {
+    --primary-color: rgba(211, 9, 0, 0.1);
+    --primary-border: rgba(211, 9, 0, 0.3);
+    --accent-color: #d30900;
+    --secondary-accent: #ffffff;
+    --team-primary: #d30900;
+    --team-secondary: #ffffff;
+}
+
+/* AS 로마 - 레드&골드 */
+body.team-AS_로마 {
+    --primary-color: rgba(134, 0, 56, 0.1);
+    --primary-border: rgba(134, 0, 56, 0.3);
+    --accent-color: #860038;
+    --secondary-accent: #f7b500;
+    --team-primary: #860038;
+    --team-secondary: #f7b500;
+}
+
+/* 레버쿠젠 - 레드&블랙 */
+body.team-레버쿠젠 {
+    --primary-color: rgba(230, 24, 35, 0.1);
+    --primary-border: rgba(230, 24, 35, 0.3);
+    --accent-color: #e61823;
+    --secondary-accent: #000000;
+    --team-primary: #e61823;
+    --team-secondary: #000000;
+}
+
+/* 스포르팅 CP - 그린&화이트 */
+body.team-스포르팅_CP {
+    --primary-color: rgba(33, 137, 61, 0.1);
+    --primary-border: rgba(33, 137, 61, 0.3);
+    --accent-color: #21893d;
+    --secondary-accent: #ffffff;
+    --team-primary: #21893d;
+    --team-secondary: #ffffff;
+}
+
+/* 벤피카 - 레드&화이트 */
+body.team-벤피카 {
+    --primary-color: rgba(231, 24, 31, 0.1);
+    --primary-border: rgba(231, 24, 31, 0.3);
+    --accent-color: #e7181f;
+    --secondary-accent: #ffffff;
+    --team-primary: #e7181f;
+    --team-secondary: #ffffff;
+}
+
+/* 셀틱 - 그린&화이트 */
+body.team-셀틱 {
+    --primary-color: rgba(0, 140, 54, 0.1);
+    --primary-border: rgba(0, 140, 54, 0.3);
+    --accent-color: #008c36;
+    --secondary-accent: #ffffff;
+    --team-primary: #008c36;
+    --team-secondary: #ffffff;
+}
+
+/* 페예노르트 - 레드&화이트 */
+body.team-페예노르트 {
+    --primary-color: rgba(255, 0, 0, 0.1);
+    --primary-border: rgba(255, 0, 0, 0.3);
+    --accent-color: #ff0000;
+    --secondary-accent: #ffffff;
+    --team-primary: #ff0000;
+    --team-secondary: #ffffff;
+}
+
+/* 올랭피크 드 마르세유 - 스카이 블루&화이트 */
+body.team-올랭피크_드_마르세유 {
+    --primary-color: rgba(39, 161, 226, 0.1);
+    --primary-border: rgba(39, 161, 226, 0.3);
+    --accent-color: #27a1e2;
+    --secondary-accent: #ffffff;
+    --team-primary: #27a1e2;
+    --team-secondary: #ffffff;
+}
+
+/* 리옹 - 블루&화이트&레드 */
+body.team-리옹 {
+    --primary-color: rgba(12, 25, 129, 0.1);
+    --primary-border: rgba(12, 25, 129, 0.3);
+    --accent-color: #0c1981;
+    --secondary-accent: #ffffff;
+    --team-primary: #0c1981;
+    --team-secondary: #ffffff;
+}
+
+/* FC 서울 - 레드 */
+body.team-FC_서울 {
+    --primary-color: rgba(227, 24, 55, 0.1);
+    --primary-border: rgba(227, 24, 55, 0.3);
+    --accent-color: #e31837;
+    --secondary-accent: #ffffff;
+    --team-primary: #e31837;
+    --team-secondary: #ffffff;
+}
+
+/* 전북 현대 - 그린 */
+body.team-전북_현대 {
+    --primary-color: rgba(0, 128, 55, 0.1);
+    --primary-border: rgba(0, 128, 55, 0.3);
+    --accent-color: #008037;
+    --secondary-accent: #ffffff;
+    --team-primary: #008037;
+    --team-secondary: #ffffff;
+}
+
+/* 울산 현대 - 블루 */
+body.team-울산_현대 {
+    --primary-color: rgba(0, 82, 155, 0.1);
+    --primary-border: rgba(0, 82, 155, 0.3);
+    --accent-color: #00529b;
+    --secondary-accent: #ffffff;
+    --team-primary: #00529b;
+    --team-secondary: #ffffff;
+}
+
+/* 포항 스틸러스 - 레드&블루 */
+body.team-포항_스틸러스 {
+    --primary-color: rgba(227, 24, 55, 0.1);
+    --primary-border: rgba(227, 24, 55, 0.3);
+    --accent-color: #e31837;
+    --secondary-accent: #003da5;
+    --team-primary: #e31837;
+    --team-secondary: #003da5;
+}
+
+/* 광주 FC - 옐로우 */
+body.team-광주_FC {
+    --primary-color: rgba(255, 215, 0, 0.1);
+    --primary-border: rgba(255, 215, 0, 0.3);
+    --accent-color: #ffd700;
+    --secondary-accent: #000000;
+    --team-primary: #ffd700;
+    --team-secondary: #000000;
+}
+
+/* 갈라타사라이 - 옐로우&레드 */
+body.team-갈라타사라이 {
+    --primary-color: rgba(255, 205, 0, 0.1);
+    --primary-border: rgba(255, 205, 0, 0.3);
+    --accent-color: #ffcd00;
+    --secondary-accent: #c41e3a;
+    --team-primary: #ffcd00;
+    --team-secondary: #c41e3a;
+}
+
+/* 알 힐랄 - 블루&화이트 */
+body.team-알_힐랄 {
+    --primary-color: rgba(0, 123, 191, 0.1);
+    --primary-border: rgba(0, 123, 191, 0.3);
+    --accent-color: #007bbf;
+    --secondary-accent: #ffffff;
+    --team-primary: #007bbf;
+    --team-secondary: #ffffff;
+}
+
+/* 알 이티하드 - 옐로우&블랙 */
+body.team-알_이티하드 {
+    --primary-color: rgba(253, 185, 39, 0.1);
+    --primary-border: rgba(253, 185, 39, 0.3);
+    --accent-color: #fdb927;
+    --secondary-accent: #000000;
+    --team-primary: #fdb927;
+    --team-secondary: #000000;
+}
+
+/* 알 나스르 - 옐로우&블루 */
+body.team-알_나스르 {
+    --primary-color: rgba(255, 215, 0, 0.1);
+    --primary-border: rgba(255, 215, 0, 0.3);
+    --accent-color: #ffd700;
+    --secondary-accent: #003da5;
+    --team-primary: #ffd700;
+    --team-secondary: #003da5;
+}
+
+/* 아르헨티나 연합 - 스카이 블루&화이트 */
+body.team-아르헨티나_연합 {
+    --primary-color: rgba(117, 170, 219, 0.1);
+    --primary-border: rgba(117, 170, 219, 0.3);
+    --accent-color: #75aadb;
+    --secondary-accent: #ffffff;
+    --team-primary: #75aadb;
+    --team-secondary: #ffffff;
+}
+
+/* 미국 연합 - 네이비&레드&화이트 */
+body.team-미국_연합 {
+    --primary-color: rgba(19, 41, 75, 0.1);
+    --primary-border: rgba(19, 41, 75, 0.3);
+    --accent-color: #13294b;
+    --secondary-accent: #bf0a30;
+    --team-primary: #13294b;
+    --team-secondary: #bf0a30;
+}
+
+/* 멕시코 연합 - 그린&화이트&레드 */
+body.team-멕시코_연합 {
+    --primary-color: rgba(0, 104, 71, 0.1);
+    --primary-border: rgba(0, 104, 71, 0.3);
+    --accent-color: #006847;
+    --secondary-accent: #ce1126;
+    --team-primary: #006847;
+    --team-secondary: #ce1126;
+}
+
+/* 브라질 연합 - 옐로우&그린&블루 */
+body.team-브라질_연합 {
+    --primary-color: rgba(255, 223, 0, 0.1);
+    --primary-border: rgba(255, 223, 0, 0.3);
+    --accent-color: #ffdf00;
+    --secondary-accent: #009b3a;
+    --team-primary: #ffdf00;
+    --team-secondary: #009b3a;
+}
+
+/* ==================== 팀 테마 적용 ==================== */
+[class*="team-"] .glass,
+[class*="team-"] .team-card,
+[class*="team-"] .btn,
+[class*="team-"] .tab-btn,
+[class*="team-"] .lobby-header,
+[class*="team-"] .formation-container,
+[class*="team-"] .team-players,
+[class*="team-"] .match-header,
+[class*="team-"] .match-events,
+[class*="team-"] .match-info,
+[class*="team-"] .tactic-selection,
+[class*="team-"] .sponsor-header,
+[class*="team-"] .sponsor-card,
+[class*="team-"] .settings-section,
+[class*="team-"] .transfer-controls,
+[class*="team-"] .transfer-player,
+[class*="team-"] #leagueTable,
+[class*="team-"] .modal-content,
+[class*="team-"] .player-growth-card,
+[class*="team-"] .records-header,
+[class*="team-"] .records-section,
+[class*="team-"] .interview-container,
+[class*="team-"] .event-card {
+    background: var(--bg-container);
+    border-color: rgba(255, 255, 255, 0.05);
+    /* Bento 스타일을 위해 테두리 투명도 조절 */
+}
+
+[class*="team-"] .league-title,
+[class*="team-"] .team-rating,
+[class*="team-"] .info-item span:last-child,
+[class*="team-"] .team-players h3,
+[class*="team-"] .event-time,
+[class*="team-"] .match-info h3,
+[class*="team-"] .tactic-selection h3,
+[class*="team-"] .sponsor-header h3,
+[class*="team-"] .info-label,
+[class*="team-"] .sponsor-card h4,
+[class*="team-"] .sponsor-detail strong,
+[class*="team-"] .tactic-tip,
+[class*="team-"] .position-header,
+[class*="team-"] .player-basic-info h4,
+[class*="team-"] .growth-label,
+[class*="team-"] .stat-value,
+[class*="team-"] .records-section h4,
+[class*="team-"] .records-header h3,
+[class*="team-"] .player-rank,
+[class*="team-"] .player-team {
+    color: var(--team-primary) !important;
+}
+
+[class*="team-"] .tab-btn.active,
+[class*="team-"] .league-tab-btn.active {
+    background: linear-gradient(135deg, var(--team-primary), var(--team-secondary));
+    border-color: var(--team-primary);
+}
+
+[class*="team-"] .btn.primary {
+    background: linear-gradient(135deg, var(--team-primary), var(--team-secondary));
+    border-color: var(--team-primary);
+}
+
+[class*="team-"] .player-card:not(.used):hover::after {
+    color: var(--team-primary) !important;
+}
+
+[class*="team-"] ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--team-primary), var(--team-secondary));
+}
+
+[class*="team-"] .loading,
+[class*="team-"] .sns-loading::after {
+    border-top-color: var(--team-primary) !important;
+}
+
+/* ==================== 평점 모달 스타일 ==================== */
+.ratings-container {
+    display: flex;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .ratings-container {
+        flex-direction: column;
+    }
+}
+
+.team-ratings h4 {
+    text-align: center;
+    color: var(--team-primary);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+}
+
+.rating-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.95rem;
+}
+
+.rating-row:last-child {
+    border-bottom: none;
+}
+
+.rating-row.mom {
+    background: rgba(46, 204, 113, 0.3);
+    /* 초록색 강조 */
+    border-left: 3px solid #2ecc71;
+    font-weight: bold;
+}
+
+.rating-value {
+    font-weight: bold;
+    color: #ffd700;
+}
+
+/* ==================== 팀 로고 스타일 ==================== */
+.team-logo {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-right: 8px;
+    object-fit: contain;
+    display: inline-block;
+}
+
+.lobby-header h1 .team-logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.match-info .team-logo {
+    width: 32px;
+    height: 32px;
+}
+
+.match-header .team-logo {
+    width: 40px;
+    height: 40px;
+    margin: 0 10px;
+    vertical-align: middle;
+}
+
+.match-score-summary .team-logo {
+    width: 36px;
+    height: 36px;
+}
+
+/* ============================================================
+ * 성장 현황 탭 스타일 (Growth Tab)
+ * ============================================================ */
+.growth-header {
+    padding: 18px 20px;
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.14), rgba(46, 204, 113, 0.10));
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 20px;
+}
+.growth-header h3 {
+    margin: 0 0 6px 0;
+    color: #fff;
+    font-size: 1.5rem;
+}
+.growth-description {
+    margin: 0;
+    color: #bbb;
+    font-size: 0.92rem;
+}
+
+.growth-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .growth-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.growth-sidebar {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.growth-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.growth-sidebar-header h4 {
+    margin: 0;
+    color: #eee;
+    font-size: 1rem;
+}
+.growth-count-badge {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: #111;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    min-width: 26px;
+    text-align: center;
+}
+
+.growth-player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+.growth-list-empty {
+    color: #aaa;
+    font-size: 0.88rem;
+    text-align: center;
+    padding: 28px 10px;
+    line-height: 1.6;
+}
+.growth-player-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.growth-player-item:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(243, 156, 18, 0.35);
+}
+.growth-player-item.active {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.18), rgba(241, 196, 15, 0.14));
+    border-color: #f39c12;
+    box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.12);
+}
+.growth-player-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.growth-player-avatar {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+.growth-player-info { flex: 1; min-width: 0; }
+.growth-player-info strong {
+    display: block;
+    color: #fff;
+    font-size: 0.95rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.growth-player-sub {
+    color: #9aa;
+    font-size: 0.78rem;
+    margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.growth-player-progress {
+    margin-top: 8px;
+}
+.player-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.player-progress-bar > div {
+    height: 100%;
+    background: linear-gradient(90deg, #2ecc71, #f1c40f, #e67e22);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+.growth-player-progress span {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: #f39c12;
+    font-weight: 600;
+    text-align: right;
+}
+
+.mentoring-summary-section h4 {
+    margin: 0 0 10px 4px;
+    font-size: 0.95rem;
+    color: #eee;
+}
+.mentoring-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+.mentoring-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(155, 89, 182, 0.18);
+    border-radius: 10px;
+    padding: 10px 10px 8px;
+}
+.mentoring-pair {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.85rem;
+    color: #eee;
+}
+.mentoring-arrow {
+    text-align: center;
+    font-size: 0.9rem;
+    margin: 4px 0;
+    opacity: 0.7;
+}
+.mentee-tag, .mentor-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.mentee-tag { background: #3498db; color: #fff; }
+.mentor-tag { background: #9b59b6; color: #fff; }
+.mentee-pos, .mentor-pos { color: #aaa; font-size: 0.78rem; }
+.mentoring-badge-row {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 8px;
+}
+.mentoring-chip {
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+.mentoring-chip.good { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
+.mentoring-chip.bonus {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(241, 196, 15, 0.25));
+    color: #f1c40f;
+}
+.mentoring-empty {
+    line-height: 1.5;
+}
+
+.growth-main {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 20px;
+    min-height: 520px;
+    display: flex;
+    flex-direction: column;
+}
+.growth-empty {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+    text-align: center;
+    padding: 60px 20px;
+}
+.growth-empty h4 { color: #ddd; margin: 0 0 6px 0; }
+
+.growth-detail { display: flex; flex-direction: column; gap: 18px; }
+.growth-detail-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+.growth-detail-player h4 {
+    margin: 0 0 4px;
+    font-size: 1.3rem;
+    color: #fff;
+}
+.growth-detail-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    flex: 1;
+    max-width: 600px;
+}
+.stat-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+}
+.stat-card .stat-label {
+    display: block;
+    font-size: 0.72rem;
+    color: #9aa;
+    margin-bottom: 4px;
+}
+.stat-card .stat-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #eee;
+}
+.stat-card .stat-value.gold { color: #f39c12; }
+.stat-card .stat-value.green { color: #2ecc71; }
+
+.growth-chart-wrap {
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 16px 14px 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+    height: 340px;
+    position: relative;
+}
+#growthChartCanvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.growth-progress-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+    padding: 10px 4px 2px;
+}
+.growth-progress-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+.growth-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db 0%, #2ecc71 45%, #f1c40f 80%, #e74c3c 100%);
+    border-radius: 999px;
+    transition: width 0.6s ease;
+}
+.stat-label {
+    font-size: 0.82rem;
+    color: #cdd;
+    font-weight: 600;
+}
+
+.rank-row .team-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.preview-graphic-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-graphic-card .media-overlay-dark {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.preview-headline {
+    position: relative;
+    z-index: 2;
+    font-weight: 900;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.preview-teams-row {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+}
+
+.preview-teams-row .team-logo {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
+
+.vs-text {
+    font-weight: 900;
+    font-size: 3.4rem;
+    color: #ffffff;
+    text-shadow:
+        0 0 16px rgba(255, 255, 255, 0.9),
+        0 0 32px rgba(255, 255, 255, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.5);
+    line-height: 1;
+}
+
+/* --- 협상 채팅 모달 --- */
+.chat-modal-content {
+    width: 90%;
+    max-width: 500px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: #222;
+    padding: 15px 20px;
+    border-bottom: 1px solid #444;
+    text-align: center;
+    position: relative;
+}
+
+.chat-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.chat-header p {
+    margin: 5px 0 0;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.chat-header .close {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 28px;
+    color: #aaa;
+    cursor: pointer;
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+}
+
+.chat-header .close:hover {
+    color: #fff;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: #121212;
+}
+
+.chat-message {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-break: break-word;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.chat-message.ai {
+    align-self: flex-start;
+    background: #333;
+    color: #eee;
+    border-bottom-left-radius: 18px;
+    border-top-left-radius: 4px;
+}
+
+.chat-message.user {
+    align-self: flex-end;
+    background: #2ecc71;
+    color: #111;
+    border-bottom-right-radius: 18px;
+    border-top-right-radius: 4px;
+}
+
+.chat-message.system {
+    align-self: center;
+    background: transparent;
+    color: #888;
+    font-size: 0.85rem;
+    text-align: center;
+    font-style: italic;
+}
+
+.chat-input-area {
+    padding: 15px;
+    background: #222;
+    border-top: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-input-area input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background: #111;
+    color: #fff;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.chat-quick-replies {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.chat-quick-replies button {
+    flex: 1;
+    min-width: 80px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================
+   📱 세로형 화면 (모바일 / 좁은 화면) 세련되게 최적화
+   ========================================================== */
+
+/* ----- 1. 기본 모바일 (768px 이하, 대부분 스마트폰) ----- */
+@media (max-width: 768px) {
+
+    /* 기본 screen 패딩 축소로 공간 확보 */
+    .screen {
+        padding: 14px 12px;
+    }
+
+    /* 탭 버튼들만 width 100% 적용 */
+    .tab-btn,
+    .league-tab-btn {
+        width: 100%;
+    }
+
+    /* 일반 버튼(.btn)은 가로 100% 확장에서 제외하되, 터치하기 편한 높이와 패딩은 유지 */
+    .btn,
+    .tab-btn,
+    .league-tab-btn {
+        min-height: 54px !important;
+        padding: 14px 18px !important;
+        font-size: 0.98rem;
+        border-radius: 22px;
+    }
+
+    /* 탭 버튼 영역: 2줄로 자연스럽게 줄바꿈 */
+    .tab-buttons,
+    .league-tabs,
+    .lobby-tabs {
+        gap: 10px;
+    }
+
+    /* Bento 대시보드: 카드 간격과 패딩 줄여서 답답함 해소 */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 6px 0;
+    }
+
+    .dashboard-card {
+        padding: 16px;
+        min-height: 160px;
+        border-radius: 20px;
+    }
+
+    .dashboard-card h3 {
+        font-size: 1.05rem;
+    }
+
+    /* 카드 내 제목이 너무 길면 줄바꿈 */
+    .dashboard-card-header h3,
+    .team-card h3,
+    .info-box h3 {
+        word-break: keep-all;
+        overflow-wrap: anywhere;
+        line-height: 1.35;
+    }
+
+    /* 팀 카드도 살짝 압축 */
+    .team-card {
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    /* 정보 아이템 압축 */
+    .team-info-grid,
+    .team-meta-info {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px;
+    }
+
+    /* 타이틀/헤딩 폰트 크기 살짝 축소 */
+    #teamSelection h1,
+    .league-title,
+    .sns-header h3 {
+        font-size: clamp(1.5rem, 7vw, 2.2rem);
+        line-height: 1.25;
+        margin-bottom: 1.2rem;
+    }
+
+    /* Modal도 모바일 친화적으로 */
+    .modal-content {
+        padding: 18px !important;
+        border-radius: 22px;
+    }
+
+    /* SNS 카드 */
+    .sns-post,
+    .sns-feed,
+    #sns {
+        padding: 14px;
+        font-size: 0.95rem;
+    }
+}
+
+/* ----- 2. 더 작은 모바일 (480px 이하, 구형 폰) ----- */
+@media (max-width: 480px) {
+
+    body {
+        font-size: 15px;
+    }
+
+    .screen {
+        padding: 10px 8px;
+    }
+
+    /* 버튼들은 완전 터치 퍼스트 */
+    .btn,
+    .tab-btn,
+    .league-tab-btn {
+        min-height: 56px !important;
+        font-size: 1rem;
+        border-radius: 20px;
+        letter-spacing: -0.01em;
+    }
+
+    /* 팀 선택 화면 grid 더 간결히 */
+    .teams-grid {
+        gap: 14px;
+    }
+
+    .team-card {
+        padding: 16px 14px;
+    }
+
+    .team-card h3 {
+        font-size: 1.25rem;
+    }
+
+    /* 대시보드 카드 더 촘촘하게 */
+    .dashboard-card {
+        padding: 14px;
+        border-radius: 18px;
+        min-height: 140px;
+    }
+
+    .dashboard-card h3 {
+        font-size: 1rem;
+    }
+
+    .glass {
+        border-radius: 20px;
+    }
+
+    /* 선수 카드 압축 */
+    .player-card,
+    .player-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .player-card-image {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+/* ----- 3. 세로 화면 및 태블릿 완벽 대응 ----- */
+/* 태블릿이나 살짝 넓은 화면일 때 (769px ~ 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .dashboard-grid {
+        /* minmax(0, 1fr)가 핵심! 한쪽 카드가 뚱뚱해져서 옆 카드를 찌부시키는 걸 완벽 차단합니다 */
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: minmax(180px, auto); 
+    }
+
+    /* 내용이 빵빵한 주요 카드들은 답답하지 않게 가로 전체(2칸)를 쓰도록 쫙 펴줍니다 */
+    #dashboard-match,
+    #dashboard-league,
+    #dashboard-tactics,
+    #dashboard-mail,
+    #dashboard-settings,
+    #dashboard-transfer_news {
+        grid-column: span 2;
+    }
+}
+
+/* 폰 화면(768px 이하) 절대 방어선 */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        /* 스마트폰에서는 묻지도 따지지도 않고 무조건 시원하게 1열 꽉 채우기! */
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+    .dashboard-card {
+        /* 혹시라도 2칸 차지하려는 눈치 없는 카드들 1칸으로 강제 초기화 */
+        grid-column: span 1 !important;
+    }
+}
+
+/* ----- 4. 채팅창 (챗탭) 세로화면 최적화 ----- */
+#chatContent .chat-shell {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px);
+    min-height: 600px;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+#chatContent .chat-sidebar {
+    max-height: 200px;
+    overflow-y: auto;
+    border-bottom: 1px solid var(--border-color);
+    border-right: none !important;
+}
+
+#chatContent .chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#chatContent .chat-thread {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 12px;
+}
+
+/* Quick Reply Chip: 세로에서 자연스럽게 여러 줄 */
+.chat-quick-replies {
+    padding: 10px 12px;
+    gap: 8px;
+    justify-content: flex-start;
+    align-content: flex-start;
+}
+
+.chat-quick-replies button {
+    flex: 0 0 auto;
+    min-width: unset;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    white-space: normal;
+    text-align: left;
+    line-height: 1.3;
+}
+
+/* 데스크톱(가로 넓은 화면)에서는 채팅창 사이드바 + 메인 나란히 */
+@media (min-width: 769px) {
+    #chatContent .chat-shell {
+        flex-direction: row;
+        height: calc(100vh - 80px);
+    }
+
+    #chatContent .chat-sidebar {
+        width: 260px;
+        max-height: none;
+        height: 100%;
+        border-right: 1px solid var(--border-color);
+        border-bottom: none;
+    }
+
+    #chatContent .chat-main {
+        flex: 1;
+        height: 100%;
+    }
+
+    .chat-quick-replies button {
+        min-width: 180px;
+        text-align: center;
+    }
+}
+
+/* 터치 기기 호버 효과 제거 → 눌림만 반응 */
+@media (hover: none) and (pointer: coarse) {
+    .btn:hover,
+    .tab-btn:hover,
+    .league-tab-btn:hover,
+    .dashboard-card:hover,
+    .team-card:hover,
+    .glass:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .btn:active,
+    .tab-btn:active,
+    .league-tab-btn:active {
+        transform: scale(0.97);
+        opacity: 0.85;
+    }
+}

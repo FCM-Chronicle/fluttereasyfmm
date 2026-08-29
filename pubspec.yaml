@@ -1,0 +1,43 @@
+name: easyfmm_mobile
+description: "EasyFMM Offline App"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # 로컬 웹 구동에 가장 안정적인 패키지 (내장 로컬 서버 지원)
+  flutter_inappwebview: ^6.0.0
+  path_provider: ^2.1.6
+  share_plus: ^13.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - easyfmm-dev/
+    - easyfmm-dev/assets/
+    - easyfmm-dev/api/
+    - easyfmm-dev/assets/bg/
+    - easyfmm-dev/assets/logo/1/
+    - easyfmm-dev/assets/ost/
+    - easyfmm-dev/assets/players/
+    - easyfmm-dev/assets/logo/2/
+    - easyfmm-dev/assets/logo/3/
+    - easyfmm-dev/assets/logo/legend/
+    - easyfmm-dev/assets/SFX/
+    - easyfmm-dev/assets/WCost/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
