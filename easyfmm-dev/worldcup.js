@@ -689,10 +689,13 @@ const WorldCupManager = {
 
         // 1. 조별리그 종료 체크
         if (this.currentStage === 'group') {
-            // [수정] 3경기를 모두 치렀을 때 조별리그 종료 (리그 데이터 기준)
-            const userMatches = gameData.leagueData.division4[this.userTeam].matches;
+            const div4Data = (gameData.leagueData && gameData.leagueData.division4) ? gameData.leagueData.division4 : {};
+            const userStats = div4Data[this.userTeam];
+            const userMatches = userStats ? userStats.matches : gameData.matchesPlayed;
+
             if (userMatches >= 3) {
-                setTimeout(() => this.startKnockoutStage(), 1000);
+                // 조별리그 종료 즉시 32강 동기 생성
+                this.startKnockoutStage();
             }
         } 
         // 2. 토너먼트 진행 중일 때
@@ -710,11 +713,8 @@ const WorldCupManager = {
             alert(`🎉 승리! ${this.getNextStageName()}에 진출합니다!`);
             this.advanceTournament(true);
         } else if (userScore < oppScore) {
-            alert(`😭 패배... 월드컵 여정이 여기서 끝납니다.`);
             this.isEliminated = true;
-            setTimeout(() => {
-                location.reload();
-            }, 5000);
+            this.showEliminationModal("토너먼트 탈락", `${this.getStageKoreanName(this.currentStage)}에서 아쉽게 패배하여 월드컵 여정을 마칩니다.`);
         } else {
             // 무승부 -> 승부차기
             this.simulatePenaltyShootout(matchData);
@@ -732,7 +732,6 @@ const WorldCupManager = {
         
         // 5번의 정규 키커
         for (let i = 1; i <= 5; i++) {
-            // 유저 킥
             if (Math.random() < baseChance) {
                 userScore++;
                 userKicks += "⭕ ";
@@ -740,7 +739,6 @@ const WorldCupManager = {
                 userKicks += "❌ ";
             }
             
-            // 상대 킥
             if (Math.random() < baseChance) {
                 oppScore++;
                 oppKicks += "⭕ ";
@@ -765,7 +763,6 @@ const WorldCupManager = {
                 oppKicks += "❌ ";
             }
             
-            // 무한 루프 방지
             if (userKicks.length > 40) break; 
         }
         
@@ -783,9 +780,7 @@ const WorldCupManager = {
             this.advanceTournament(true);
         } else {
             this.isEliminated = true;
-            setTimeout(() => {
-                location.reload();
-            }, 5000);
+            this.showEliminationModal("승부차기 탈락", `${this.getStageKoreanName(this.currentStage)} 승부차기 접전 끝에 아쉽게 탈락했습니다.`);
         }
     },
 
@@ -812,7 +807,7 @@ const WorldCupManager = {
 
     // 32강 토너먼트 시작 (조별리그 종료 후)
     startKnockoutStage() {
-        alert("조별리그 종료! 32강 진출팀을 결정합니다.");
+        alert("🏆 조별리그 종료! 32강 진출팀을 확정하고 토너먼트를 시작합니다.");
         
         // 1. 모든 조 순위 산정
         const standings = this.calculateAllGroupStandings();
@@ -824,9 +819,11 @@ const WorldCupManager = {
         
         Object.keys(standings).sort().forEach(group => {
             const groupTeams = standings[group];
-            firsts.push({ ...groupTeams[0], group });
-            seconds.push({ ...groupTeams[1], group });
-            thirds.push({ ...groupTeams[2], group });
+            if (groupTeams && groupTeams.length >= 3) {
+                firsts.push({ ...groupTeams[0], group });
+                seconds.push({ ...groupTeams[1], group });
+                thirds.push({ ...groupTeams[2], group });
+            }
         });
 
         // 3. 3위 팀 서열 정리 (상위 8팀 진출)
@@ -834,7 +831,7 @@ const WorldCupManager = {
             if (b.points !== a.points) return b.points - a.points;
             if (b.goalDiff !== a.goalDiff) return b.goalDiff - a.goalDiff;
             if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
-            return b.wins - a.wins; // 승리 횟수
+            return b.wins - a.wins;
         });
         
         const bestThirds = thirds.slice(0, 8);
@@ -843,10 +840,7 @@ const WorldCupManager = {
         const userRank = this.getUserGroupRank(standings);
         if (userRank > 3 || (userRank === 3 && !bestThirds.find(t => t.team === this.userTeam))) {
             this.isEliminated = true;
-            alert("조별리그 탈락! 대회를 마칩니다.");
-            setTimeout(() => {
-                location.reload();
-            }, 5000);
+            this.showEliminationModal("조별리그 탈락", `${this.userTeam}은(는) 조 ${userRank}위로 아쉽게 32강 진출에 실패했습니다.`);
             return;
         }
 
@@ -859,24 +853,27 @@ const WorldCupManager = {
         // 5. 일정 설정
         this.setKnockoutSchedule(bracket);
 
-        // [추가] 32강 대진표 확정 후 자동 저장
+        // 32강 대진표 확정 후 자동 저장
         this.autoSave();
 
-        alert("32강 대진표가 확정되었습니다!");
+        alert("⚔️ 32강 토너먼트 대진표가 완성되었습니다! 다음 상대를 확인하세요.");
     },
 
     calculateAllGroupStandings() {
         const standings = {};
-        const data = gameData.leagueData.division4;
+        const data = (gameData.leagueData && gameData.leagueData.division4) ? gameData.leagueData.division4 : {};
 
         Object.entries(this.groups).forEach(([group, teams]) => {
-            const groupTeams = teams.map(team => ({
-                team: team,
-                ...data[team],
-                goalDiff: data[team].goalsFor - data[team].goalsAgainst
-            }));
+            const groupTeams = teams.map(team => {
+                const s = data[team] || { matches: 0, wins: 0, draws: 0, losses: 0, points: 0, goalsFor: 0, goalsAgainst: 0 };
+                return {
+                    team: team,
+                    ...s,
+                    goalDiff: (s.goalsFor || 0) - (s.goalsAgainst || 0)
+                };
+            });
 
-            // 정렬: 승점 > 득실 > 다득점 > 승자승(생략) > 랜덤
+            // 정렬: 승점 > 득실 > 다득점
             groupTeams.sort((a, b) => {
                 if (b.points !== a.points) return b.points - a.points;
                 if (b.goalDiff !== a.goalDiff) return b.goalDiff - a.goalDiff;
@@ -900,19 +897,19 @@ const WorldCupManager = {
     generateBracket(firsts, seconds, thirds) {
         const matches = [];
 
-        // 1. 2위 vs 2위 고정 매칭 (2A vs 2B, 2C vs 2D ...)
+        // 1. 2위 vs 2위 고정 매칭
         for (let i = 0; i < seconds.length; i += 2) {
-            matches.push({ home: seconds[i].team, away: seconds[i+1].team });
+            if (seconds[i+1]) {
+                matches.push({ home: seconds[i].team, away: seconds[i+1].team });
+            }
         }
 
-        // 2. 1위 vs 3위 매칭 (와일드카드 셔플)
-        // 1위 팀들을 성적순으로 정렬
+        // 2. 1위 vs 3위 매칭
         firsts.sort((a, b) => b.points - a.points || b.goalDiff - a.goalDiff || b.goalsFor - a.goalsFor);
 
         const unmatchedFirsts = [...firsts];
         const unmatchedThirds = [...thirds];
 
-        // 상위 8개 1위 팀 vs 3위 팀 (같은 조 피하기)
         const top8Firsts = unmatchedFirsts.slice(0, 8);
         const bottom4Firsts = unmatchedFirsts.slice(8);
 
@@ -920,7 +917,6 @@ const WorldCupManager = {
             const first = top8Firsts[i];
             let thirdIndex = 0;
 
-            // 같은 조가 아닌 3위 팀 찾기
             while (thirdIndex < unmatchedThirds.length) {
                 if (unmatchedThirds[thirdIndex].group !== first.group) {
                     break;
@@ -928,46 +924,105 @@ const WorldCupManager = {
                 thirdIndex++;
             }
 
-            // 만약 적절한 팀이 없으면(거의 없겠지만) 0번 선택
             if (thirdIndex >= unmatchedThirds.length) thirdIndex = 0;
 
             const third = unmatchedThirds.splice(thirdIndex, 1)[0];
-            matches.push({ home: first.team, away: third.team });
+            if (third) {
+                matches.push({ home: first.team, away: third.team });
+            }
         }
 
-        // 3. 남은 1위 vs 1위 (4팀 -> 2경기)
+        // 3. 남은 1위 vs 1위
         for (let i = 0; i < bottom4Firsts.length; i += 2) {
-            matches.push({ home: bottom4Firsts[i].team, away: bottom4Firsts[i+1].team });
+            if (bottom4Firsts[i+1]) {
+                matches.push({ home: bottom4Firsts[i].team, away: bottom4Firsts[i+1].team });
+            }
         }
 
         return matches;
     },
 
     setKnockoutSchedule(matches) {
-        // 단판 승부 스케줄 설정
+        if (!gameData.schedule) gameData.schedule = {};
         gameData.schedule.division4 = [matches];
-        gameData.currentRound = 1; // 토너먼트 라운드 리셋
+        gameData.currentRound = 1;
         if (typeof window.setNextOpponent === 'function') window.setNextOpponent();
     },
 
     advanceTournament(userWon) {
-        // 다음 라운드 진출 로직 (16강 -> 8강 -> 4강 -> 결승)
         const stages = ['r32', 'r16', 'qf', 'sf', 'final'];
         const currentIndex = stages.indexOf(this.currentStage);
 
         if (currentIndex < stages.length - 1) {
             this.currentStage = stages[currentIndex + 1];
-
-            // 다음 라운드 대진 생성 (간소화: 랜덤 매칭)
             this.generateNextRound(userWon);
-
-            // [추가] 라운드 진출 후 자동 저장
             this.autoSave();
-
-            alert(`${this.getStageKoreanName(this.currentStage)} 진출! 다음 상대를 확인하세요.`);
+            alert(`🔥 ${this.getStageKoreanName(this.currentStage)} 진출! 다음 상대를 확인하세요.`);
         } else {
-            alert("🏆 월드컵 우승! 축하합니다!");
-            // 엔딩 크레딧 or 메인 메뉴 복귀
+            this.showEliminationModal("🏆 FIFA 월드컵 우승!", `축하합니다! ${this.userTeam}이(가) 세계 최정상에 올랐습니다! 🥇`);
+        }
+    },
+
+    showEliminationModal(title, msg) {
+        let modal = document.getElementById('wcResultModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'wcResultModal';
+            modal.className = 'modal';
+            modal.style.zIndex = '100005';
+            document.body.appendChild(modal);
+        }
+        modal.innerHTML = `
+            <div class="modal-content" style="background: linear-gradient(135deg, #1f2430, #0f1219); color: white; max-width: 500px; text-align: center; border-radius: 16px; border: 1px solid rgba(255,215,0,0.3); padding: 30px;">
+                <div style="font-size: 3rem; margin-bottom: 10px;">${this.isEliminated ? '😢' : '🏆'}</div>
+                <h2 style="color: #ffd700; margin: 0 0 10px 0;">${title}</h2>
+                <p style="color: #ddd; font-size: 1rem; line-height: 1.6; margin-bottom: 25px;">${msg}</p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button class="btn" onclick="WorldCupManager.renderRecordsTab(); document.getElementById('wcResultModal').style.display='none'; if(typeof showTab==='function') showTab('records');" style="background: rgba(255,255,255,0.1); border: 1px solid #fff; padding: 10px 20px;">📊 대회 기록</button>
+                    <button class="btn primary" onclick="WorldCupManager.exitWorldCupMode(); document.getElementById('wcResultModal').style.display='none';" style="padding: 10px 20px;">🏠 메인 메뉴로 복귀</button>
+                </div>
+            </div>
+        `;
+        modal.style.display = 'block';
+    },
+
+    exitWorldCupMode() {
+        gameData.isWorldCupMode = false;
+        this.isEliminated = false;
+        
+        // 국대 팀들을 allTeams에서 정리
+        if (window.allTeams) {
+            Object.keys(window.allTeams).forEach(key => {
+                if (window.allTeams[key] && window.allTeams[key].league === 4) {
+                    delete window.allTeams[key];
+                }
+            });
+        }
+        
+        // UI 탭 원상 복구
+        const tabsToShow = ['transfer', 'sponsor', 'youth', 'transfer_news', 'league', 'sns', 'mail'];
+        tabsToShow.forEach(t => {
+            const btn = document.querySelector(`[data-tab="${t}"]`);
+            if (btn) btn.style.display = 'inline-block';
+        });
+        
+        const transferBtn = document.querySelector(`[data-tab="callup"]`);
+        if (transferBtn) {
+            transferBtn.textContent = '🤝 이적';
+            transferBtn.dataset.tab = 'transfer';
+        }
+        
+        const recordsBtn = document.querySelector(`[data-tab="records"]`);
+        if (recordsBtn) {
+            recordsBtn.textContent = '📊 개인기록';
+        }
+        
+        // 팀 선택 화면으로 안전하게 이동
+        if (typeof showScreen === 'function') {
+            showScreen('teamSelection');
+        }
+        if (typeof renderTeamSelectionUI === 'function') {
+            renderTeamSelectionUI();
         }
     },
 

@@ -193,17 +193,45 @@ window.updateAutoSaveUI = function () {
     }
 };
 
+const WORLD_CUP_FLAGS = {
+    "대한민국": "🇰🇷", "일본": "🇯🇵", "중국": "🇨🇳", "호주": "🇦🇺", "사우디아라비아": "🇸🇦",
+    "이란": "🇮🇷", "카타르": "🇶🇦", "우즈베키스탄": "🇺🇿", "이라크": "🇮🇶", "요르단": "🇯🇴", "UAE": "🇦🇪",
+    "잉글랜드": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "프랑스": "🇫🇷", "독일": "🇩🇪", "스페인": "🇪🇸", "이탈리아": "🇮🇹",
+    "네덜란드": "🇳🇱", "포르투갈": "🇵🇹", "벨기에": "🇧🇪", "크로아티아": "🇭🇷", "스위스": "🇨🇭",
+    "덴마크": "🇩🇰", "오스트리아": "🇦🇹", "노르웨이": "🇳🇴", "스웨덴": "🇸🇪", "폴란드": "🇵🇱",
+    "체코": "🇨🇿", "우크라이나": "🇺🇦", "스코틀랜드": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "웨일스": "🏴󠁧󠁢󠁷󠁬󠁳󠁿", "튀르키예": "🇹🇷", "루마니아": "🇷🇴",
+    "브라질": "🇧🇷", "아르헨티나": "🇦🇷", "우루과이": "🇺🇾", "콜롬비아": "🇨🇴", "에콰도르": "🇪🇨",
+    "파라과이": "🇵🇾", "칠레": "🇨🇱", "볼리비아": "🇧🇴", "페루": "🇵🇪",
+    "미국": "🇺🇸", "멕시코": "🇲🇽", "캐나다": "🇨🇦", "파나마": "🇵🇦", "코스타리카": "🇨🇷", "아이티": "🇭🇹", "퀴라소": "🇨🇼",
+    "모로코": "🇲🇦", "세네갈": "🇸🇳", "이집트": "🇪🇬", "알제리": "🇩🇿", "튀니지": "🇹🇳",
+    "나이지리아": "🇳🇬", "카메룬": "🇨🇲", "가나": "🇬🇭", "코트디부아르": "🇨🇮", "남아공": "🇿🇦", "카보베르데": "🇨🇻",
+    "뉴질랜드": "🇳🇿"
+};
+
 function getTeamLogoHTML(teamName) {
+    if (!teamName) return '';
+
+    // 월드컵 모드이거나 국가대표팀 국기가 존재하는 경우 국기 이모지 배지 표시
+    if ((typeof gameData !== 'undefined' && gameData.isWorldCupMode) || WORLD_CUP_FLAGS[teamName]) {
+        const flag = WORLD_CUP_FLAGS[teamName] || '🌐';
+        return `<span class="team-logo-flag" style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; font-size:1.35rem; margin-right:6px; flex-shrink:0; vertical-align:middle;">${flag}</span>`;
+    }
+
     const team = allTeams[teamName];
     if (!team) return '';
     const code = team.logoCode || "DFT";
 
-    // [수정] 레전드 팀은 별도의 폴더(legend) 사용
+    // 레전드 팀
     if (teamName.startsWith("Legend_")) {
-        return `<img src="assets/logo/legend/${code}.webp" class="team-logo" alt="${teamName}">`;
+        return `<img src="assets/logo/legend/${code}.webp" class="team-logo" alt="${teamName}" onerror="this.outerHTML='<span class=\\'team-logo-fallback\\'>👑</span>'">`;
     }
 
-    return `<img src="assets/logo/${team.league}/${code}.webp" class="team-logo" alt="${teamName}">`;
+    if (code === "DFT" || team.isCustom || team.isIcon || !team.league) {
+        const initials = (teamNames[teamName] || teamName || 'FC').substring(0, 2).toUpperCase();
+        return `<span class="team-logo-fallback" style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; background:linear-gradient(135deg, #ffd700, #f39c12); color:#000; border-radius:50%; font-weight:900; font-size:0.8rem; border:1px solid #ffd700; margin-right:6px; flex-shrink:0; vertical-align:middle;">${initials}</span>`;
+    }
+
+    return `<img src="assets/logo/${team.league}/${code}.webp" class="team-logo" alt="${teamName}" onerror="this.outerHTML='<span class=\\'team-logo-fallback\\' style=\\'display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; background:linear-gradient(135deg, #ffd700, #f39c12); color:#000; border-radius:50%; font-weight:900; font-size:0.8rem; border:1px solid #ffd700; margin-right:6px; flex-shrink:0; vertical-align:middle;\\'>⚽</span>'">`;
 }
 
 
@@ -468,14 +496,29 @@ function setupEventListeners() {
     //     });
     // });
 
-    // 나만의 팀 만들기 버튼
-    document.getElementById('openCreateTeamModalBtn').addEventListener('click', openCreateTeamModal);
-    document.getElementById('closeCreateTeamModal').addEventListener('click', closeCreateTeamModal);
-    document.getElementById('createIconTeamBtn').addEventListener('click', showIconTeamCreation);
-    document.getElementById('createCustomTeamBtn').addEventListener('click', showCustomTeamCreation);
-    document.getElementById('confirmCreateTeamBtn').addEventListener('click', createIconTeam);
-    document.getElementById('confirmCreateCustomTeamBtn').addEventListener('click', createCustomTeam);
-    document.getElementById('customLeagueSelect').addEventListener('change', updateCustomReplacementTeams);
+    // 나만의 팀 만들기 버튼 및 인터랙션
+    document.getElementById('openCreateTeamModalBtn')?.addEventListener('click', openCreateTeamModal);
+    document.getElementById('closeCreateTeamModal')?.addEventListener('click', closeCreateTeamModal);
+    document.getElementById('createIconTeamBtn')?.addEventListener('click', showIconTeamCreation);
+    document.getElementById('createCustomTeamBtn')?.addEventListener('click', showCustomTeamCreation);
+    document.getElementById('confirmCreateTeamBtn')?.addEventListener('click', createIconTeam);
+    document.getElementById('confirmCreateCustomTeamBtn')?.addEventListener('click', createCustomTeam);
+    document.getElementById('customLeagueSelect')?.addEventListener('change', updateCustomReplacementTeams);
+
+    // [신규] 아이콘/커스텀 팀 만들기 편의 기능 이벤트 연결
+    document.getElementById('autoDraftIconBtn')?.addEventListener('click', autoDraftIconTeam);
+    document.getElementById('randomIconTeamNameBtn')?.addEventListener('click', pickRandomIconTeamName);
+    document.getElementById('randomCustomTeamNameBtn')?.addEventListener('click', pickRandomCustomTeamName);
+    document.getElementById('autoFillCustomPlayersBtn')?.addEventListener('click', autoFillCustomPlayers);
+
+    // 아이콘 포지션 필터 버튼 이벤트
+    document.getElementById('iconFilterTabs')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-tab-pill');
+        if (!btn) return;
+        document.querySelectorAll('#iconFilterTabs .filter-tab-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterIconPlayers(btn.dataset.pos);
+    });
 
     // 경기 시작
     // document.getElementById('startMatchBtn').addEventListener('click', startMatch);
@@ -546,16 +589,46 @@ function setupEventListeners() {
     }); // keydown 이벤트 끝
 } // setupEventListeners 함수 끝 (파일 전체의 끝이 아님에 주의!)
 
+// ==================== [NEW] 나만의 팀 만들기 & 아이콘/커스텀 구단 창단 시스템 ====================
+
+const RANDOM_CUSTOM_TEAM_NAMES = [
+    "FC 서울시티", "네오 유나이티드", "골든 드림팀", "블루 피닉스", "블랙 드래곤스",
+    "빅토리 스타즈", "레전드 일레븐", "인피니티 FC", "로얄 킹덤", "크라운 유나이티드",
+    "사이버 FC", "마제스티 유나이티드", "판타지아 FC", "프라임 일레븐"
+];
+
+const RANDOM_KOREAN_PLAYER_NAMES = [
+    "김민재", "이강인", "손흥민", "황희찬", "조규성", "설영우", "이재성", "황인범", "박용우", "정우영",
+    "김승규", "조현우", "송범근", "김영권", "김진수", "김문환", "이기제", "홍현석", "배준호", "양현준",
+    "오현규", "정상빈", "엄원상", "송민규", "백승호", "원두재", "이동경", "권창훈", "나상호", "김태환",
+    "권경원", "정승현", "박진섭", "김주성", "이태석", "최준", "배서준", "강성진", "이영준", "고영준"
+];
+
+const RANDOM_GLOBAL_PLAYER_NAMES = [
+    "하란드", "음바페", "벨링엄", "비니시우스", "사카", "로드리", "포든", "더브라위너", "살라", "케인",
+    "무시알라", "비르츠", "야말", "페드리", "가비", "카마빙가", "추아메니", "발베르데", "반다이크", "살리바",
+    "디아스", "그바르디올", "알폰소", "하키미", "테오", "쿠르투아", "알리송", "에데르송", "돈나룸마", "오블락",
+    "라파엘 레앙", "라우타로", "오시멘", "로드리고", "바렐라", "바스토니", "마르키뉴스", "워커", "더리흐트"
+];
+
+let selectedIconIndices = new Set();
+let currentIconPosFilter = "ALL";
+
 // 팀 만들기 모달 열기
 function openCreateTeamModal() {
-    document.getElementById('createTeamModal').style.display = 'block';
-    document.getElementById('createTeamModeSelection').style.display = 'flex';
-    document.getElementById('iconTeamCreationArea').style.display = 'none';
-    document.getElementById('customTeamCreationArea').style.display = 'none';
+    const modal = document.getElementById('createTeamModal');
+    if (modal) modal.style.display = 'block';
+    const modeSel = document.getElementById('createTeamModeSelection');
+    if (modeSel) modeSel.style.display = 'grid';
+    const iconArea = document.getElementById('iconTeamCreationArea');
+    if (iconArea) iconArea.style.display = 'none';
+    const customArea = document.getElementById('customTeamCreationArea');
+    if (customArea) customArea.style.display = 'none';
 }
 
 function closeCreateTeamModal() {
-    document.getElementById('createTeamModal').style.display = 'none';
+    const modal = document.getElementById('createTeamModal');
+    if (modal) modal.style.display = 'none';
 }
 
 // 아이콘 팀 생성 화면 표시
@@ -574,7 +647,7 @@ function showIconTeamCreation() {
         teamSelect.appendChild(option);
     });
 
-    // 선수 목록 포지션별 정렬 (GK -> DF -> MF -> FW)
+    // 정렬 (GK -> DF -> MF -> FW)
     const positionOrder = { 'GK': 1, 'DF': 2, 'MF': 3, 'FW': 4 };
     iconPlayersList.sort((a, b) => {
         const posA = positionOrder[a.position] || 5;
@@ -582,109 +655,139 @@ function showIconTeamCreation() {
         return posA - posB;
     });
 
-    // 선택 초기화 (정렬로 인해 인덱스가 바뀌므로)
     selectedIconIndices.clear();
-    updateSelectedCount();
-
-    const listContainer = document.getElementById('iconPlayerSelectionList');
-    listContainer.innerHTML = '';
-
-    iconPlayersList.forEach((player, index) => {
-        const item = document.createElement('div');
-        item.className = 'icon-player-select-item';
-        item.style.cssText = 'background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px; cursor: pointer; border: 1px solid transparent; display: flex; justify-content: space-between; align-items: center;';
-        item.innerHTML = `
-            <div>
-                <span style="font-weight: bold;">${player.name}</span>
-                <span style="font-size: 0.8rem; color: #aaa; margin-left: 5px;">${player.position}</span>
-            </div>
-            <div class="check-mark" style="display: none;">✅</div>
-        `;
-
-        item.addEventListener('click', () => toggleIconPlayerSelection(item, index));
-        listContainer.appendChild(item);
-    });
-
+    currentIconPosFilter = "ALL";
+    renderIconPlayersList();
     updateSelectedCount();
 }
 
-let selectedIconIndices = new Set();
+function filterIconPlayers(pos) {
+    currentIconPosFilter = pos;
+    renderIconPlayersList();
+}
 
-function toggleIconPlayerSelection(element, index) {
+function renderIconPlayersList() {
+    const listContainer = document.getElementById('iconPlayerSelectionList');
+    if (!listContainer) return;
+    listContainer.innerHTML = '';
+
+    iconPlayersList.forEach((player, index) => {
+        if (currentIconPosFilter !== "ALL" && player.position !== currentIconPosFilter) return;
+
+        const isSelected = selectedIconIndices.has(index);
+        const item = document.createElement('div');
+        item.className = `icon-player-card-item ${isSelected ? 'selected' : ''}`;
+        item.innerHTML = `
+            <div class="icon-player-info">
+                <div class="icon-player-name">${player.name}</div>
+                <div class="icon-player-meta">${player.country} · OVR 81</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="icon-pos-tag ${player.position}">${player.position}</span>
+                <span class="check-mark" style="font-size: 1rem; ${isSelected ? '' : 'display:none;'}">✅</span>
+            </div>
+        `;
+
+        item.addEventListener('click', () => toggleIconPlayerSelection(index));
+        listContainer.appendChild(item);
+    });
+}
+
+function toggleIconPlayerSelection(index) {
     if (selectedIconIndices.has(index)) {
         selectedIconIndices.delete(index);
-        element.style.borderColor = 'transparent';
-        element.style.background = 'rgba(255,255,255,0.1)';
-        element.querySelector('.check-mark').style.display = 'none';
     } else {
         if (selectedIconIndices.size >= 18) {
             alert('최대 18명까지만 선택할 수 있습니다.');
             return;
         }
         selectedIconIndices.add(index);
-        element.style.borderColor = '#ffd700';
-        element.style.background = 'rgba(255, 215, 0, 0.2)';
-        element.querySelector('.check-mark').style.display = 'block';
     }
+    renderIconPlayersList();
     updateSelectedCount();
 }
 
 function updateSelectedCount() {
     const count = selectedIconIndices.size;
-    document.getElementById('selectedCount').textContent = count;
-    document.getElementById('confirmCreateTeamBtn').disabled = count !== 18;
-}
+    const countEl = document.getElementById('selectedCount');
+    if (countEl) countEl.textContent = count;
 
-function createIconTeam() {
-    const teamNameInput = document.getElementById('customTeamName').value.trim();
-    if (!teamNameInput) {
-        alert('팀 이름(공백없이 6글자)을 입력해주세요.');
-        return;
-    }
-    if (teamNameInput.length > 6) {
-        alert('팀 이름은 6글자 이내(공백 없이)여야 합니다.');
-        return;
-    }
-    if (selectedIconIndices.size !== 18) {
-        alert('선수 18명을 선택해야 합니다.');
-        return;
-    }
-
-    // 포지션별 인원 체크
     let gkCount = 0, dfCount = 0, mfCount = 0, fwCount = 0;
-    selectedIconIndices.forEach(index => {
-        const p = iconPlayersList[index];
+    selectedIconIndices.forEach(idx => {
+        const p = iconPlayersList[idx];
         if (p.position === 'GK') gkCount++;
         else if (p.position === 'DF') dfCount++;
         else if (p.position === 'MF') mfCount++;
         else if (p.position === 'FW') fwCount++;
     });
 
-    if (gkCount < 2) {
-        alert('골키퍼는 최소 2명 선택해야 합니다.');
-        return;
-    }
-    if (dfCount < 5) {
-        alert('수비수는 최소 5명 선택해야 합니다.');
-        return;
-    }
-    if (mfCount < 5) {
-        alert('미드필더는 최소 5명 선택해야 합니다.');
-        return;
-    }
+    const cntGk = document.getElementById('cnt-GK');
+    const cntDf = document.getElementById('cnt-DF');
+    const cntMf = document.getElementById('cnt-MF');
+    const cntFw = document.getElementById('cnt-FW');
+    if (cntGk) cntGk.textContent = gkCount;
+    if (cntDf) cntDf.textContent = dfCount;
+    if (cntMf) cntMf.textContent = mfCount;
+    if (cntFw) cntFw.textContent = fwCount;
 
-    // 선택된 교체 팀 가져오기
+    const pillGk = document.getElementById('pill-GK');
+    const pillDf = document.getElementById('pill-DF');
+    const pillMf = document.getElementById('pill-MF');
+    const pillFw = document.getElementById('pill-FW');
+    if (pillGk) pillGk.className = `pos-pill ${gkCount >= 2 ? 'ready' : ''}`;
+    if (pillDf) pillDf.className = `pos-pill ${dfCount >= 5 ? 'ready' : ''}`;
+    if (pillMf) pillMf.className = `pos-pill ${mfCount >= 5 ? 'ready' : ''}`;
+    if (pillFw) pillFw.className = `pos-pill ${fwCount >= 1 ? 'ready' : ''}`;
+
+    const confirmBtn = document.getElementById('confirmCreateTeamBtn');
+    if (confirmBtn) {
+        const isReady = count === 18 && gkCount >= 2 && dfCount >= 5 && mfCount >= 5 && fwCount >= 1;
+        confirmBtn.disabled = !isReady;
+    }
+}
+
+function autoDraftIconTeam() {
+    selectedIconIndices.clear();
+
+    const gks = [], dfs = [], mfs = [], fws = [];
+    iconPlayersList.forEach((p, idx) => {
+        if (p.position === 'GK') gks.push(idx);
+        else if (p.position === 'DF') dfs.push(idx);
+        else if (p.position === 'MF') mfs.push(idx);
+        else if (p.position === 'FW') fws.push(idx);
+    });
+
+    const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+
+    // GK 2, DF 6, MF 5, FW 5
+    shuffle(gks).slice(0, 2).forEach(i => selectedIconIndices.add(i));
+    shuffle(dfs).slice(0, 6).forEach(i => selectedIconIndices.add(i));
+    shuffle(mfs).slice(0, 5).forEach(i => selectedIconIndices.add(i));
+    shuffle(fws).slice(0, 5).forEach(i => selectedIconIndices.add(i));
+
+    renderIconPlayersList();
+    updateSelectedCount();
+}
+
+function pickRandomIconTeamName() {
+    const input = document.getElementById('customTeamName');
+    if (input) {
+        const randomName = RANDOM_CUSTOM_TEAM_NAMES[Math.floor(Math.random() * RANDOM_CUSTOM_TEAM_NAMES.length)];
+        input.value = randomName.substring(0, 6);
+    }
+}
+
+function createIconTeam() {
+    const teamNameInput = (document.getElementById('customTeamName').value || '').trim();
+    if (!teamNameInput) return alert('팀 이름을 입력해주세요.');
+    if (teamNameInput.length > 6) return alert('팀 이름은 6글자 이내여야 합니다.');
+    if (selectedIconIndices.size !== 18) return alert('선수 18명을 모두 선택해야 합니다.');
+
     const replacedTeamKey = document.getElementById('replacementTeamSelect').value;
-    if (!replacedTeamKey || !allTeams[replacedTeamKey]) {
-        alert('교체할 팀을 선택해주세요.');
-        return;
-    }
-    if (allTeams[teamNameInput] && teamNameInput !== replacedTeamKey) {
-        alert('이미 사용 중인 팀 이름입니다. 다른 이름을 입력해주세요.');
-        return;
-    }
+    if (!replacedTeamKey || !allTeams[replacedTeamKey]) return alert('교체할 팀을 선택해주세요.');
 
-    // 선택된 선수 데이터 생성
+    const budgetVal = parseInt(document.getElementById('iconTeamBudgetSelect')?.value) || 300;
+
     const newPlayers = Array.from(selectedIconIndices).map(index => {
         const p = iconPlayersList[index];
         return {
@@ -693,33 +796,39 @@ function createIconTeam() {
             country: p.country,
             age: 19,
             rating: 81,
-            isIcon: true // 아이콘 선수 식별용 플래그
+            isIcon: true
         };
     });
 
-    // 새 팀 데이터 생성
-    const newTeamKey = teamNameInput; // 유저 입력 이름을 키로 사용
+    const newTeamKey = teamNameInput;
     allTeams[newTeamKey] = {
         league: allTeams[replacedTeamKey].league,
         players: newPlayers,
-        description: "전설적인 선수들이 모인 나만의 드림팀",
+        description: "전설적인 아이콘들이 모인 나만의 드림팀",
         displayName: teamNameInput,
-        logoCode: "DFT"
+        logoCode: "DFT",
+        isIcon: true,
+        budget: budgetVal
     };
     teams[newTeamKey] = newPlayers;
     teamNames[newTeamKey] = teamNameInput;
 
-    // 기존 팀 삭제
     if (replacedTeamKey !== newTeamKey) {
         delete allTeams[replacedTeamKey];
         delete teams[replacedTeamKey];
         delete teamNames[replacedTeamKey];
     }
 
-    // 게임 데이터 초기화
-    gameData.teamMoney = 0; // 시작 자금 0원
-    gameData.schedule = null; // 스케줄 재생성 필요
-    initializeLeagueData(); // [수정] 리그 데이터 재설정 (삭제된 팀 제거 및 새 팀 등록)
+    // 개인 기록 시스템에 선수 등록
+    if (typeof leagueBasedRecordsSystem !== 'undefined' && leagueBasedRecordsSystem) {
+        newPlayers.forEach(p => {
+            leagueBasedRecordsSystem.initializePlayer(p.name, newTeamKey, p.position);
+        });
+    }
+
+    gameData.teamMoney = budgetVal;
+    gameData.schedule = null;
+    initializeLeagueData();
 
     closeCreateTeamModal();
     selectTeam(newTeamKey);
@@ -730,14 +839,14 @@ function showCustomTeamCreation() {
     document.getElementById('createTeamModeSelection').style.display = 'none';
     document.getElementById('customTeamCreationArea').style.display = 'block';
 
-    updateCustomReplacementTeams(); // 초기 교체 팀 목록 로드
-    generateCustomPlayerInputs(); // 입력 필드 생성
+    updateCustomReplacementTeams();
+    generateCustomPlayerInputs();
 }
 
-// 리그 선택에 따른 교체 팀 목록 업데이트
 function updateCustomReplacementTeams() {
-    const league = parseInt(document.getElementById('customLeagueSelect').value);
+    const league = parseInt(document.getElementById('customLeagueSelect').value) || 2;
     const select = document.getElementById('customReplacementSelect');
+    if (!select) return;
     select.innerHTML = '';
 
     const leagueTeams = Object.keys(allTeams).filter(key => allTeams[key].league === league);
@@ -749,9 +858,9 @@ function updateCustomReplacementTeams() {
     });
 }
 
-// 선수 이름 입력 필드 생성 (GK 2, DF 6, MF 5, FW 5)
 function generateCustomPlayerInputs() {
     const container = document.getElementById('customPlayerInputs');
+    if (!container) return;
     container.innerHTML = '';
 
     const structure = [
@@ -764,55 +873,86 @@ function generateCustomPlayerInputs() {
     structure.forEach(group => {
         for (let i = 1; i <= group.count; i++) {
             const div = document.createElement('div');
-            div.style.marginBottom = '5px';
+            div.className = 'custom-player-row-item';
             div.innerHTML = `
-                <span style="display:inline-block; width: 40px; font-weight:bold; color:#ffd700;">${group.pos}</span>
-                <input type="text" class="custom-player-input" data-pos="${group.pos}" placeholder="선수명" style="width: 120px; padding: 5px; background: #444; color: white; border: 1px solid #666;">
+                <span class="icon-pos-tag ${group.pos}">${group.pos} ${i}</span>
+                <input type="text" class="custom-player-input" data-pos="${group.pos}" placeholder="선수 이름 입력" maxlength="12">
+                <button type="button" class="dice-mini-btn" title="랜덤 이름 추천">🎲</button>
             `;
+            const input = div.querySelector('input');
+            const diceBtn = div.querySelector('.dice-mini-btn');
+            diceBtn.onclick = () => randomizeSingleCustomPlayer(input, group.pos);
             container.appendChild(div);
         }
     });
 }
 
-// 커스텀 팀 생성 실행
-function createCustomTeam() {
-    const teamName = document.getElementById('customTeamNameInput').value.trim();
-    if (!teamName || teamName.length > 6) {
-        alert('팀 이름을 1~6글자(공백 없이)로 입력해주세요.');
-        return;
+function pickRandomCustomTeamName() {
+    const input = document.getElementById('customTeamNameInput');
+    if (input) {
+        const randomName = RANDOM_CUSTOM_TEAM_NAMES[Math.floor(Math.random() * RANDOM_CUSTOM_TEAM_NAMES.length)];
+        input.value = randomName.substring(0, 6);
     }
+}
 
-    const league = parseInt(document.getElementById('customLeagueSelect').value);
+function randomizeSingleCustomPlayer(inputEl, pos) {
+    const nation = document.getElementById('customNationSelect')?.value || '대한민국';
+    const pool = (nation === '대한민국') ? RANDOM_KOREAN_PLAYER_NAMES : RANDOM_GLOBAL_PLAYER_NAMES;
+    const randomName = pool[Math.floor(Math.random() * pool.length)];
+    inputEl.value = randomName;
+}
+
+function autoFillCustomPlayers() {
+    const nation = document.getElementById('customNationSelect')?.value || '대한민국';
+    const pool = [...((nation === '대한민국') ? RANDOM_KOREAN_PLAYER_NAMES : RANDOM_GLOBAL_PLAYER_NAMES)].sort(() => Math.random() - 0.5);
+    const inputs = document.querySelectorAll('.custom-player-input');
+
+    inputs.forEach((input, idx) => {
+        input.value = pool[idx % pool.length] + (idx >= pool.length ? ` ${idx}` : '');
+    });
+}
+
+function createCustomTeam() {
+    const teamNameInput = (document.getElementById('customTeamNameInput').value || '').trim();
+    if (!teamNameInput) return alert('팀 이름을 입력해주세요.');
+    if (teamNameInput.length > 6) return alert('팀 이름은 6글자 이내여야 합니다.');
+
     const replacedTeamKey = document.getElementById('customReplacementSelect').value;
     const nation = document.getElementById('customNationSelect').value;
-    if (allTeams[teamName] && teamName !== replacedTeamKey) {
-        alert('이미 사용 중인 팀 이름입니다. 다른 이름을 입력해주세요.');
-        return;
-    }
+    const budgetVal = parseInt(document.getElementById('customBudgetSelect')?.value) || 300;
 
-    // 선수 이름 수집
+    if (!replacedTeamKey || !allTeams[replacedTeamKey]) return alert('교체할 팀을 선택해주세요.');
+
+    // 교체 대상 팀의 리그와 무조건 일치시켜 리그별 14팀 균형 보장
+    const targetLeague = allTeams[replacedTeamKey].league || parseInt(document.getElementById('customLeagueSelect').value) || 2;
+
     const inputs = document.querySelectorAll('.custom-player-input');
     const newPlayers = [];
-    let emptyCount = 0;
+    const pool = (nation === '대한민국') ? RANDOM_KOREAN_PLAYER_NAMES : RANDOM_GLOBAL_PLAYER_NAMES;
+    const usedNames = new Set();
 
-    // 오버롤 범위 설정
     let minRating, maxRating;
-    if (league === 1) { minRating = 80; maxRating = 86; }
-    else if (league === 2) { minRating = 78; maxRating = 84; }
+    if (targetLeague === 1) { minRating = 80; maxRating = 86; }
+    else if (targetLeague === 2) { minRating = 78; maxRating = 84; }
     else { minRating = 70; maxRating = 75; }
 
-    inputs.forEach(input => {
-        const name = input.value.trim();
+    inputs.forEach((input, index) => {
+        let name = input.value.trim();
         if (!name) {
-            emptyCount++;
-            return;
+            name = pool[index % pool.length];
         }
 
-        const pos = input.dataset.pos;
-        const rating = Math.floor(Math.random() * (maxRating - minRating + 1)) + minRating;
-        const age = Math.floor(Math.random() * 6) + 18; // 18~23세
+        let uniqueName = name;
+        let counter = 1;
+        while (usedNames.has(uniqueName)) {
+            uniqueName = `${name}_${counter++}`;
+        }
+        usedNames.add(uniqueName);
 
-        // 국적 설정
+        const pos = input.dataset.pos || 'MF';
+        const rating = Math.floor(Math.random() * (maxRating - minRating + 1)) + minRating;
+        const age = Math.floor(Math.random() * 6) + 18;
+
         let playerNation = nation;
         if (nation === 'random') {
             const nations = ['대한민국', '잉글랜드', '스페인', '독일', '프랑스', '이탈리아', '브라질', '아르헨티나', '네덜란드', '포르투갈'];
@@ -820,41 +960,27 @@ function createCustomTeam() {
         }
 
         newPlayers.push({
-            name: name,
+            name: uniqueName,
             position: pos,
             country: playerNation,
             age: age,
             rating: rating,
-            isCustom: true // 커스텀 선수 플래그 (성장 한계 돌파용)
+            isCustom: true
         });
     });
 
-    if (emptyCount > 0) {
-        alert('모든 선수의 이름을 입력해주세요.');
-        return;
-    }
-
-    // [추가] 중복 이름 체크
-    const nameSet = new Set();
-    for (const player of newPlayers) {
-        if (nameSet.has(player.name)) {
-            alert(`선수 이름이 중복됩니다: "${player.name}"\n같은 팀 내에서 모든 선수의 이름은 서로 달라야 합니다.`);
-            return;
-        }
-        nameSet.add(player.name);
-    }
-
-    // 팀 데이터 생성 및 교체
-    const newTeamKey = teamName;
+    const newTeamKey = teamNameInput;
     allTeams[newTeamKey] = {
-        league: league,
+        league: targetLeague,
         players: newPlayers,
-        description: "내가 직접 만든 커스텀 팀",
-        displayName: teamName,
-        logoCode: "DFT"
+        description: "직접 창단한 나만의 커스텀 명문 구단",
+        displayName: teamNameInput,
+        logoCode: "DFT",
+        isCustom: true,
+        budget: budgetVal
     };
     teams[newTeamKey] = newPlayers;
-    teamNames[newTeamKey] = teamName;
+    teamNames[newTeamKey] = teamNameInput;
 
     if (replacedTeamKey !== newTeamKey) {
         delete allTeams[replacedTeamKey];
@@ -862,9 +988,16 @@ function createCustomTeam() {
         delete teamNames[replacedTeamKey];
     }
 
-    gameData.teamMoney = 0;
+    // 개인 기록 시스템에 선수 등록
+    if (typeof leagueBasedRecordsSystem !== 'undefined' && leagueBasedRecordsSystem) {
+        newPlayers.forEach(p => {
+            leagueBasedRecordsSystem.initializePlayer(p.name, newTeamKey, p.position);
+        });
+    }
+
+    gameData.teamMoney = budgetVal;
     gameData.schedule = null;
-    initializeLeagueData(); // [수정] 리그 데이터 재설정 (삭제된 팀 제거 및 새 팀 등록)
+    initializeLeagueData();
 
     closeCreateTeamModal();
     selectTeam(newTeamKey);
@@ -1033,7 +1166,7 @@ function showTab(tabName) {
     document.getElementById('tab-content-area').style.display = 'block';
     document.getElementById('homeBtn').style.display = 'block'; // 홈 버튼 표시
     const lobbyTabs = document.getElementById('main-tabs');
-    if (lobbyTabs) lobbyTabs.style.display = 'none'; // 상단 탭 숨김 처리
+    if (lobbyTabs) lobbyTabs.style.display = 'flex'; // 상단 탭 표시하여 다른 탭으로 빠른 전환 지원
 
     // 기존 탭 로직 유지
 
@@ -2114,10 +2247,17 @@ function generateLeagueSchedule(leagueTeams) {
 }
 
 function generateFullSchedule() {
+    if (typeof gameData !== 'undefined' && gameData.isWorldCupMode) {
+        if (typeof WorldCupManager !== 'undefined') {
+            WorldCupManager.generateWCSchedule();
+        }
+        return;
+    }
+
     gameData.schedule = {};
     for (let i = 1; i <= 3; i++) {
-        const leagueTeams = Object.keys(allTeams).filter(key => allTeams[key].league === i);
-        // 매 시즌 랜덤한 순서로 스케줄 생성
+        const leagueTeams = Object.keys(allTeams).filter(key => allTeams[key] && allTeams[key].league === i);
+        // 팀 목록 랜덤 셔플
         leagueTeams.sort(() => Math.random() - 0.5);
         gameData.schedule[`division${i}`] = generateLeagueSchedule(leagueTeams);
     }
@@ -2129,20 +2269,19 @@ function setNextOpponent() {
     if (!gameData.schedule) {
         generateFullSchedule();
     }
-    // 실제 상대 결정 로직은 tacticSystem.js의 endMatch나 초기화 시점에서 
-    // gameData.currentRound를 기반으로 처리되지만, 
-    // UI 갱신을 위해 여기서도 현재 라운드 정보를 확인합니다.
 
     const currentLeagueKey = `division${gameData.currentLeague}`;
-    const leagueSchedule = gameData.schedule[currentLeagueKey];
+    const leagueSchedule = gameData.schedule ? gameData.schedule[currentLeagueKey] : null;
 
-    if (!leagueSchedule || gameData.currentRound > leagueSchedule.length) {
-        // 시즌 종료 상태
+    if (!leagueSchedule || !Array.isArray(leagueSchedule) || gameData.currentRound > leagueSchedule.length || gameData.currentRound <= 0) {
+        // 시즌 종료 또는 스케줄 범위 초과
         return;
     }
 
     const currentRoundMatches = leagueSchedule[gameData.currentRound - 1];
-    const userMatch = currentRoundMatches.find(m => m.home === gameData.selectedTeam || m.away === gameData.selectedTeam);
+    if (!currentRoundMatches || !Array.isArray(currentRoundMatches)) return;
+
+    const userMatch = currentRoundMatches.find(m => m && (m.home === gameData.selectedTeam || m.away === gameData.selectedTeam));
 
     if (userMatch) {
         gameData.currentOpponent = (userMatch.home === gameData.selectedTeam) ? userMatch.away : userMatch.home;
@@ -2153,12 +2292,24 @@ function setNextOpponent() {
 }
 
 function initializeLeagueData() {
-    // 각 division 초기화 (객체 자체는 유지)
     if (!gameData.leagueData) {
         gameData.leagueData = {};
     }
 
-    // 각 division 비우기
+    // 월드컵 모드인 경우
+    if (typeof gameData !== 'undefined' && gameData.isWorldCupMode) {
+        gameData.leagueData.division4 = {};
+        if (typeof WorldCupManager !== 'undefined' && WorldCupManager.wcPlayers) {
+            Object.keys(WorldCupManager.wcPlayers).forEach(teamKey => {
+                gameData.leagueData.division4[teamKey] = {
+                    matches: 0, wins: 0, draws: 0, losses: 0, points: 0, goalsFor: 0, goalsAgainst: 0
+                };
+            });
+        }
+        return;
+    }
+
+    // 일반 클럽 리그 모드: 1, 2, 3부만 초기화
     gameData.leagueData.division1 = {};
     gameData.leagueData.division2 = {};
     gameData.leagueData.division3 = {};
@@ -2168,12 +2319,18 @@ function initializeLeagueData() {
     window.league2Table = {};
     window.league3Table = {};
 
-    // allTeams 기준으로 새로 구축
+    // allTeams 중 league가 1, 2, 3인 팀만 안전하게 등록 (국가대표팀/비정상 데이터 제외)
     Object.keys(allTeams).forEach(teamKey => {
-        const league = allTeams[teamKey].league;
+        const teamObj = allTeams[teamKey];
+        if (!teamObj || (teamObj.league !== 1 && teamObj.league !== 2 && teamObj.league !== 3)) return;
+
+        const league = teamObj.league;
         const divisionKey = `division${league}`;
 
-        // gameData.leagueData 초기화
+        if (!gameData.leagueData[divisionKey]) {
+            gameData.leagueData[divisionKey] = {};
+        }
+
         gameData.leagueData[divisionKey][teamKey] = {
             matches: 0,
             wins: 0,
@@ -2184,7 +2341,6 @@ function initializeLeagueData() {
             goalsAgainst: 0
         };
 
-        // 리그 테이블도 동시에 초기화
         let leagueTable;
         if (league === 1) leagueTable = window.league1Table;
         else if (league === 2) leagueTable = window.league2Table;

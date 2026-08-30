@@ -58,7 +58,7 @@ const LegendLeagueManager = {
                 { name: "이케르 카시야스", position: "GK", country: "스페인", age: 26, rating: 96, isIcon: true },
                 { name: "알프레도 디 스테파노", position: "FW", country: "아르헨티나", age: 26, rating: 99, isIcon: true },
                 { name: "페렌츠 푸스카스", position: "FW", country: "헝가리", age: 26, rating: 98, isIcon: true },
-                { name: "클로드 마켈렐레", position: "MF", country: "프랑스", age: 26, rating: 95, isIcon: true },
+                { name: "클로드 마케렐레", position: "MF", country: "프랑스", age: 26, rating: 95, isIcon: true },
                 { name: "파비오 칸나바로", position: "DF", country: "이탈리아", age: 26, rating: 93, isIcon: true },
                 { name: "루카 모드리치", position: "MF", country: "크로아티아", age: 26, rating: 94, isIcon: true },
                 { name: "카림 벤제마", position: "FW", country: "프랑스", age: 26, rating: 95, isIcon: true }
@@ -154,7 +154,7 @@ const LegendLeagueManager = {
                 { name: "미하엘 발락", position: "MF", country: "독일", age: 26, rating: 91, isIcon: true },
                 { name: "후안 마타", position: "MF", country: "스페인", age: 26, rating: 89, isIcon: true },
                 { name: "디에고 코스타", position: "FW", country: "스페인", age: 26, rating: 90, isIcon: true },
-                { name: "세사르 아스필리쿠에타", position: "DF", country: "스페인", age: 26, rating: 88, isIcon: true },
+                { name: "아스필리쿠에타", position: "DF", country: "스페인", age: 26, rating: 88, isIcon: true },
                 { name: "마르셀 드사이", position: "DF", country: "프랑스", age: 26, rating: 90, isIcon: true }
             ],
             description: "푸른 사자 군단, 아이콘 첼시"
@@ -214,7 +214,7 @@ const LegendLeagueManager = {
                 { name: "크리스티안 비에리", position: "FW", country: "이탈리아", age: 26, rating: 92, isIcon: true },
                 { name: "디에고 밀리토", position: "FW", country: "아르헨티나", age: 26, rating: 91, isIcon: true },
                 { name: "사무엘 에투", position: "FW", country: "카메룬", age: 26, rating: 93, isIcon: true },
-                { name: "베슬리 스네이더", position: "MF", country: "네덜란드", age: 26, rating: 92, isIcon: true },
+                { name: "베슬리 슈나이더", position: "MF", country: "네덜란드", age: 26, rating: 92, isIcon: true },
                 { name: "로타어 마테우스", position: "MF", country: "독일", age: 26, rating: 95, isIcon: true },
                 { name: "에스테반 캄비아소", position: "MF", country: "아르헨티나", age: 26, rating: 89, isIcon: true },
                 { name: "하비에르 사네티", position: "DF", country: "아르헨티나", age: 26, rating: 93, isIcon: true },
@@ -233,7 +233,7 @@ const LegendLeagueManager = {
         },
         "Legend_Juventus": {
             league: 1,
-            players: [
+            players: [  
                 { name: "알레산드로 델 피에로", position: "FW", country: "이탈리아", age: 26, rating: 94, isIcon: true },
                 { name: "로베르토 바조", position: "FW", country: "이탈리아", age: 26, rating: 95, isIcon: true },
                 { name: "미셸 플라티니", position: "MF", country: "프랑스", age: 26, rating: 97, isIcon: true },
@@ -338,7 +338,7 @@ const LegendLeagueManager = {
                 { name: "카레카", position: "FW", country: "브라질", age: 26, rating: 92, isIcon: true },
                 { name: "치로 페라라", position: "DF", country: "이탈리아", age: 26, rating: 91, isIcon: true },
                 { name: "칼리두 쿨리발리", position: "DF", country: "세네갈", age: 26, rating: 92, isIcon: true },
-                { name: "지안프랑코 졸라", position: "FW", country: "이탈리아", age: 26, rating: 90, isIcon: true },
+                { name: "잔프랑코 졸라", position: "FW", country: "이탈리아", age: 26, rating: 90, isIcon: true },
                 { name: "에세키엘 라베찌", position: "FW", country: "아르헨티나", age: 26, rating: 89, isIcon: true },
                 { name: "페페 레이나", position: "GK", country: "스페인", age: 26, rating: 88, isIcon: true },
                 { name: "조르지뉴", position: "MF", country: "이탈리아", age: 26, rating: 89, isIcon: true },

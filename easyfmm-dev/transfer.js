@@ -9,7 +9,7 @@ class TransferSystem {
         this.aiSquadManagementCooldown = 0; // AI 지능적 영입 쿨타임
         this.basePrice = 600; // 기본 가격 600억으로 하향 조정 (요청사항 반영)
         this.aiTeamBudgets = {}; // AI 팀 현재 자금
-        this.aiTeamWageBudgets = {}; // AI 팀 주급 자금Fㄹ
+        this.aiTeamWageBudgets = {}; // AI 팀 주급 자금
 
         // 타 리그 선수들
         this.extraPlayers = [
@@ -54,7 +54,6 @@ class TransferSystem {
             { "name": "디오고 코스타", "position": "GK", "country": "포르투갈", "rating": 86, "age": 25, "team": "외부리그" },
             { "name": "후고 라르손", "position": "MF", "country": "스웨덴", "rating": 81, "age": 20, "team": "외부리그" },
             { "name": "아담 와튼", "position": "MF", "country": "잉글랜드", "rating": 84, "age": 20, "team": "외부리그" },
-            { "name": "아산 우에드라오고", "position": "MF", "country": "독일", "rating": 78, "age": 18, "team": "외부리그" },
             { "name": "마틴 바투리나", "position": "MF", "country": "크로아티아", "rating": 79, "age": 21, "team": "외부리그" },
             { "name": "자비 게라", "position": "MF", "country": "스페인", "rating": 79, "age": 21, "team": "외부리그" },
             { "name": "옌스 카스트로프", "position": "MF", "country": "대한민국", "rating": 80, "age": 21, "team": "외부리그" },
@@ -62,11 +61,9 @@ class TransferSystem {
             { "name": "켄드리 파에스", "position": "MF", "country": "에콰도르", "rating": 76, "age": 17, "team": "외부리그" },
             { "name": "윌프리드 뇽토", "position": "FW", "country": "이탈리아", "rating": 79, "age": 20, "team": "외부리그" },
             { "name": "엘리에스 벤 세기르", "position": "FW", "country": "모로코", "rating": 80, "age": 19, "team": "외부리그" },
-            { "name": "에반 퍼거슨", "position": "FW", "country": "아일랜드", "rating": 83, "age": 19, "team": "외부리그" },
             { "name": "카림 코네", "position": "FW", "country": "코트디부아르", "rating": 77, "age": 20, "team": "외부리그" },
             { "name": "엄지성", "position": "FW", "country": "대한민국", "rating": 72, "age": 22, "team": "외부리그" },
             { "name": "배준호", "position": "FW", "country": "대한민국", "rating": 75, "age": 21, "team": "외부리그" },
-            { "name": "기성용", "position": "MF", "country": "대한민국", "rating": 80, "age": 37, "team": "외부리그" },
             { "name": "오현규", "position": "FW", "country": "대한민국", "rating": 75, "age": 23, "team": "외부리그" },
             { "name": "폴 포그바", "position": "MF", "country": "프랑스", "rating": 80, "age": 32, "team": "외부리그" },
             { "name": "황희찬", "position": "FW", "country": "대한민국", "rating": 82, "age": 29, "team": "외부리그" },
@@ -2086,36 +2083,11 @@ function displayTransferPlayers() {
                     <div class="player-team">소속: ${teamInfo}</div>
                     <div class="transfer-price">${player.price}억</div>
                     <div style="color: #e74c3c; font-weight: bold; font-size: 0.9rem; margin-top: 2px;">요구 주급: ${wage}억</div>
-                    <button class="btn" style="width: 100%; margin-top: 6px; padding: 5px; background: #f39c12;" onclick='transferSystem.promptPurchaseNegotiation(${JSON.stringify(player.name)}, ${JSON.stringify(player.originalTeam)}, ${player.price}, ${JSON.stringify(player.position)}, ${player.rating}, ${player.age}); event.stopPropagation();'>이적료 협상</button>
+                    <button class="btn primary" style="width: 100%; margin-top: 8px; padding: 7px; font-weight: bold; font-size: 0.9rem;" onclick='transferSystem.promptPurchaseNegotiation(${JSON.stringify(player.name)}, ${JSON.stringify(player.originalTeam)}, ${player.price}, ${JSON.stringify(player.position)}, ${player.rating}, ${player.age}); event.stopPropagation();'>🤝 영입 협상 시작</button>
                     <div class="market-days">시장 ${player.daysOnMarket}일째</div>
                 </div>
             </div>
         `;
-
-        playerCard.addEventListener('click', () => {
-            const result = transferSystem.signPlayer(player);
-
-            if (result.success) {
-                if (window.GameState) window.GameState.clampTeamMoney();
-                else gameData.teamMoney = Math.max(0, gameData.teamMoney);
-                updateDisplay();
-
-                alert(result.message);
-                displayTransferPlayers(); // 목록 새로고침
-
-                // 성장 시스템에 새 선수 추가
-                if (result.player.age <= 25 && typeof playerGrowthSystem !== 'undefined') {
-                    playerGrowthSystem.initializePlayerGrowth();
-                }
-
-                // 팀 선수 목록 새로고침
-                if (document.getElementById('squad').classList.contains('active')) {
-                    displayTeamPlayers();
-                }
-            } else {
-                alert(result.message);
-            }
-        });
 
         fragment.appendChild(playerCard);
     });
@@ -2157,41 +2129,21 @@ function searchPlayers() {
             `<div class="market-status" style="color: #f39c12;">⚠️ 이적 시장에 없음</div>`;
 
         playerCard.innerHTML = `
-    <div class="player-card-content">
-        <img src="assets/players/${player.name}.webp" class="player-card-image" loading="lazy" onerror="this.onerror=null; this.src='assets/players/default.webp'">
-        <div class="player-info-text">
-            <div class="player-name">${player.name}</div>
-            <div class="player-position">${player.position}</div>
-            <div class="player-rating">능력치: ${Math.floor(player.rating)}</div>
-            <div class="player-age">나이: ${player.age}</div>
-            <div class="player-team">소속: ${teamInfo}</div>
-            <div class="transfer-price">${player.price}억</div>
-            <div style="color: #e74c3c; font-weight: bold; font-size: 0.9rem; margin-top: 2px;">요구 주급: ${wage}억</div>
-            <button class="btn" style="width: 100%; margin-top: 6px; padding: 5px; background: #f39c12;" onclick='transferSystem.promptPurchaseNegotiation(${JSON.stringify(player.name)}, ${JSON.stringify(player.originalTeam)}, ${player.price}, ${JSON.stringify(player.position)}, ${player.rating}, ${player.age}); event.stopPropagation();'>이적료 협상</button>
-            ${marketStatus}
-        </div>
-    </div>
-`;
-
-        playerCard.addEventListener('click', () => {
-            const result = transferSystem.signPlayer(player);
-
-            if (result.success) {
-                if (window.GameState) window.GameState.clampTeamMoney();
-                else gameData.teamMoney = Math.max(0, gameData.teamMoney);
-                updateDisplay();
-
-                alert(result.message);
-                searchPlayers(); // 검색 결과 새로고침
-
-                // 성장 시스템에 새 선수 추가
-                if (result.player.age <= 25 && typeof playerGrowthSystem !== 'undefined') {
-                    playerGrowthSystem.initializePlayerGrowth();
-                }
-            } else {
-                alert(result.message);
-            }
-        });
+            <div class="player-card-content">
+                <img src="assets/players/${player.name}.webp" class="player-card-image" loading="lazy" onerror="this.onerror=null; this.src='assets/players/default.webp'">
+                <div class="player-info-text">
+                    <div class="player-name">${player.name}</div>
+                    <div class="player-position">${player.position}</div>
+                    <div class="player-rating">능력치: ${Math.floor(player.rating)}</div>
+                    <div class="player-age">나이: ${player.age}</div>
+                    <div class="player-team">소속: ${teamInfo}</div>
+                    <div class="transfer-price">${player.price}억</div>
+                    <div style="color: #e74c3c; font-weight: bold; font-size: 0.9rem; margin-top: 2px;">요구 주급: ${wage}억</div>
+                    <button class="btn primary" style="width: 100%; margin-top: 8px; padding: 7px; font-weight: bold; font-size: 0.9rem;" onclick='transferSystem.promptPurchaseNegotiation(${JSON.stringify(player.name)}, ${JSON.stringify(player.originalTeam)}, ${player.price}, ${JSON.stringify(player.position)}, ${player.rating}, ${player.age}); event.stopPropagation();'>🤝 영입 협상 시작</button>
+                    ${marketStatus}
+                </div>
+            </div>
+        `;
 
         fragment.appendChild(playerCard);
     });

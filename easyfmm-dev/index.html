@@ -1955,37 +1955,134 @@
 <body>
     <!-- [신규] 감독 선택 화면 -->
     <div id="managerSelectionScreen" class="screen active">
-        <h1>감독 선택</h1>
+        <div style="text-align: center; max-width: 1200px; margin: 0 auto 30px;">
+            <h1 style="font-size: 2.8rem; margin-bottom: 8px; background: linear-gradient(135deg, #ffd700, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">🏆 EASY FOOTBALL CLUB</h1>
+            <p style="color: #bbb; font-size: 1.05rem; margin: 0;">구단을 이끌 명장을 선택하거나 새로운 감독 커리어를 시작하세요.</p>
+        </div>
         
-        <div style="max-width: 1200px; margin: 0 auto 30px; display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: #ffd700; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px;">저장된 감독 목록</h3>
-            <button id="createNewManagerBtn" class="btn primary">새 감독 생성</button>
+        <div style="max-width: 1200px; margin: 0 auto 24px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.04); padding: 16px 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.2rem;">📋</span>
+                <span style="color: #ffd700; font-weight: 800; font-size: 1.1rem;">등록된 감독 목록</span>
+                <span id="managerCountBadge" style="background: rgba(243, 156, 18, 0.2); color: #f39c12; border: 1px solid rgba(243, 156, 18, 0.4); padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 800;">0명</span>
+            </div>
+            <button id="createNewManagerBtn" class="btn primary" style="padding: 12px 24px; font-size: 1rem; font-weight: 800; border-radius: 12px; display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #ffd700, #f39c12); color: #000; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);">
+                <span>✨ 새 감독 생성</span>
+            </button>
         </div>
 
-        <div id="managerListGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto;">
+        <div id="managerListGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; max-width: 1200px; margin: 0 auto;">
             <!-- JS로 감독 목록 동적 렌더링 -->
         </div>
     </div>
 
-    <!-- [신규] 감독 생성/수정 모달 -->
+    <!-- [신규] 프리미엄 감독 생성/수정 모달 (라이브 카드 프리뷰 & 철학 선택) -->
     <div id="managerEditModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-content manager-creator-modal">
             <span class="close-btn" id="closeManagerEditModal">&times;</span>
-            <h2 id="managerEditTitle">새 감독 생성</h2>
-            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-                <div>
-                    <label style="display: block; margin-bottom: 5px;">이름</label>
-                    <input type="text" id="managerNameInput" class="input-field" placeholder="감독 이름 입력" style="width: 100%; padding: 10px;">
+            
+            <div class="manager-creator-shell">
+                <!-- 좌측: 실시간 라이센스 ID 카드 프리뷰 -->
+                <div class="manager-preview-col">
+                    <div class="manager-license-card" id="creatorLiveCard">
+                        <div class="license-top-bar">
+                            <span class="license-org">EASY FOOTBALL FEDERATION</span>
+                            <span class="license-badge-pill">OFFICIAL</span>
+                        </div>
+                        <div class="license-avatar-wrap">
+                            <div class="avatar-glow-ring"></div>
+                            <div class="license-avatar-display" id="prevAvatar">👔</div>
+                        </div>
+                        <div class="license-body">
+                            <div class="license-name-label">HEAD COACH / MANAGER</div>
+                            <div class="license-name" id="prevName">신임 감독</div>
+                            <div class="license-meta-row">
+                                <span class="license-flag" id="prevFlag">🇰🇷</span>
+                                <span class="license-nation" id="prevNation">대한민국</span>
+                                <span class="license-divider">•</span>
+                                <span class="license-age" id="prevAge">45세</span>
+                            </div>
+                            <div class="license-title-badge" id="prevTitleBadge">전성기 명장</div>
+                            <div class="license-philo-badge" id="prevPhiloBadge">
+                                <span>⚡</span> 닥공 & 게겐프레싱
+                            </div>
+                        </div>
+                        <div class="license-footer">
+                            <div class="license-rank">
+                                <span class="rank-label">CLASS</span>
+                                <span class="rank-stars">UEFA PRO ★★★★★</span>
+                            </div>
+                            <div class="license-id-code" id="prevIdCode">ID: MGR-2026</div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 5px;">국적</label>
-                    <input type="text" id="managerNationInput" class="input-field" placeholder="국적 입력 (예: 대한민국)" style="width: 100%; padding: 10px;">
+
+                <!-- 우측: 인터랙티브 커스터마이저 폼 -->
+                <div class="manager-form-col">
+                    <div class="creator-header">
+                        <h2 id="managerEditTitle">새 감독 등록</h2>
+                        <p class="creator-subtitle">구단을 이끌 새로운 사령탑의 프로필과 축구 철학을 설정하세요.</p>
+                    </div>
+
+                    <!-- 1. 기본 인적사항 -->
+                    <div class="creator-section">
+                        <div class="section-label">1. 기본 프로필</div>
+                        <div class="name-input-group">
+                            <input type="text" id="managerNameInput" class="creator-input" placeholder="감독 이름 입력" maxlength="16">
+                            <button type="button" id="randomNameBtn" class="dice-btn" title="랜덤 명장 이름 생성">🎲 랜덤 이름</button>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div>
+                                <label class="sub-label">국적</label>
+                                <select id="managerNationSelect" class="creator-select">
+                                    <option value="대한민국" data-flag="🇰🇷">🇰🇷 대한민국</option>
+                                    <option value="잉글랜드" data-flag="🏴󠁧󠁢󠁥󠁮󠁧󠁿">🏴󠁧󠁢󠁥󠁮󠁧󠁿 잉글랜드</option>
+                                    <option value="스페인" data-flag="🇪🇸">🇪🇸 스페인</option>
+                                    <option value="독일" data-flag="🇩🇪">🇩🇪 독일</option>
+                                    <option value="프랑스" data-flag="🇫🇷">🇫🇷 프랑스</option>
+                                    <option value="이탈리아" data-flag="🇮🇹">🇮🇹 이탈리아</option>
+                                    <option value="브라질" data-flag="🇧🇷">🇧🇷 브라질</option>
+                                    <option value="아르헨티나" data-flag="🇦🇷">🇦🇷 아르헨티나</option>
+                                    <option value="포르투갈" data-flag="🇵🇹">🇵🇹 포르투갈</option>
+                                    <option value="네덜란드" data-flag="🇳🇱">🇳🇱 네덜란드</option>
+                                    <option value="일본" data-flag="🇯🇵">🇯🇵 일본</option>
+                                    <option value="기타" data-flag="🌐">🌐 기타</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <label class="sub-label">나이</label>
+                                    <span id="ageValueDisplay" class="age-badge">45세</span>
+                                </div>
+                                <input type="range" id="managerAgeRange" min="32" max="72" value="45" class="creator-range">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. 외형 / 아바타 선택 -->
+                    <div class="creator-section">
+                        <div class="section-label">2. 감독 비주얼 아바타</div>
+                        <div class="avatar-picker-grid" id="avatarPickerGrid">
+                            <!-- JS로 8종 렌더링 -->
+                        </div>
+                    </div>
+
+                    <!-- 3. 전술 철학 선택 -->
+                    <div class="creator-section">
+                        <div class="section-label">3. 감독 전술 철학 & 특성</div>
+                        <div class="philosophy-picker-grid" id="philoPickerGrid">
+                            <!-- JS로 4종 카드 렌더링 -->
+                        </div>
+                    </div>
+
+                    <!-- 계약 체결 버튼 -->
+                    <div class="creator-actions">
+                        <button id="saveManagerInfoBtn" class="creator-submit-btn">
+                            <span>🚀 정식 감독 계약 체결 및 등록</span>
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 5px;">나이</label>
-                    <input type="number" id="managerAgeInput" class="input-field" placeholder="나이 입력" style="width: 100%; padding: 10px;">
-                </div>
-                <button id="saveManagerInfoBtn" class="btn success" style="margin-top: 10px;">저장</button>
             </div>
         </div>
     </div>
@@ -2025,7 +2122,11 @@
 
     <!-- 팀 선택 화면 (active 클래스 제거) -->
     <div id="teamSelection" class="screen">
-        <h1>팀 선택</h1>
+        <div style="max-width: 1400px; margin: 0 auto 10px; display: flex; justify-content: space-between; align-items: center;">
+            <button id="backToManagerBtn" class="back-nav-btn">◀ 감독 선택으로 돌아가기</button>
+            <h1 style="margin: 0; font-size: 2rem;">팀 선택</h1>
+            <div style="width: 160px;"></div> <!-- 균형용 빈 공간 -->
+        </div>
 
         <!-- [신규] 저장된 게임 이어하기 섹션 -->
         <div id="mainLoadSection" style="max-width: 1200px; margin: 0 auto 30px; display: none;">
@@ -2146,6 +2247,7 @@
         <div id="main-tabs" class="lobby-tabs" style="display:none;">
             <button class="tab-btn active" data-tab="squad">👥 스쿼드</button>
             <button class="tab-btn" data-tab="match">⚽ 경기</button>
+            <button class="tab-btn" data-tab="league">📊 리그</button>
             <button class="tab-btn" data-tab="tactics">🧬 전술</button>
             <button class="tab-btn" data-tab="transfer">💸 이적</button>
             <button class="tab-btn" data-tab="growth">📈 성장</button>
@@ -2156,7 +2258,7 @@
             <button class="tab-btn" data-tab="youth">🌟 유스</button>
             <button class="tab-btn" data-tab="sns">📱 SNS</button>
             <button class="tab-btn" data-tab="mail">📬 메일</button>
-            <button class="tab-btn" data-tab="secretary">👩‍💼 비서</button>
+            <button class="tab-btn" data-tab="chat">💬 대화</button>
             <button class="tab-btn" data-tab="settings">⚙️ 설정</button>
         </div>
         <div id="tab-content-area" class="tab-content" style="display: none;">
@@ -2184,7 +2286,7 @@
                 </div>
 
                 <div class="team-players">
-                    <h3>팀 선수 목록(선발인 선수는 판매하지 마세요)</h3>
+                    <h3>구단 선수 명단</h3>
                     <div id="playerList"></div>
                 </div>
             </div>
@@ -2192,7 +2294,7 @@
             <!-- 개선된 경기 탭 -->
             <div id="match" class="tab-panel">
                 <div class="match-info">
-                    <h3>🏆 다음 경기(경기 중에는 경기종료버튼 누르지 마세요 누르면 겜터짐)</h3>
+                    <h3>🏆 다음 경기 일정</h3>
                     <div class="opponent-info">
                         <div class="opponent-details">
                             <div class="opponent-name">
@@ -2235,13 +2337,13 @@
 
             <!-- 전술(DNA) 탭 -->
             <div id="tactics" class="tab-panel">
-                <div class="tactics-header">
+                <div class="tactics-header-flex">
                     <h3>🧬 팀 DNA 설정</h3>
                     <button id="openEngineGuideBtn" class="btn"
-                        style="float: right; margin-top: -40px; background: #9b59b6;">📖 매치 엔진 가이드</button>
-                    <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 20px;">라인별 총 포인트(OVR x 4)를 4대 핵심 스탯에 직접
-                        분배하여 팀의 색깔을 결정하세요.</p>
+                        style="background: #9b59b6;">📖 매치 엔진 가이드</button>
                 </div>
+                <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 20px;">라인별 총 포인트(OVR x 4)를 4대 핵심 스탯에 직접
+                    분배하여 팀의 색깔을 결정하세요.</p>
                 <div id="tacticsContent"></div>
             </div>
 
@@ -2317,7 +2419,7 @@
             <div id="records" class="tab-panel">
                 <div class="records-header">
                     <h3>📊 개인 기록</h3>
-                    <p class="records-description">시즌 득점왕과 도움왕 순위를 확인하세요!(개발중)</p>
+                    <p class="records-description">시즌 득점왕, 도움왕 및 베스트 11 순위를 확인하세요!</p>
                 </div>
 
                 <div class="records-content">
@@ -2610,102 +2712,164 @@
         </div>
     </div>
 
-    <!-- 팀 만들기 모달 -->
+    <!-- [신규/개편] 나만의 팀 만들기 모달 -->
     <div id="createTeamModal" class="modal">
-        <div class="modal-content" style="max-width: 900px;">
+        <div class="modal-content create-team-modal">
             <span class="close-btn" id="closeCreateTeamModal">&times;</span>
-            <h3 style="text-align: center; color: #ffd700; margin-bottom: 30px;">나만의 팀 만들기</h3>
-
-            <!-- 모드 선택 화면 -->
-            <div id="createTeamModeSelection"
-                style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;">
-                <button id="createIconTeamBtn" class="btn primary" style="padding: 30px; font-size: 1.2rem; flex: 1;">
-                    ⭐ 아이콘 팀 만들기<br>
-                    <span
-                        style="font-size: 0.9rem; font-weight: normal; display: block; margin-top: 10px; color: #ddd;">
-                        레전드 선수들로 구성된 드림팀<br>
-                        2부리그 시작 / 초기 오버롤 81 / 19세
-                    </span>
-                </button>
-                <button id="createCustomTeamBtn" class="btn primary"
-                    style="padding: 30px; font-size: 1.2rem; flex: 1; background: linear-gradient(45deg, #3498db, #2980b9);">
-                    📝 커스텀 팀 만들기<br>
-                    <span
-                        style="font-size: 0.9rem; font-weight: normal; display: block; margin-top: 10px; color: #ddd;">
-                        원하는 선수들로 구성된 나만의 팀<br>
-                        1~3부 리그 선택 가능 / 이름, 국적 등 커스터마이징
-                    </span>
-                </button>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h2 style="font-size: 2rem; color: #ffd700; margin: 0 0 6px 0;">🛠️ 나만의 구단 창단 센터</h2>
+                <p style="color: #bbb; font-size: 0.95rem; margin: 0;">원하는 창단 방식을 선택하여 축구 세계에 새로운 바람을 일으키세요.</p>
             </div>
 
-            <!-- 아이콘 팀 생성 화면 (초기에는 숨김) -->
-            <div id="iconTeamCreationArea" style="display: none;">
-                <div style="margin-bottom: 20px; text-align: center;">
-                    <label style="font-size: 1.1rem; margin-right: 10px;">팀 이름:</label>
-                    <input type="text" id="customTeamName" maxlength="6" placeholder="6글자 이내"
-                        style="padding: 8px; font-size: 1rem; width: 150px; text-align: center;">
-                </div>
-                <div style="margin-bottom: 20px; text-align: center;">
-                    <label style="font-size: 1.1rem; margin-right: 10px;">교체할 팀 (2부):</label>
-                    <select id="replacementTeamSelect"
-                        style="padding: 8px; font-size: 1rem; width: 200px; background: #333; color: #fff; border: 1px solid #555;"></select>
-                </div>
-                <p style="text-align: center; margin-bottom: 15px;">선수 18명을 선택하세요 (<span id="selectedCount">0</span>/18)
-                </p>
-                <div id="iconPlayerSelectionList"
-                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; margin-bottom: 20px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px;">
-                    <!-- 자바스크립트로 선수 목록 생성 -->
-                </div>
-                <button id="confirmCreateTeamBtn" class="btn primary" style="width: 100%;" disabled>팀 생성 완료</button>
-            </div>
-
-            <!-- 커스텀 팀 생성 화면 -->
-            <div id="customTeamCreationArea" style="display: none;">
-                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+            <!-- 1. 모드 선택 화면 -->
+            <div id="createTeamModeSelection" class="mode-select-grid">
+                <div id="createIconTeamBtn" class="mode-select-card">
                     <div>
-                        <label style="display: block; font-size: 0.9rem; margin-bottom: 5px;">팀 이름 (6자)</label>
-                        <input type="text" id="customTeamNameInput" maxlength="6"
-                            style="padding: 8px; width: 120px; text-align: center; background: #333; color: white; border: 1px solid #555;">
+                        <div class="mode-card-icon">👑</div>
+                        <div class="mode-card-title">아이콘 드림팀 창단</div>
+                        <div class="mode-card-desc">
+                            마라도나, 펠레, 지단, 차범근 등 시대를 풍미한 전설의 아이콘 18명을 드래프트하여 2부 리그에서 시작합니다.
+                        </div>
+                    </div>
+                    <span class="mode-card-badge">2부 리그 시작 · OVR 81 · 19세</span>
+                </div>
+
+                <div id="createCustomTeamBtn" class="mode-select-card">
+                    <div>
+                        <div class="mode-card-icon">🎨</div>
+                        <div class="mode-card-title">커스텀 구단 창단</div>
+                        <div class="mode-card-desc">
+                            구단 이름, 참가 리그(1~3부), 연고지/국적, 시작 자금을 직접 커스터마이징하고 선수단을 직접 구성합니다.
+                        </div>
+                    </div>
+                    <span class="mode-card-badge">1~3부 리그 자유 선택 · 원클릭 선수단 생성</span>
+                </div>
+            </div>
+
+            <!-- 2. 아이콘 팀 생성 화면 -->
+            <div id="iconTeamCreationArea" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <button type="button" class="back-nav-btn" onclick="openCreateTeamModal()" style="margin-bottom: 0;">◀ 모드 선택으로</button>
+                    <button type="button" id="autoDraftIconBtn" class="btn small" style="background: rgba(255,215,0,0.15); border: 1px solid #ffd700; color: #ffd700; font-weight: 800; padding: 6px 14px;">🎲 18명 밸런스 자동 드래프트</button>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                    <div>
+                        <label class="sub-label">팀 이름 (최대 6자)</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="customTeamName" maxlength="6" placeholder="팀 이름" class="creator-input" style="padding: 8px;">
+                            <button type="button" id="randomIconTeamNameBtn" class="dice-mini-btn" title="랜덤 팀명">🎲</button>
+                        </div>
                     </div>
                     <div>
-                        <label style="display: block; font-size: 0.9rem; margin-bottom: 5px;">참가 리그</label>
-                        <select id="customLeagueSelect"
-                            style="padding: 8px; width: 100px; background: #333; color: white; border: 1px solid #555;">
+                        <label class="sub-label">교체할 2부 구단</label>
+                        <select id="replacementTeamSelect" class="creator-select" style="padding: 8px;"></select>
+                    </div>
+                    <div>
+                        <label class="sub-label">초기 예산</label>
+                        <select id="iconTeamBudgetSelect" class="creator-select" style="padding: 8px;">
+                            <option value="100">100억 (도전적)</option>
+                            <option value="300" selected>300억 (스탠다드)</option>
+                            <option value="500">500억 (풍족)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 포지션 카운터 바 -->
+                <div class="pos-counter-bar">
+                    <div style="font-weight: 800; color: #fff;">
+                        선수단 선택: <span id="selectedCount" style="color: #ffd700; font-size: 1.2rem;">0</span> / 18명
+                    </div>
+                    <div class="pos-pill-group">
+                        <span class="pos-pill" id="pill-GK">GK <b id="cnt-GK">0</b>/2</span>
+                        <span class="pos-pill" id="pill-DF">DF <b id="cnt-DF">0</b>/5</span>
+                        <span class="pos-pill" id="pill-MF">MF <b id="cnt-MF">0</b>/5</span>
+                        <span class="pos-pill" id="pill-FW">FW <b id="cnt-FW">0</b>/1</span>
+                    </div>
+                </div>
+
+                <!-- 포지션 필터 탭 -->
+                <div class="filter-tabs-row" id="iconFilterTabs">
+                    <button type="button" class="filter-tab-pill active" data-pos="ALL">전체 (44)</button>
+                    <button type="button" class="filter-tab-pill" data-pos="GK">골키퍼 (GK)</button>
+                    <button type="button" class="filter-tab-pill" data-pos="DF">수비수 (DF)</button>
+                    <button type="button" class="filter-tab-pill" data-pos="MF">미드필더 (MF)</button>
+                    <button type="button" class="filter-tab-pill" data-pos="FW">공격수 (FW)</button>
+                </div>
+
+                <!-- 아이콘 선수 목록 그리드 -->
+                <div id="iconPlayerSelectionList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; max-height: 380px; overflow-y: auto; margin-bottom: 18px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+                    <!-- 자바스크립트로 선수 목록 동적 생성 -->
+                </div>
+
+                <button id="confirmCreateTeamBtn" class="creator-submit-btn" disabled>
+                    <span>🚀 아이콘 드림팀 창단 완료</span>
+                </button>
+            </div>
+
+            <!-- 3. 커스텀 팀 생성 화면 -->
+            <div id="customTeamCreationArea" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <button type="button" class="back-nav-btn" onclick="openCreateTeamModal()" style="margin-bottom: 0;">◀ 모드 선택으로</button>
+                    <button type="button" id="autoFillCustomPlayersBtn" class="btn small" style="background: rgba(46,204,113,0.15); border: 1px solid #2ecc71; color: #2ecc71; font-weight: 800; padding: 6px 14px;">⚡ 선수단 18명 일괄 자동 생성</button>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+                    <div>
+                        <label class="sub-label">팀 이름 (최대 6자)</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="customTeamNameInput" maxlength="6" placeholder="팀 이름" class="creator-input" style="padding: 8px;">
+                            <button type="button" id="randomCustomTeamNameBtn" class="dice-mini-btn" title="랜덤 팀명">🎲</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="sub-label">참가 리그</label>
+                        <select id="customLeagueSelect" class="creator-select" style="padding: 8px;">
                             <option value="1">1부 리그</option>
-                            <option value="2">2부 리그</option>
+                            <option value="2" selected>2부 리그</option>
                             <option value="3">3부 리그</option>
                         </select>
                     </div>
                     <div>
-                        <label style="display: block; font-size: 0.9rem; margin-bottom: 5px;">팀 국적</label>
-                        <select id="customNationSelect"
-                            style="padding: 8px; width: 100px; background: #333; color: white; border: 1px solid #555;">
-                            <option value="random">랜덤</option>
-                            <option value="대한민국">대한민국</option>
-                            <option value="잉글랜드">잉글랜드</option>
-                            <option value="스페인">스페인</option>
-                            <option value="독일">독일</option>
-                            <option value="프랑스">프랑스</option>
-                            <option value="이탈리아">이탈리아</option>
-                            <option value="브라질">브라질</option>
-                            <option value="아르헨티나">아르헨티나</option>
+                        <label class="sub-label">교체할 기존 구단</label>
+                        <select id="customReplacementSelect" class="creator-select" style="padding: 8px;"></select>
+                    </div>
+                    <div>
+                        <label class="sub-label">구단 국적</label>
+                        <select id="customNationSelect" class="creator-select" style="padding: 8px;">
+                            <option value="random">🌐 랜덤</option>
+                            <option value="대한민국" selected>🇰🇷 대한민국</option>
+                            <option value="잉글랜드">🏴󠁧󠁢󠁥󠁮󠁧󠁿 잉글랜드</option>
+                            <option value="스페인">🇪🇸 스페인</option>
+                            <option value="독일">🇩🇪 독일</option>
+                            <option value="프랑스">🇫🇷 프랑스</option>
+                            <option value="이탈리아">🇮🇹 이탈리아</option>
+                            <option value="브라질">🇧🇷 브라질</option>
+                            <option value="아르헨티나">🇦🇷 아르헨티나</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="sub-label">시작 자금</label>
+                        <select id="customBudgetSelect" class="creator-select" style="padding: 8px;">
+                            <option value="100">100억 (소형 구단)</option>
+                            <option value="300" selected>300억 (중견 구단)</option>
+                            <option value="600">600억 (명문 구단)</option>
+                            <option value="1200">1,200억 (빅클럽)</option>
                         </select>
                     </div>
                 </div>
 
-                <div style="margin-bottom: 15px; text-align: center;">
-                    <label style="font-size: 0.9rem; margin-right: 10px;">교체할 팀:</label>
-                    <select id="customReplacementSelect"
-                        style="padding: 5px; background: #333; color: white; border: 1px solid #555;"></select>
+                <div style="font-size: 0.85rem; color: #ffd700; margin-bottom: 8px; font-weight: 700;">
+                    👥 선수단 구성 (총 18명: GK 2명, DF 6명, MF 5명, FW 5명)
                 </div>
 
-                <div id="customPlayerInputs"
-                    style="max-height: 400px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div id="customPlayerInputs" class="custom-player-grid-styled">
                     <!-- 자바스크립트로 입력 필드 생성 -->
                 </div>
 
-                <button id="confirmCreateCustomTeamBtn" class="btn primary" style="width: 100%; margin-top: 15px;">팀 생성
-                    완료</button>
+                <button id="confirmCreateCustomTeamBtn" class="creator-submit-btn" style="margin-top: 18px;">
+                    <span>🚀 커스텀 구단 창단 및 리그 참가</span>
+                </button>
             </div>
         </div>
     </div>
