@@ -59,10 +59,16 @@ class _EasyFmmWebViewState extends State<EasyFmmWebView> {
 
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('파일 공유창을 여는 중...: $fileName')),
+                      SnackBar(content: Text('파일 공유창을 여는 중: $fileName')),
+                    );
+                    final box = context.findRenderObject() as RenderBox?;
+                    final Rect? sharePositionOrigin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+                    await Share.shareXFiles(
+                      [XFile(file.path, mimeType: 'application/json', name: fileName)],
+                      text: 'EasyFMM Save File',
+                      sharePositionOrigin: sharePositionOrigin,
                     );
                   }
-                  await Share.shareXFiles([XFile(file.path, mimeType: 'application/json')], text: 'EasyFMM Save File');
                 } catch (e) {
                   print("Error saving blob file: $e");
                   if (context.mounted) {
@@ -83,14 +89,22 @@ class _EasyFmmWebViewState extends State<EasyFmmWebView> {
                 try {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('파일을 준비 중입니다...')),
+                      const SnackBar(content: Text('파일 저장/공유를 준비 중입니다...')),
                     );
                   }
                   final directory = await getTemporaryDirectory();
                   final file = File('${directory.path}/$fileName');
                   await file.writeAsString(jsonString);
 
-                  await Share.shareXFiles([XFile(file.path, mimeType: 'application/json')], text: 'EasyFMM Save File');
+                  if (context.mounted) {
+                    final box = context.findRenderObject() as RenderBox?;
+                    final Rect? sharePositionOrigin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+                    await Share.shareXFiles(
+                      [XFile(file.path, mimeType: 'application/json', name: fileName)],
+                      text: 'EasyFMM Save File',
+                      sharePositionOrigin: sharePositionOrigin,
+                    );
+                  }
                 } catch (e) {
                   print("Error saving file: $e");
                   if (context.mounted) {

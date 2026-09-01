@@ -2483,27 +2483,29 @@ function saveGame() {
 
     try {
         // 이적 시장 데이터 저장 (gameData에 통합)
-        if (typeof transferSystem !== 'undefined') {
+        if (typeof transferSystem !== 'undefined' && typeof transferSystem.getSaveData === 'function') {
             gameData.transferSystemData = transferSystem.getSaveData();
         }
 
         // Records System에서 모든 득점/도움 데이터 수집
         const recordsData = {};
 
-        if (typeof leagueBasedRecordsSystem !== 'undefined') {
+        if (typeof leagueBasedRecordsSystem !== 'undefined' && typeof leagueBasedRecordsSystem.getSaveData === 'function') {
             recordsData.recordsSystemData = leagueBasedRecordsSystem.getSaveData();
 
             // 전체 득점왕/도움왕 순위도 저장
-            recordsData.topScorersAll = leagueBasedRecordsSystem.getTopScorers(20);
-            recordsData.topAssistersAll = leagueBasedRecordsSystem.getTopAssisters(20);
+            recordsData.topScorersAll = typeof leagueBasedRecordsSystem.getTopScorers === 'function' ? leagueBasedRecordsSystem.getTopScorers(20) : [];
+            recordsData.topAssistersAll = typeof leagueBasedRecordsSystem.getTopAssisters === 'function' ? leagueBasedRecordsSystem.getTopAssisters(20) : [];
 
             // 리그별 득점왕/도움왕도 저장
             recordsData.leagueTopScorers = {};
             recordsData.leagueTopAssisters = {};
 
-            for (let league = 1; league <= 3; league++) {
-                recordsData.leagueTopScorers[league] = leagueBasedRecordsSystem.getTopScorersByLeague(league, 10);
-                recordsData.leagueTopAssisters[league] = leagueBasedRecordsSystem.getTopAssistersByLeague(league, 10);
+            if (typeof leagueBasedRecordsSystem.getTopScorersByLeague === 'function') {
+                for (let league = 1; league <= 3; league++) {
+                    recordsData.leagueTopScorers[league] = leagueBasedRecordsSystem.getTopScorersByLeague(league, 10);
+                    recordsData.leagueTopAssisters[league] = leagueBasedRecordsSystem.getTopAssistersByLeague(league, 10);
+                }
             }
         }
 
@@ -2511,33 +2513,60 @@ function saveGame() {
             gameData: gameData,
             allTeams: typeof allTeams !== 'undefined' ? allTeams : null, // teams는 allTeams에서 복구 가능하므로 제외
             recordsData: recordsData,
-            snsData: snsManager.getSaveData(),
-            mailData: mailManager.getSaveData(), // 메일 데이터 저장
-            growthData: playerGrowthSystem.getSaveData(),
-            injuryData: injurySystem.getSaveData(), // 부상 데이터 추가
+            snsData: typeof snsManager !== 'undefined' && typeof snsManager.getSaveData === 'function' ? snsManager.getSaveData() : null,
+            mailData: typeof mailManager !== 'undefined' && typeof mailManager.getSaveData === 'function' ? mailManager.getSaveData() : null, // 메일 데이터 저장
+            growthData: typeof playerGrowthSystem !== 'undefined' && typeof playerGrowthSystem.getSaveData === 'function' ? playerGrowthSystem.getSaveData() : null,
+            injuryData: typeof injurySystem !== 'undefined' && typeof injurySystem.getSaveData === 'function' ? injurySystem.getSaveData() : null, // 부상 데이터 추가
             timestamp: new Date().toISOString()
         };
 
-        // JSON 파일로 저장
-        const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${teamNames[gameData.selectedTeam]}_${new Date().toISOString().slice(0, 10)}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
+        const rawTeamName = (typeof teamNames !== 'undefined' && gameData && gameData.selectedTeam && teamNames[gameData.selectedTeam]) 
+            ? teamNames[gameData.selectedTeam] 
+            : (gameData && gameData.selectedTeam ? gameData.selectedTeam : 'easyfmm_save');
+        const safeTeamName = String(rawTeamName).replace(/[/\\?%*:|"<>]/g, '_');
+        const fileName = `${safeTeamName}_${new Date().toISOString().slice(0, 10)}.json`;
+        const jsonString = JSON.stringify(saveData, null, 2);
+
+        // Flutter InAppWebView 환경인 경우 네이티브 핸들러 호출
+        if (window.flutter_inappwebview && typeof window.flutter_inappwebview.callHandler === 'function') {
+            window.flutter_inappwebview.callHandler('saveFile', jsonString, fileName)
+                .then(function () {
+                    console.log('Flutter 저장 핸들러 호출 완료');
+                })
+                .catch(function (err) {
+                    console.error('Flutter 저장 핸들러 호출 에러:', err);
+                    triggerBrowserDownload(jsonString, fileName);
+                });
+        } else {
+            // 일반 브라우저 환경인 경우 브라우저 다운로드 실행
+            triggerBrowserDownload(jsonString, fileName);
+        }
 
         console.log('게임 저장 완료');
 
     } catch (error) {
         console.error('저장 중 오류:', error);
-        alert('저장 중 오류가 발생했습니다.');
+        alert('저장 중 오류가 발생했습니다: ' + (error.message || error));
     } finally {
         // 중복 실행 방지 해제 (2초 후)
         setTimeout(() => {
             window.savingInProgress = false;
         }, 2000);
     }
+}
+
+function triggerBrowserDownload(jsonString, fileName) {
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+    }, 10000);
 }
 
 function loadGame(event) {
