@@ -2212,9 +2212,31 @@ function initializeTransferSystem() {
 
 // 저장/불러오기에 이적 데이터 포함하도록 기존 함수 확장
 function saveGameWithTransfer() {
-    if (typeof saveGame === 'function') {
-        saveGame();
+    console.log('=== 저장 시작 (Transfer System 포함) ===');
+
+    // 기존 게임 데이터에 이적 시스템 데이터 추가
+    gameData.transferSystemData = transferSystem.getSaveData();
+
+    // 선수 성장 데이터도 포함
+    if (typeof playerGrowthSystem !== 'undefined') {
+        gameData.playerGrowthData = playerGrowthSystem.getSaveData();
     }
+
+    const saveData = {
+        gameData: gameData,
+        teams: teams,
+        timestamp: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${teamNames[gameData.selectedTeam]}_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    console.log('게임 저장 완료');
 }
 
 function loadGameWithTransfer(event) {

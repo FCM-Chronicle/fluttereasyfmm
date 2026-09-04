@@ -59,11 +59,7 @@ function checkSeasonEnd() {
         return teamData && teamData.matches >= totalRounds;
     });
     
-    // [버그 수정] 유저가 이미 정규 라운드를 초과해서 진행해버린 경우(세이브 버그 등) 시즌 강제 종료
-    if (allTeamsFinished || gameData.currentRound > totalRounds) {
-        if (!allTeamsFinished) {
-            console.warn(`⚠️ 일부 팀이 ${totalRounds}경기를 채우지 못했지만, 현재 라운드가 ${gameData.currentRound}이므로 시즌을 강제 종료합니다.`);
-        }
+    if (allTeamsFinished) {
         endSeason();
     }
 }
