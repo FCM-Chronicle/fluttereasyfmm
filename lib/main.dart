@@ -37,6 +37,7 @@ class _EasyFmmWebViewState extends State<EasyFmmWebView> {
             javaScriptEnabled: true,
             allowFileAccessFromFileURLs: true,
             allowUniversalAccessFromFileURLs: true,
+            mediaPlaybackRequiresUserGesture: false, // 💡 JS 오디오(BGM/SFX) 자동 재생 차단 해제
             // 💡 외부 HTTPS(Vercel API) 통신 차단 해제 설정 추가
             mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
             useOnDownloadStart: true, // 추가: 다운로드 인터셉트 활성화
@@ -63,14 +64,16 @@ class _EasyFmmWebViewState extends State<EasyFmmWebView> {
                     );
                     final box = context.findRenderObject() as RenderBox?;
                     final Rect? sharePositionOrigin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
-                    await Share.shareXFiles(
-                      [XFile(file.path, mimeType: 'application/json', name: fileName)],
-                      text: 'EasyFMM Save File',
-                      sharePositionOrigin: sharePositionOrigin,
+                    await SharePlus.instance.share(
+                      ShareParams(
+                        files: [XFile(file.path, mimeType: 'application/json', name: fileName)],
+                        text: 'EasyFMM Save File',
+                        sharePositionOrigin: sharePositionOrigin,
+                      ),
                     );
                   }
                 } catch (e) {
-                  print("Error saving blob file: $e");
+                  debugPrint("Error saving blob file: $e");
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('저장 중 오류가 발생했습니다: $e')),
@@ -99,14 +102,16 @@ class _EasyFmmWebViewState extends State<EasyFmmWebView> {
                   if (context.mounted) {
                     final box = context.findRenderObject() as RenderBox?;
                     final Rect? sharePositionOrigin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
-                    await Share.shareXFiles(
-                      [XFile(file.path, mimeType: 'application/json', name: fileName)],
-                      text: 'EasyFMM Save File',
-                      sharePositionOrigin: sharePositionOrigin,
+                    await SharePlus.instance.share(
+                      ShareParams(
+                        files: [XFile(file.path, mimeType: 'application/json', name: fileName)],
+                        text: 'EasyFMM Save File',
+                        sharePositionOrigin: sharePositionOrigin,
+                      ),
                     );
                   }
                 } catch (e) {
-                  print("Error saving file: $e");
+                  debugPrint("Error saving file: $e");
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('저장 실패: $e')),
@@ -145,7 +150,7 @@ class _EasyFmmWebViewState extends State<EasyFmmWebView> {
           },
           // 💡 웹 내부 JS 에러/로그를 플러터 터미널에 출력하는 설정
           onConsoleMessage: (controller, consoleMessage) {
-            print("WebView Console: ${consoleMessage.message}");
+            debugPrint("WebView Console: ${consoleMessage.message}");
           },
         ),
       ),

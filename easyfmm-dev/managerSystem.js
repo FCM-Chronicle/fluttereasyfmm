@@ -1,48 +1,54 @@
 // managerSystem.js - 프리미엄 감독 관리 및 생성 시스템
 
 const MANAGER_AVATARS = [
-    { id: "suit", emoji: "👔", label: "모던 수트" },
-    { id: "tracksuit", emoji: "🧢", label: "야전 지휘관" },
-    { id: "glasses", emoji: "👓", label: "지능파 전술가" },
-    { id: "trench", emoji: "🧥", label: "카리스마 명장" },
-    { id: "maestro", emoji: "🦁", label: "마에스트로" },
-    { id: "legend", emoji: "🎩", label: "레전드 감독" },
-    { id: "fire", emoji: "🔥", label: "열정의 지략가" },
-    { id: "wizard", emoji: "🧙‍♂️", label: "전술 마법사" }
+    { id: "suit", emoji: "suit", icon: "user", label: "모던 수트" },
+    { id: "tracksuit", emoji: "tracksuit", icon: "activity", label: "야전 지휘관" },
+    { id: "glasses", emoji: "glasses", icon: "target", label: "지능파 전술가" },
+    { id: "trench", emoji: "trench", icon: "shield", label: "카리스마 명장" },
+    { id: "maestro", emoji: "maestro", icon: "crown", label: "마에스트로" },
+    { id: "legend", emoji: "legend", icon: "trophy", label: "레전드 감독" },
+    { id: "fire", emoji: "fire", icon: "flame", label: "열정의 지략가" },
+    { id: "wizard", emoji: "wizard", icon: "sparkles", label: "전술 마법사" }
 ];
+
+function getAvatarIconHTML(avatarKey) {
+    const found = MANAGER_AVATARS.find(a => a.id === avatarKey || a.emoji === avatarKey);
+    const iconName = found ? found.icon : 'user';
+    return typeof iconSVG === 'function' ? iconSVG(iconName) : avatarKey;
+}
 
 const MANAGER_PHILOSOPHIES = {
     attacking: {
         id: "attacking",
         name: "닥공 & 게겐프레싱",
-        icon: "⚡",
+        icon: "zap",
         badge: "Heavy Metal",
         desc: "초고속 템포와 전방 압박으로 상대를 압도하며, 공격진의 사기 상승폭이 큽니다.",
-        color: "#e74c3c"
+        color: "#EF4444"
     },
     defensive: {
         id: "defensive",
         name: "철벽 수비 & 카테나치오",
-        icon: "🛡️",
+        icon: "shield",
         badge: "Iron Wall",
         desc: "견고한 수비 블록으로 실점을 최소화하고 안정적인 승점을 확보합니다.",
-        color: "#3498db"
+        color: "#38BDF8"
     },
     youth: {
         id: "youth",
         name: "유스 육성 & 멘토링",
-        icon: "🌟",
+        icon: "sparkles",
         badge: "Youth Guru",
         desc: "23세 이하 유망주들의 잠재력 폭발 확률과 성장 속도가 20% 증가합니다.",
-        color: "#2ecc71"
+        color: "#A3E635"
     },
     moneyball: {
         id: "moneyball",
         name: "머니볼 & 협상 달인",
-        icon: "💼",
+        icon: "briefcase",
         badge: "Mastermind",
         desc: "이적료 및 주급 협상 테이블에서 유리한 조건을 이끌어내는 능력을 발휘합니다.",
-        color: "#f39c12"
+        color: "#FBBF24"
     }
 };
 
@@ -72,18 +78,18 @@ const RANDOM_MANAGER_NAMES = [
 ];
 
 const NATION_FLAGS = {
-    "대한민국": "🇰🇷",
-    "잉글랜드": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    "스페인": "🇪🇸",
-    "독일": "🇩🇪",
-    "프랑스": "🇫🇷",
-    "이탈리아": "🇮🇹",
-    "브라질": "🇧🇷",
-    "아르헨티나": "🇦🇷",
-    "포르투갈": "🇵🇹",
-    "네덜란드": "🇳🇱",
-    "일본": "🇯🇵",
-    "기타": "🌐"
+    "대한민국": "KOR",
+    "잉글랜드": "ENG",
+    "스페인": "ESP",
+    "독일": "GER",
+    "프랑스": "FRA",
+    "이탈리아": "ITA",
+    "브라질": "BRA",
+    "아르헨티나": "ARG",
+    "포르투갈": "POR",
+    "네덜란드": "NED",
+    "일본": "JPN",
+    "기타": "INT"
 };
 
 const managerSystem = {
@@ -95,9 +101,9 @@ const managerSystem = {
     creatorState: {
         name: "",
         nation: "대한민국",
-        flag: "🇰🇷",
+        flag: "KOR",
         age: 45,
-        avatar: "👔",
+        avatar: "suit",
         philosophy: "attacking"
     },
 
@@ -132,9 +138,10 @@ const managerSystem = {
     migrateLegacySaves() {
         let hasLegacySaves = false;
         const legacySaves = [];
+        const readSave = (k) => (typeof SaveStorage !== 'undefined' ? SaveStorage.getItem(k) : localStorage.getItem(k));
         
         for (let i = 1; i <= 3; i++) {
-            const save = localStorage.getItem(`footballManagerSave_slot${i}`);
+            const save = readSave(`footballManagerSave_slot${i}`);
             if (save) {
                 hasLegacySaves = true;
                 legacySaves.push({ slot: i, data: save });
@@ -146,9 +153,9 @@ const managerSystem = {
                 id: `legacy_${Date.now()}`,
                 name: "기존 감독 (Legacy)",
                 nation: "대한민국",
-                flag: "🇰🇷",
+                flag: "KOR",
                 age: 45,
-                avatar: "👔",
+                avatar: "suit",
                 philosophy: "attacking",
                 title: "전성기 명장",
                 stats: { matches: 0, wins: 0, draws: 0, losses: 0, trophies: 0 },
@@ -158,8 +165,14 @@ const managerSystem = {
             this.saveManagers();
 
             legacySaves.forEach(item => {
-                localStorage.setItem(`fm_save_${legacyManager.id}_slot${item.slot}`, item.data);
-                localStorage.removeItem(`footballManagerSave_slot${item.slot}`);
+                const newKey = `fm_save_${legacyManager.id}_slot${item.slot}`;
+                const oldKey = `footballManagerSave_slot${item.slot}`;
+                if (typeof SaveStorage !== 'undefined') {
+                    SaveStorage.setItem(newKey, item.data).then(() => SaveStorage.removeItem(oldKey));
+                } else {
+                    localStorage.setItem(newKey, item.data);
+                    localStorage.removeItem(oldKey);
+                }
             });
 
             console.log("레거시 세이브 마이그레이션 완료", legacyManager);
@@ -218,7 +231,7 @@ const managerSystem = {
         nationSelect?.addEventListener('change', (e) => {
             const opt = e.target.selectedOptions[0];
             this.creatorState.nation = opt.value;
-            this.creatorState.flag = opt.dataset.flag || NATION_FLAGS[opt.value] || "🌐";
+            this.creatorState.flag = opt.dataset.flag || NATION_FLAGS[opt.value] || "INT";
             this.updateLiveCard();
         });
 
@@ -226,6 +239,8 @@ const managerSystem = {
             this.creatorState.age = parseInt(e.target.value);
             const ageDisplay = document.getElementById('ageValueDisplay');
             if (ageDisplay) ageDisplay.textContent = `${this.creatorState.age}세`;
+            const pct = Math.max(0, Math.min(100, ((this.creatorState.age - 32) / 40) * 100));
+            ageRange.style.background = `linear-gradient(to right, #38BDF8 0%, #38BDF8 ${pct}%, #1E293B ${pct}%, #1E293B 100%)`;
             this.updateLiveCard();
         });
     },
@@ -233,15 +248,22 @@ const managerSystem = {
     renderAvatarPicker() {
         const grid = document.getElementById('avatarPickerGrid');
         if (!grid) return;
-        grid.innerHTML = '';
+        grid.replaceChildren();
 
         MANAGER_AVATARS.forEach(item => {
             const card = document.createElement('div');
             card.className = `avatar-card-opt ${this.creatorState.avatar === item.emoji ? 'active' : ''}`;
-            card.innerHTML = `
-                <span class="opt-emoji">${item.emoji}</span>
-                <span class="opt-name">${item.label}</span>
-            `;
+
+            const emojiSpan = document.createElement('span');
+            emojiSpan.className = 'opt-emoji';
+            emojiSpan.innerHTML = getAvatarIconHTML(item.id);
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'opt-name';
+            nameSpan.textContent = item.label;
+
+            card.append(emojiSpan, nameSpan);
+
             card.onclick = () => {
                 this.creatorState.avatar = item.emoji;
                 grid.querySelectorAll('.avatar-card-opt').forEach(el => el.classList.remove('active'));
@@ -255,18 +277,29 @@ const managerSystem = {
     renderPhilosophyPicker() {
         const grid = document.getElementById('philoPickerGrid');
         if (!grid) return;
-        grid.innerHTML = '';
+        grid.replaceChildren();
 
         Object.values(MANAGER_PHILOSOPHIES).forEach(philo => {
             const card = document.createElement('div');
             card.className = `philosophy-card-opt ${this.creatorState.philosophy === philo.id ? 'active' : ''}`;
-            card.innerHTML = `
-                <div class="philo-opt-header">
-                    <span>${philo.icon}</span>
-                    <span>${philo.name}</span>
-                </div>
-                <div class="philo-opt-desc">${philo.desc}</div>
-            `;
+
+            const header = document.createElement('div');
+            header.className = 'philo-opt-header';
+
+            const iconSpan = document.createElement('span');
+            iconSpan.innerHTML = typeof iconSVG === 'function' ? iconSVG(philo.icon) : '';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = philo.name;
+
+            header.append(iconSpan, nameSpan);
+
+            const desc = document.createElement('div');
+            desc.className = 'philo-opt-desc';
+            desc.textContent = philo.desc;
+
+            card.append(header, desc);
+
             card.onclick = () => {
                 this.creatorState.philosophy = philo.id;
                 grid.querySelectorAll('.philosophy-card-opt').forEach(el => el.classList.remove('active'));
@@ -295,15 +328,18 @@ const managerSystem = {
 
         const name = this.creatorState.name.trim() || "신임 감독";
         if (nameEl) nameEl.textContent = name;
-        if (flagEl) flagEl.textContent = this.creatorState.flag;
+        if (flagEl) flagEl.textContent = NATION_FLAGS[this.creatorState.nation] || this.creatorState.flag;
         if (nationEl) nationEl.textContent = this.creatorState.nation;
         if (ageEl) ageEl.textContent = `${this.creatorState.age}세`;
-        if (avatarEl) avatarEl.textContent = this.creatorState.avatar;
+        if (avatarEl) avatarEl.innerHTML = getAvatarIconHTML(this.creatorState.avatar);
         if (titleBadgeEl) titleBadgeEl.textContent = this.getTitleByAge(this.creatorState.age);
 
         const currentPhilo = MANAGER_PHILOSOPHIES[this.creatorState.philosophy] || MANAGER_PHILOSOPHIES.attacking;
         if (philoBadgeEl) {
-            philoBadgeEl.innerHTML = `<span>${currentPhilo.icon}</span> ${currentPhilo.name}`;
+            philoBadgeEl.replaceChildren();
+            const iconSpan = document.createElement('span');
+            iconSpan.innerHTML = typeof iconSVG === 'function' ? iconSVG(currentPhilo.icon) : '';
+            philoBadgeEl.append(iconSpan, ` ${currentPhilo.name}`);
             philoBadgeEl.style.borderColor = currentPhilo.color;
             philoBadgeEl.style.color = currentPhilo.color;
         }
@@ -333,9 +369,9 @@ const managerSystem = {
                 this.creatorState = {
                     name: manager.name || "",
                     nation: manager.nation || "대한민국",
-                    flag: manager.flag || NATION_FLAGS[manager.nation] || "🇰🇷",
+                    flag: NATION_FLAGS[manager.nation] || manager.flag || "KOR",
                     age: manager.age || 45,
-                    avatar: manager.avatar || "👔",
+                    avatar: manager.avatar || "suit",
                     philosophy: manager.philosophy || "attacking"
                 };
             }
@@ -344,16 +380,20 @@ const managerSystem = {
             this.creatorState = {
                 name: "",
                 nation: "대한민국",
-                flag: "🇰🇷",
+                flag: "KOR",
                 age: 45,
-                avatar: "👔",
+                avatar: "suit",
                 philosophy: "attacking"
             };
         }
 
         if (nameInput) nameInput.value = this.creatorState.name;
         if (nationSelect) nationSelect.value = this.creatorState.nation;
-        if (ageRange) ageRange.value = this.creatorState.age;
+        if (ageRange) {
+            ageRange.value = this.creatorState.age;
+            const pct = Math.max(0, Math.min(100, ((this.creatorState.age - 32) / 40) * 100));
+            ageRange.style.background = `linear-gradient(to right, #38BDF8 0%, #38BDF8 ${pct}%, #1E293B ${pct}%, #1E293B 100%)`;
+        }
         if (ageDisplay) ageDisplay.textContent = `${this.creatorState.age}세`;
 
         this.renderAvatarPicker();
@@ -368,7 +408,7 @@ const managerSystem = {
         if (!name) return alert("감독 이름을 입력해주세요.");
 
         const nation = this.creatorState.nation;
-        const flag = this.creatorState.flag || NATION_FLAGS[nation] || "🌐";
+        const flag = NATION_FLAGS[nation] || this.creatorState.flag || "INT";
         const age = this.creatorState.age;
         const avatar = this.creatorState.avatar;
         const philosophy = this.creatorState.philosophy;
@@ -418,7 +458,12 @@ const managerSystem = {
         this.saveManagers();
         
         for (let i = 1; i <= 3; i++) {
-            localStorage.removeItem(`fm_save_${managerId}_slot${i}`);
+            const key = `fm_save_${managerId}_slot${i}`;
+            if (typeof SaveStorage !== 'undefined') {
+                SaveStorage.removeItem(key);
+            } else {
+                localStorage.removeItem(key);
+            }
         }
 
         document.getElementById('managerProfileModal').style.display = 'none';
@@ -430,25 +475,51 @@ const managerSystem = {
         const countBadge = document.getElementById('managerCountBadge');
         if (!grid) return;
         
-        grid.innerHTML = '';
+        grid.replaceChildren();
         if (countBadge) countBadge.textContent = `${this.managers.length}명`;
         
         if (this.managers.length === 0) {
-            grid.innerHTML = `
-                <div style="grid-column: 1/-1; text-align: center; color: #aaa; padding: 60px 20px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px dashed rgba(255,215,0,0.2);">
-                    <div style="font-size: 3.5rem; margin-bottom: 12px;">👔</div>
-                    <h3 style="color: #fff; margin-bottom: 8px;">등록된 감독이 없습니다</h3>
-                    <p style="color: #888; margin-bottom: 20px;">'새 감독 생성' 버튼을 눌러 여러분만의 사령탑을 등록하고 축구 세계를 제패하세요!</p>
-                    <button class="btn primary" onclick="managerSystem.openEditModal()" style="font-weight: 800; padding: 12px 28px;">✨ 첫 감독 생성하기</button>
-                </div>
+            const emptyBox = document.createElement('div');
+            emptyBox.className = 'manager-empty-hero-card';
+
+            const badgeTag = document.createElement('div');
+            badgeTag.className = 'manager-empty-badge';
+            badgeTag.innerHTML = `${typeof iconSVG === 'function' ? iconSVG('trophy') : ''} <span>CAREER MODE</span>`;
+
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'manager-empty-avatar-ring';
+            iconDiv.innerHTML = getAvatarIconHTML('suit');
+
+            const h2 = document.createElement('h2');
+            h2.className = 'manager-empty-title';
+            h2.textContent = '새로운 명장의 탄생을 기다리고 있습니다';
+
+            const p = document.createElement('p');
+            p.className = 'manager-empty-desc';
+            p.textContent = '아직 등록된 감독 프로필이 없습니다. 나만의 전술 철학과 캐릭터를 설정하고 세계 무대에 도전해 보세요.';
+
+            const featureRow = document.createElement('div');
+            featureRow.className = 'manager-empty-features';
+            featureRow.innerHTML = `
+                <div class="mgr-feat-pill">${typeof iconSVG === 'function' ? iconSVG('activity') : ''} <span>실시간 전술 철학 시뮬레이션</span></div>
+                <div class="mgr-feat-pill">${typeof iconSVG === 'function' ? iconSVG('shield') : ''} <span>독점 라이센스 ID 발급</span></div>
+                <div class="mgr-feat-pill">${typeof iconSVG === 'function' ? iconSVG('briefcase') : ''} <span>구단 협상 & 머니볼</span></div>
             `;
+
+            const btn = document.createElement('button');
+            btn.className = 'manager-hero-cta-btn';
+            btn.innerHTML = `${typeof iconSVG === 'function' ? iconSVG('sparkles') : ''} <span>새 감독 프로필 생성하기</span>`;
+            btn.onclick = () => managerSystem.openEditModal();
+
+            emptyBox.append(badgeTag, iconDiv, h2, p, featureRow, btn);
+            grid.appendChild(emptyBox);
             return;
         }
 
         this.managers.forEach(manager => {
-            const avatar = manager.avatar || "👔";
-            const flag = manager.flag || NATION_FLAGS[manager.nation] || "🇰🇷";
+            const avatar = manager.avatar || "suit";
             const nation = manager.nation || "대한민국";
+            const flag = NATION_FLAGS[nation] || manager.flag || "KOR";
             const philo = MANAGER_PHILOSOPHIES[manager.philosophy] || MANAGER_PHILOSOPHIES.attacking;
             const matches = manager.stats?.matches || 0;
             const wins = manager.stats?.wins || 0;
@@ -460,51 +531,96 @@ const managerSystem = {
             // 세이브 슬롯 사용 개수 확인
             let activeSlots = 0;
             for (let i = 1; i <= 3; i++) {
-                if (localStorage.getItem(`fm_save_${manager.id}_slot${i}`)) activeSlots++;
+                const key = `fm_save_${manager.id}_slot${i}`;
+                const exists = typeof SaveStorage !== 'undefined' ? SaveStorage.getItem(key) : localStorage.getItem(key);
+                if (exists) activeSlots++;
             }
 
             const card = document.createElement('div');
             card.className = 'manager-card-premium';
             card.onclick = () => this.openProfileModal(manager.id);
 
-            card.innerHTML = `
-                <div>
-                    <div class="mgr-card-top">
-                        <div class="mgr-card-avatar">${avatar}</div>
-                        <div class="mgr-card-info">
-                            <h3>${manager.name}</h3>
-                            <div class="mgr-card-meta">
-                                <span>${flag} ${nation}</span>
-                                <span>•</span>
-                                <span>${manager.age || 45}세</span>
-                            </div>
-                        </div>
-                    </div>
+            const cardMain = document.createElement('div');
 
-                    <div style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
-                        <span style="background: rgba(255,215,0,0.12); color: #ffd700; border: 1px solid rgba(255,215,0,0.3); padding: 3px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;">
-                            ${philo.icon} ${philo.name}
-                        </span>
-                        ${trophies > 0 ? `<span style="background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.3); padding: 3px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;">🏆 우승 ${trophies}회</span>` : ''}
-                    </div>
+            const cardTop = document.createElement('div');
+            cardTop.className = 'mgr-card-top';
 
-                    <div class="mgr-card-stats-grid">
-                        <div class="mgr-stat-item">
-                            <span class="stat-lbl">통산 전적</span>
-                            <span class="stat-val">${matches}전 ${wins}승 ${draws}무 ${losses}패</span>
-                        </div>
-                        <div class="mgr-stat-item">
-                            <span class="stat-lbl">승률</span>
-                            <span class="stat-val" style="color: ${parseFloat(winRate) >= 50 ? '#2ecc71' : '#ffd700'};">${winRate}%</span>
-                        </div>
-                    </div>
-                </div>
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'mgr-card-avatar';
+            avatarDiv.innerHTML = getAvatarIconHTML(avatar);
 
-                <div class="mgr-card-footer">
-                    <span style="color: #aaa; font-size: 0.75rem;">💾 저장 슬롯 ${activeSlots}/3</span>
-                    <span>커리어 관리 ➔</span>
-                </div>
-            `;
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'mgr-card-info';
+
+            const nameH3 = document.createElement('h3');
+            nameH3.textContent = manager.name;
+
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'mgr-card-meta';
+            const flagNationSpan = document.createElement('span');
+            flagNationSpan.textContent = `[${flag}] ${nation}`;
+            const dotSpan = document.createElement('span');
+            dotSpan.textContent = '•';
+            const ageSpan = document.createElement('span');
+            ageSpan.textContent = `${manager.age || 45}세`;
+            metaDiv.append(flagNationSpan, dotSpan, ageSpan);
+
+            infoDiv.append(nameH3, metaDiv);
+            cardTop.append(avatarDiv, infoDiv);
+
+            const badgesDiv = document.createElement('div');
+            badgesDiv.style.cssText = 'display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;';
+
+            const philoBadge = document.createElement('span');
+            philoBadge.style.cssText = 'background: rgba(251,191,36,0.12); color: #FBBF24; border: 1px solid rgba(251,191,36,0.3); padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;';
+            philoBadge.innerHTML = `${typeof iconSVG === 'function' ? iconSVG(philo.icon) : ''} <span>${philo.name}</span>`;
+            badgesDiv.appendChild(philoBadge);
+
+            if (trophies > 0) {
+                const trophyBadge = document.createElement('span');
+                trophyBadge.style.cssText = 'background: rgba(163,230,53,0.15); color: #A3E635; border: 1px solid rgba(163,230,53,0.3); padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;';
+                trophyBadge.innerHTML = `${typeof iconSVG === 'function' ? iconSVG('trophy') : ''} <span>우승 ${trophies}회</span>`;
+                badgesDiv.appendChild(trophyBadge);
+            }
+
+            const statsGrid = document.createElement('div');
+            statsGrid.className = 'mgr-card-stats-grid';
+
+            const statItem1 = document.createElement('div');
+            statItem1.className = 'mgr-stat-item';
+            const statLbl1 = document.createElement('span');
+            statLbl1.className = 'stat-lbl';
+            statLbl1.textContent = '통산 전적';
+            const statVal1 = document.createElement('span');
+            statVal1.className = 'stat-val';
+            statVal1.textContent = `${matches}전 ${wins}승 ${draws}무 ${losses}패`;
+            statItem1.append(statLbl1, statVal1);
+
+            const statItem2 = document.createElement('div');
+            statItem2.className = 'mgr-stat-item';
+            const statLbl2 = document.createElement('span');
+            statLbl2.className = 'stat-lbl';
+            statLbl2.textContent = '승률';
+            const statVal2 = document.createElement('span');
+            statVal2.className = 'stat-val';
+            statVal2.style.color = parseFloat(winRate) >= 50 ? '#A3E635' : '#FBBF24';
+            statVal2.textContent = `${winRate}%`;
+            statItem2.append(statLbl2, statVal2);
+
+            statsGrid.append(statItem1, statItem2);
+
+            cardMain.append(cardTop, badgesDiv, statsGrid);
+
+            const cardFooter = document.createElement('div');
+            cardFooter.className = 'mgr-card-footer';
+            const slotSpan = document.createElement('span');
+            slotSpan.style.cssText = 'color: #94A3B8; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;';
+            slotSpan.innerHTML = `${typeof iconSVG === 'function' ? iconSVG('save') : ''} <span>저장 슬롯 ${activeSlots}/3</span>`;
+            const actionSpan = document.createElement('span');
+            actionSpan.textContent = '커리어 관리 ->';
+            cardFooter.append(slotSpan, actionSpan);
+
+            card.append(cardMain, cardFooter);
             grid.appendChild(card);
         });
     },
@@ -514,9 +630,9 @@ const managerSystem = {
         const manager = this.managers.find(m => m.id === managerId);
         if (!manager) return;
 
-        const avatar = manager.avatar || "👔";
-        const flag = manager.flag || NATION_FLAGS[manager.nation] || "🇰🇷";
+        const avatar = manager.avatar || "suit";
         const nation = manager.nation || "대한민국";
+        const flag = NATION_FLAGS[nation] || manager.flag || "KOR";
         const philo = MANAGER_PHILOSOPHIES[manager.philosophy] || MANAGER_PHILOSOPHIES.attacking;
         const matches = manager.stats?.matches || 0;
         const wins = manager.stats?.wins || 0;
@@ -531,8 +647,14 @@ const managerSystem = {
         const wdlEl = document.getElementById('profileManagerWDL');
         const trophiesEl = document.getElementById('profileManagerTrophies');
 
-        if (nameEl) nameEl.innerHTML = `<span style="margin-right: 8px;">${avatar}</span>${manager.name}`;
-        if (nationEl) nationEl.textContent = `${flag} ${nation}`;
+        if (nameEl) {
+            nameEl.replaceChildren();
+            const avatarSpan = document.createElement('span');
+            avatarSpan.style.cssText = 'margin-right: 8px; display: inline-flex; align-items: center;';
+            avatarSpan.innerHTML = getAvatarIconHTML(avatar);
+            nameEl.append(avatarSpan, manager.name);
+        }
+        if (nationEl) nationEl.textContent = `[${flag}] ${nation}`;
         if (ageEl) ageEl.textContent = manager.age || 45;
         if (matchesEl) matchesEl.textContent = matches;
         if (wdlEl) wdlEl.textContent = `${wins} / ${draws} / ${losses}`;
@@ -546,18 +668,17 @@ const managerSystem = {
     renderSaveSlotsForManager(managerId) {
         const grid = document.getElementById('managerSaveSlotsGrid');
         if (!grid) return;
-        grid.innerHTML = '';
+        grid.replaceChildren();
 
         for (let i = 1; i <= 3; i++) {
             const slotKey = `fm_save_${managerId}_slot${i}`;
-            const saveDataStr = localStorage.getItem(slotKey);
+            const saveDataStr = typeof SaveStorage !== 'undefined' ? SaveStorage.getItem(slotKey) : localStorage.getItem(slotKey);
             
             const slotDiv = document.createElement('div');
             slotDiv.className = 'save-slot';
-            slotDiv.style.cssText = `
-                background: linear-gradient(145deg, rgba(25, 25, 38, 0.9), rgba(15, 15, 25, 0.95));
-                border: 1px solid rgba(255, 215, 0, 0.2);
-                border-radius: 14px;
+            slotDiv.style.cssText = `background: linear-gradient(145deg, #161F30, #111827);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 8px;
                 padding: 16px;
                 display: flex;
                 flex-direction: column;
@@ -572,39 +693,79 @@ const managerSystem = {
                     const gData = saveData.gameData || {};
                     const teamKey = gData.selectedTeam;
                     const tName = teamKey ? (typeof teamNames !== 'undefined' && teamNames[teamKey] ? teamNames[teamKey] : teamKey) : '팀 없음';
-                    const logoHtml = (teamKey && typeof getTeamLogoHTML === 'function') ? getTeamLogoHTML(teamKey) : '';
                     const sCount = gData.seasonCount || 1;
                     const money = gData.teamMoney || 1000;
                     const date = saveData.timestamp ? new Date(saveData.timestamp).toLocaleDateString() : '최근';
 
-                    slotDiv.innerHTML = `
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <span style="color: #2ecc71; font-weight: 800; font-size: 0.85rem;">SLOT 0${i}</span>
-                                <span style="font-size: 0.72rem; color: #888;">${date}</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                ${logoHtml}
-                                <strong style="font-size: 1.05rem; color: #fff;">${tName}</strong>
-                            </div>
-                            <div style="font-size: 0.8rem; color: #aaa; display: flex; gap: 10px;">
-                                <span>시즌 ${sCount}</span>
-                                <span>자금: <b style="color:#ffd700;">${money}억</b></span>
-                            </div>
-                        </div>
-                        <button class="btn primary small" style="margin-top: 12px; width: 100%; font-weight: 800; padding: 8px;" onclick="managerSystem.loadGame('${managerId}', ${i})">▶ 이어하기</button>
-                    `;
+                    const contentWrap = document.createElement('div');
+
+                    const headerRow = document.createElement('div');
+                    headerRow.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;';
+                    const slotBadge = document.createElement('span');
+                    slotBadge.style.cssText = 'color: #A3E635; font-weight: 800; font-size: 0.85rem;';
+                    slotBadge.textContent = `SLOT 0${i}`;
+                    const dateSpan = document.createElement('span');
+                    dateSpan.style.cssText = 'font-size: 0.72rem; color: #94A3B8;';
+                    dateSpan.textContent = date;
+                    headerRow.append(slotBadge, dateSpan);
+
+                    const teamRow = document.createElement('div');
+                    teamRow.style.cssText = 'display: flex; align-items: center; gap: 8px; margin-bottom: 6px;';
+                    if (teamKey && typeof createTeamLogoElement === 'function') {
+                        teamRow.appendChild(createTeamLogoElement(teamKey));
+                    }
+                    const teamNameStrong = document.createElement('strong');
+                    teamNameStrong.style.cssText = 'font-size: 1.05rem; color: #F8FAFC;';
+                    teamNameStrong.textContent = tName;
+                    teamRow.appendChild(teamNameStrong);
+
+                    const metaRow = document.createElement('div');
+                    metaRow.style.cssText = 'font-size: 0.8rem; color: #94A3B8; display: flex; gap: 10px;';
+                    const seasonSpan = document.createElement('span');
+                    seasonSpan.textContent = `시즌 ${sCount}`;
+                    const moneySpan = document.createElement('span');
+                    moneySpan.textContent = '자금: ';
+                    const moneyBold = document.createElement('b');
+                    moneyBold.style.color = '#FBBF24';
+                    moneyBold.textContent = `${money}억`;
+                    moneySpan.appendChild(moneyBold);
+                    metaRow.append(seasonSpan, moneySpan);
+
+                    contentWrap.append(headerRow, teamRow, metaRow);
+
+                    const loadBtn = document.createElement('button');
+                    loadBtn.className = 'btn primary small';
+                    loadBtn.style.cssText = 'margin-top: 12px; width: 100%; font-weight: 800; padding: 8px;';
+                    loadBtn.textContent = '이어하기';
+                    loadBtn.onclick = () => managerSystem.loadGame(managerId, i);
+
+                    slotDiv.append(contentWrap, loadBtn);
                 } catch (e) {
-                    slotDiv.innerHTML = `<div>슬롯 ${i} <br> 데이터 오류</div>`;
+                    const errDiv = document.createElement('div');
+                    errDiv.textContent = `슬롯 ${i} 데이터 오류`;
+                    slotDiv.appendChild(errDiv);
                 }
             } else {
-                slotDiv.innerHTML = `
-                    <div style="text-align: center; padding: 10px 0;">
-                        <div style="font-size: 1.8rem; margin-bottom: 4px; opacity: 0.5;">📂</div>
-                        <div style="color: #888; font-size: 0.85rem; font-weight: 600;">빈 슬롯 0${i}</div>
-                    </div>
-                    <button class="btn success small" style="margin-top: 10px; width: 100%; font-weight: 800; padding: 8px;" onclick="managerSystem.startNewCareer('${managerId}', ${i})">✨ 새 커리어 시작</button>
-                `;
+                const emptyBox = document.createElement('div');
+                emptyBox.style.cssText = 'text-align: center; padding: 10px 0;';
+
+                const icon = document.createElement('div');
+                icon.style.cssText = 'font-size: 1.8rem; margin-bottom: 4px; opacity: 0.5; display: flex; justify-content: center; color: #94A3B8;';
+                icon.innerHTML = typeof iconSVG === 'function' ? iconSVG('folder') : '';
+
+                const label = document.createElement('div');
+                label.style.cssText = 'color: #94A3B8; font-size: 0.85rem; font-weight: 600;';
+                label.textContent = `빈 슬롯 0${i}`;
+
+                emptyBox.append(icon, label);
+
+                const newCareerBtn = document.createElement('button');
+                newCareerBtn.className = 'btn success small';
+                newCareerBtn.style.cssText = 'margin-top: 10px; width: 100%; font-weight: 800; padding: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;';
+                newCareerBtn.innerHTML = `${typeof iconSVG === 'function' ? iconSVG('sparkles') : ''} <span>새 커리어 시작</span>`;
+                newCareerBtn.onclick = () => managerSystem.startNewCareer(managerId, i);
+
+                slotDiv.append(emptyBox, newCareerBtn);
             }
             grid.appendChild(slotDiv);
         }

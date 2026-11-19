@@ -32,8 +32,8 @@ class SNSManager {
                 "[이적 루머] {playerName}, {newTeam} 이적설 솔솔... {transferFee} 거론",
                 "[이적설] {playerName}, {newTeam}으로 깜짝 이적하나?",
                 "[이적시장] {playerName}, {newTeam} 이적 임박?",
-                "[루머] {playerName}, {newTeam} '러브콜' 받았다!",
-                "[이적 가십] {playerName}, {newTeam} 이적 '가능성' 제기!"
+                "[루머] {playerName}, {newTeam} '러브콜'받았다!",
+                "[이적 가십] {playerName}, {newTeam} 이적 '가능성'제기!"
             ],
 
             // 경기 결과 템플릿 - 이변/충격 (약팀이 강팀을 이김)
@@ -97,54 +97,54 @@ class SNSManager {
 
             // 시즌 결과 - 우승
             seasonChampion: [
-                "🏆 [시즌 종료] {team}, {league}부 리그 우승! 최종 {points}점으로 정상 등극!",
-                "🏆 [시즌 종료] 우승! {team}이 {league}부 리그를 제패했습니다!",
-                "🏆 [시즌 종료] {team}, {league}부 리그 챔피언 등극! {points}점 획득!",
-                "👑 [시즌 종료] {team}의 시대! {league}부 리그 우승 달성!",
-                "🎉 [시즌 종료] 완벽한 시즌! {team}, {league}부 리그 우승!"
+                "[시즌 종료] {team}, {league}부 리그 우승! 최종 {points}점으로 정상 등극!",
+                "[시즌 종료] 우승! {team}이 {league}부 리그를 제패했습니다!",
+                "[시즌 종료] {team}, {league}부 리그 챔피언 등극! {points}점 획득!",
+                "[시즌 종료] {team}의 시대! {league}부 리그 우승 달성!",
+                "[시즌 종료] 완벽한 시즌! {team}, {league}부 리그 우승!"
             ],
 
             // 시즌 결과 - 승격
             seasonPromotion: [
-                "⬆️ [시즌 종료] {team}, {newLeague}부 리그 승격 확정! 축하합니다!",
-                "🎊 [시즌 종료] 승격의 주역! {team}, {newLeague}부 리그로!",
-                "⬆️ [시즌 종료] {team}, {newLeague}부 리그 승격! 새로운 도전!",
-                "🚀 [시즌 종료] {team}, {newLeague}부 리그 승격 성공!",
-                "✨ [시즌 종료] 꿈의 승격! {team}, {newLeague}부 리그로 올라간다!"
+                "⬆ [시즌 종료] {team}, {newLeague}부 리그 승격 확정! 축하합니다!",
+                "[시즌 종료] 승격의 주역! {team}, {newLeague}부 리그로!",
+                "⬆ [시즌 종료] {team}, {newLeague}부 리그 승격! 새로운 도전!",
+                "[시즌 종료] {team}, {newLeague}부 리그 승격 성공!",
+                "[시즌 종료] 꿈의 승격! {team}, {newLeague}부 리그로 올라간다!"
             ],
 
             // 시즌 결과 - 강등
             seasonRelegation: [
-                "⬇️ [시즌 종료] {team}, {newLeague}부 리그 강등... 재기를 노린다",
-                "😢 [시즌 종료] {team}, {newLeague}부 리그 강등 확정...",
-                "⬇️ [시즌 종료] 아쉬운 강등... {team}, {newLeague}부 리그로",
-                "💔 [시즌 종료] {team}, {newLeague}부 리그 강등... 내년을 기약",
-                "⬇️ [시즌 종료] {team}, {newLeague}부 리그로... 재도약 다짐"
+                "⬇ [시즌 종료] {team}, {newLeague}부 리그 강등... 재기를 노린다",
+                "[시즌 종료] {team}, {newLeague}부 리그 강등 확정...",
+                "⬇ [시즌 종료] 아쉬운 강등... {team}, {newLeague}부 리그로",
+                "[시즌 종료] {team}, {newLeague}부 리그 강등... 내년을 기약",
+                "⬇ [시즌 종료] {team}, {newLeague}부 리그로... 재도약 다짐"
             ],
 
             // 득점왕
             topScorer: [
-                "⚽👑 [시즌 종료] 득점왕은 {playerName}({team})! {goals}골로 득점왕 수상!",
-                "⚽ [시즌 종료] 골 제조기 {playerName}({team}), {goals}골로 득점왕!",
-                "👟 [시즌 종료] {playerName}({team}), {goals}골로 {league}부 리그 득점왕 등극!",
-                "⚽ [시즌 종료] 득점왕의 탄생! {playerName}({team}) {goals}골!",
-                "🎯 [시즌 종료] {playerName}({team}), {goals}골로 득점왕 차지!"
+                "[시즌 종료] 득점왕은 {playerName}({team})! {goals}골로 득점왕 수상!",
+                "[시즌 종료] 골 제조기 {playerName}({team}), {goals}골로 득점왕!",
+                "[시즌 종료] {playerName}({team}), {goals}골로 {league}부 리그 득점왕 등극!",
+                "[시즌 종료] 득점왕의 탄생! {playerName}({team}) {goals}골!",
+                "[시즌 종료] {playerName}({team}), {goals}골로 득점왕 차지!"
             ],
 
             // 도움왕
             topAssister: [
-                "🅰️👑 [시즌 종료] 도움왕은 {playerName}({team})! {assists}도움으로 도움왕!",
-                "🅰️ [시즌 종료] 어시스트 머신 {playerName}({team}), {assists}도움!",
-                "🎯 [시즌 종료] {playerName}({team}), {assists}도움으로 {league}부 리그 도움왕!",
-                "🅰️ [시즌 종료] 도움왕 등극! {playerName}({team}) {assists}도움!",
-                "✨ [시즌 종료] {playerName}({team}), {assists}도움으로 도움왕 차지!"
+                "[시즌 종료] 도움왕은 {playerName}({team})! {assists}도움으로 도움왕!",
+                "[시즌 종료] 어시스트 머신 {playerName}({team}), {assists}도움!",
+                "[시즌 종료] {playerName}({team}), {assists}도움으로 {league}부 리그 도움왕!",
+                "[시즌 종료] 도움왕 등극! {playerName}({team}) {assists}도움!",
+                "[시즌 종료] {playerName}({team}), {assists}도움으로 도움왕 차지!"
             ],
 
             // 시즌 종합 결과
             seasonSummary: [
-                "📊 [시즌 종료] {league}부 리그 시즌 종료! 우승: {champion}, 득점왕: {topScorer}, 도움왕: {topAssister}",
-                "🏁 [시즌 종료] {league}부 리그 막 내렸다! 챔피언 {champion} 등극!",
-                "📋 [시즌 종료] {league}부 리그 최종 결과 발표! 우승팀은 {champion}!"
+                "[시즌 종료] {league}부 리그 시즌 종료! 우승: {champion}, 득점왕: {topScorer}, 도움왕: {topAssister}",
+                "[시즌 종료] {league}부 리그 막 내렸다! 챔피언 {champion} 등극!",
+                "[시즌 종료] {league}부 리그 최종 결과 발표! 우승팀은 {champion}!"
             ],
 
             // 유망주 발굴 템플릿
@@ -206,6 +206,16 @@ class SNSManager {
         this.isProcessingQueue = false;
     }
 
+    buildAICommentObjects(aiCommentsText, baseTimestamp) {
+        return aiCommentsText.slice(0, 3).map((text, index) => ({
+            id: Math.random().toString(36).substr(2, 9),
+            author: this.generateRandomUsername ? this.generateRandomUsername() : '익명',
+            text: text,
+            likes: Math.floor(Math.random() * 100) + 1,
+            timestamp: (baseTimestamp || Date.now()) + (index + 1) * 60000
+        }));
+    }
+
     async preGenerateAIComments(post) {
         if (post.isAIFinalized) return true;
         if (post.isGeneratingComments) return false;
@@ -213,20 +223,12 @@ class SNSManager {
         post.isGeneratingComments = true;
         
         try {
-            const tempDiv = document.createElement("div");
-            tempDiv.innerHTML = post.content;
-            const cleanContent = tempDiv.textContent || tempDiv.innerText || "";
+            const cleanContent = post.content ? post.content.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim() : "";
             
             const aiCommentsText = await this.callNvidiaForComments(cleanContent);
             
             if (aiCommentsText && aiCommentsText.length > 0) {
-                post.generatedComments = aiCommentsText.slice(0, 3).map((text, index) => ({
-                    id: Math.random().toString(36).substr(2, 9),
-                    author: this.generateRandomUsername ? this.generateRandomUsername() : '익명',
-                    text: text,
-                    likes: Math.floor(Math.random() * 100) + 1,
-                    timestamp: post.timestamp + (index + 1) * 60000
-                }));
+                post.generatedComments = this.buildAICommentObjects(aiCommentsText, post.timestamp);
                 post.isAIFinalized = true;
 
                 const commentsSection = document.getElementById(`comments-${post.id}`);
@@ -389,7 +391,7 @@ class SNSManager {
 
     // 시즌 종료 이벤트 핸들러 (endSeason.js에서 호출)
     onSeasonEnd(seasonData) {
-        console.log('📢 SNS: 시즌 종료 이벤트 처리 시작');
+        console.log('SNS: 시즌 종료 이벤트 처리 시작');
 
         // 1. 각 리그 우승팀 포스트
         if (seasonData.champions) {
@@ -426,7 +428,7 @@ class SNSManager {
             });
         }
 
-        console.log('✅ SNS: 시즌 종료 이벤트 처리 완료');
+        console.log('SNS: 시즌 종료 이벤트 처리 완료');
     }
     // 수정된 generateMatchPost 함수
     generateMatchPost(matchData) {
@@ -505,7 +507,7 @@ class SNSManager {
 
         let postContent = this.fillTemplate(template, templateData);
         if (goalRecords.length > 0) {
-            postContent += '<br><br>⚽ 골 기록<br>' + goalRecords.join('<br>');
+            postContent += '<br><br> 골 기록<br>' + goalRecords.join('<br>');
         }
 
         const post = {
@@ -580,9 +582,12 @@ class SNSManager {
     }
 
     generateRandomTransferRumor() {
-        if (typeof allTeams === 'undefined' && typeof teams === 'undefined') return;
+        const teamsObj = (typeof allTeams !== 'undefined' && allTeams)
+            ? allTeams
+            : (typeof teams !== 'undefined' ? teams : null);
+        if (!teamsObj) return;
         
-        const teamKeys = Object.keys(allTeams || teams);
+        const teamKeys = Object.keys(teamsObj);
         if (teamKeys.length < 2) return;
         
         let targetTeamKey;
@@ -602,7 +607,9 @@ class SNSManager {
             do { newTeamKey = teamKeys[Math.floor(Math.random() * teamKeys.length)]; } while (newTeamKey === targetTeamKey);
         }
         
-        const targetTeamPlayers = (allTeams && allTeams[targetTeamKey] ? allTeams[targetTeamKey].players : null) || (teams ? teams[targetTeamKey] : []);
+        const targetTeamPlayers = teamsObj[targetTeamKey] && teamsObj[targetTeamKey].players
+            ? teamsObj[targetTeamKey].players
+            : (Array.isArray(teamsObj[targetTeamKey]) ? teamsObj[targetTeamKey] : []);
         
         if (!targetTeamPlayers || targetTeamPlayers.length === 0) return;
 
@@ -613,34 +620,35 @@ class SNSManager {
         this.generateTransferPost(player.name, targetTeamKey, newTeamKey, transferFee, true);
     }
 
-    // AI 경기 미리보기 생성 (같은 디비전끼리만)
+    // AI 경기 미리보기 생성 (같은 리그끼리만)
     generateAIMatchPreview() {
-        // 현재 선택된 팀의 디비전 확인
+        if (typeof allTeams === 'undefined' || typeof gameData === 'undefined') return;
+
         const currentDivision = gameData.currentLeague;
+        const userLeagueId = (typeof LeagueManager !== 'undefined' && gameData.selectedTeam)
+            ? LeagueManager.getLeagueIdByTeam(gameData.selectedTeam)
+            : null;
 
-        // 같은 디비전의 다른 팀들만 필터링
+        // 같은 리그의 다른 팀들만 필터링
         const sameLeagueTeams = Object.keys(allTeams).filter(teamKey => {
-            // 현재 선택된 팀 제외
             if (teamKey === gameData.selectedTeam) return false;
-
-            // 같은 리그(디비전)인지 확인
-            const teamLeague = allTeams[teamKey].league || 1; // 기본값 1
+            if (userLeagueId && allTeams[teamKey].leagueId) {
+                return allTeams[teamKey].leagueId === userLeagueId;
+            }
+            const teamLeague = allTeams[teamKey].league || 1;
             return teamLeague === currentDivision;
         });
-
-        console.log(`현재 디비전: ${currentDivision}`);
-        console.log('같은 디비전 팀들:', sameLeagueTeams);
 
         if (sameLeagueTeams.length >= 2) {
             const team1 = sameLeagueTeams[Math.floor(Math.random() * sameLeagueTeams.length)];
             const team2 = sameLeagueTeams.filter(t => t !== team1)[Math.floor(Math.random() * (sameLeagueTeams.length - 1))];
 
             const previews = [
-                `🔥 주목할 만한 경기! ${this.getTeamName(team1)} vs ${this.getTeamName(team2)} 오늘 밤 대격돌!`,
-                `⚡ 빅 매치 예고! ${this.getTeamName(team1)}과 ${this.getTeamName(team2)}의 운명적 대결`,
-                `🎯 클래시코! ${this.getTeamName(team1)} 대 ${this.getTeamName(team2)}, 승자는?`,
-                `⚽ 리그 주요 경기! ${this.getTeamName(team1)} vs ${this.getTeamName(team2)} 예상!`,
-                `🏆 ${currentDivision}부 리그 경기! ${this.getTeamName(team1)} 대 ${this.getTeamName(team2)}`
+                `주목할 만한 경기! ${this.getTeamName(team1)} vs ${this.getTeamName(team2)} 오늘 밤 대격돌!`,
+                `빅 매치 예고! ${this.getTeamName(team1)}과 ${this.getTeamName(team2)}의 운명적 대결`,
+                `클래시코! ${this.getTeamName(team1)} 대 ${this.getTeamName(team2)}, 승자는?`,
+                `리그 주요 경기! ${this.getTeamName(team1)} vs ${this.getTeamName(team2)} 예상!`,
+                ` ${currentDivision}부 리그 경기! ${this.getTeamName(team1)} 대 ${this.getTeamName(team2)}`
             ];
 
             const post = {
@@ -719,7 +727,7 @@ class SNSManager {
                 const isHome = event.teamKey
                     ? event.teamKey === matchData.homeTeam
                     : null;
-                const side = isHome === null ? '' : (isHome ? '🏠 ' : '🛫 ');
+                const side = isHome === null ? '' : (isHome ? ' ' : ' ');
                 let text = `${side}${event.minute}' ${event.scorer}`;
                 if (event.assister) text += ` (도움: ${event.assister})`;
                 return text;
@@ -761,12 +769,15 @@ class SNSManager {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        container.innerHTML = '';
+        container.replaceChildren();
 
         const postsToShow = this.posts.slice(0, limit);
 
         if (postsToShow.length === 0) {
-            container.innerHTML = '<div class="sns-empty">아직 소식이 없습니다.</div>';
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'sns-empty';
+            emptyDiv.textContent = '아직 소식이 없습니다.';
+            container.appendChild(emptyDiv);
             return;
         }
 
@@ -782,187 +793,403 @@ class SNSManager {
 
         const timeAgo = this.formatTimeAgo(post.timestamp);
 
-        // 포스트 타입에 따라 '게시자(프로필)' 팀을 명확히 결정
-        let postingTeam = gameData.selectedTeam;
-        if (post.type === 'match_result') postingTeam = post.homeTeam;
-        else if (post.type === 'match_preview') postingTeam = post.team1;
-        else if (post.type === 'transfer_confirmed' || post.type === 'transfer_rumor') postingTeam = post.toTeam;
-        else if (post.type === 'rebirth') postingTeam = post.teamKey;
+        // 포스트 타입에 따라 '게시자(프로필)'팀을 명확히 결정
+        let postingTeam = typeof gameData !== 'undefined' ? gameData.selectedTeam : null;
+        if (post.type === 'match_result') postingTeam = post.homeTeam || postingTeam;
+        else if (post.type === 'match_preview') postingTeam = post.team1 || postingTeam;
+        else if (post.type === 'transfer_confirmed' || post.type === 'transfer_rumor') postingTeam = post.toTeam || postingTeam;
+        else if (post.type === 'rebirth') postingTeam = post.teamKey || postingTeam;
 
         const teamName = this.getTeamName(postingTeam);
-        const stadium = post.type === 'match_result' || post.type === 'match_preview' ? "📍 Official Stadium" : post.type === 'rebirth' ? "📍 Youth Academy" : "⚽ Transfer Market";
+        const stadium = post.type === 'match_result' || post.type === 'match_preview' ? "Official Stadium" : post.type === 'rebirth' ? "Youth Academy" : "Transfer Market";
 
-        let mediaHtml = '';
-        if (post.type === 'match_result') {
-            const homeLogo = getTeamLogoHTML(post.homeTeam);
-            const awayLogo = getTeamLogoHTML(post.awayTeam);
-            const bgUrl = `assets/bg/${post.homeTeam}.png`;
+        const header = document.createElement('div');
+        header.className = 'insta-header';
 
-            mediaHtml = `
-            <div class="insta-media match-result-card" style="background-image: url('${bgUrl}'), url('assets/bg/basic.png');">
-                <div class="media-overlay-dark"></div>
-                <div class="media-content">
-                    <div class="result-score-row">
-                        <div class="result-team">
-                            ${homeLogo}
-                            <span class="score-num">${post.homeScore}</span>
-                        </div>
-                        <div class="score-vs">:</div>
-                        <div class="result-team">
-                            <span class="score-num">${post.awayScore}</span>
-                            ${awayLogo}
-                        </div>
-                    </div>
-                    <div class="result-scorers">${post.goalScorers ? '⚽ ' + post.goalScorers : ''}</div>
-                </div>
-            </div>
-        `;
-        } else if (post.type === 'transfer_confirmed' || post.type === 'transfer_rumor') {
-            const toTeamName = this.getTeamName(post.toTeam);
-            const bgUrl = `assets/bg/${post.toTeam}.png`;
-            const logoHtml = getTeamLogoHTML(post.toTeam);
-
-            mediaHtml = `
-            <div class="insta-media transfer-graphic-card" style="background-image: url('${bgUrl}'), url('assets/bg/basic.png');">
-                <div class="transfer-card-overlay"></div>
-                <img src="assets/players/${post.playerName}.webp" class="transfer-card-player" onerror="this.src='assets/players/default.webp'">
-                <div class="transfer-card-price-badge">${post.transferFee}</div>
-                <div class="transfer-card-footer">
-                    <div class="transfer-footer-top">
-                        ${logoHtml}
-                        <span class="transfer-official-tag">[OFFICIAL]</span>
-                    </div>
-                    <div class="transfer-main-headline">
-                        ${post.playerName}, ${toTeamName}으로 이적
-                    </div>
-                </div>
-            </div>
-        `;
-        } else if (post.type === 'match_preview') {
-            const bgUrl = `assets/bg/${post.team1}.png`;
-            mediaHtml = `
-            <div class="insta-media preview-graphic-card" style="background-image: url('${bgUrl}'), url('assets/bg/basic.png');">
-                <div class="media-overlay-dark"></div>
-                <div class="preview-headline">NEXT MATCH</div>
-                <div class="preview-teams-row">
-                    ${getTeamLogoHTML(post.team1)}
-                    <span class="vs-text">V</span>
-                    ${getTeamLogoHTML(post.team2)}
-                </div>
-            </div>
-        `;
-        } else if (post.type === 'rebirth') {
-            const bgUrl = `assets/bg/${post.teamKey}.png`;
-            mediaHtml = `
-            <div class="insta-media preview-graphic-card" style="background-image: url('${bgUrl}'), url('assets/bg/basic.png'); display: flex; flex-direction: column; justify-content: flex-end; align-items: center;">
-                <div class="media-overlay-dark" style="opacity: 0.3;"></div>
-                <div style="z-index: 10; padding-bottom: 40px; color: white; font-weight: 900; font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; text-align: center; line-height: 1.4;">
-                    ${post.playerName} 은퇴,<br>이어받을 유망주 등장
-                </div>
-            </div>
-        `;
+        const profilePic = document.createElement('div');
+        profilePic.className = 'insta-profile-pic';
+        if (typeof createTeamLogoElement === 'function') {
+            profilePic.appendChild(createTeamLogoElement(postingTeam));
         }
 
-        postEl.innerHTML = `
-        <div class="insta-header">
-            <div class="insta-profile-pic">
-                ${getTeamLogoHTML(postingTeam)}
-            </div>
-            <div class="insta-header-text">
-                <div class="insta-username">${teamName}</div>
-                <div class="insta-location">${stadium}</div>
-            </div>
-            <div class="insta-more">•••</div>
-        </div>
-        
-        ${mediaHtml}
+        const headerText = document.createElement('div');
+        headerText.className = 'insta-header-text';
+        const uName = document.createElement('div');
+        uName.className = 'insta-username';
+        uName.textContent = teamName;
+        const uLoc = document.createElement('div');
+        uLoc.className = 'insta-location';
+        uLoc.textContent = stadium;
+        headerText.append(uName, uLoc);
 
-        <div class="insta-actions">
-            <div class="actions-left">
-                <span class="action-icon">❤️</span>
-                <span class="action-icon sns-comments-btn" data-post-id="${post.id}">💬</span>
-                <span class="action-icon">✈️</span>
-            </div>
-            <div class="actions-right">
-                <span class="action-icon">🔖</span>
-            </div>
-        </div>
+        const moreBtn = document.createElement('div');
+        moreBtn.className = 'insta-more';
+        moreBtn.textContent = '•••';
 
-        <div class="insta-content">
-            <div class="insta-likes-count">좋아요 ${post.likes.toLocaleString()}개</div>
-            <div class="insta-caption">
-                <span class="insta-username">${teamName}</span> ${post.content}
-            </div>
-            <div class="insta-hashtags">
-                ${post.hashtags.join(' ')}
-            </div>
-            <div class="insta-view-comments sns-comments-btn" data-post-id="${post.id}">
-                댓글 ${post.comments}개 모두 보기
-            </div>
-            <div class="insta-time">${timeAgo.toUpperCase()}</div>
-        </div>
-        <div class="sns-comments-section" id="comments-${post.id}" style="display: none;"></div>
-    `;
+        header.append(profilePic, headerText, moreBtn);
 
-        // 이벤트 리스너를 직접 추가
-        const commentsBtn = postEl.querySelector('.sns-comments-btn');
-        commentsBtn.addEventListener('click', () => {
-            this.toggleComments(post.id);
+        let mediaEl = null;
+        if (post.type === 'match_result') {
+            const bgUrl = `assets/bg/${post.homeTeam}.png`;
+            mediaEl = document.createElement('div');
+            mediaEl.className = 'insta-media match-result-card';
+            mediaEl.style.backgroundImage = `url('${bgUrl}'), url('assets/bg/basic.png')`;
+
+            const darkOverlay = document.createElement('div');
+            darkOverlay.className = 'media-overlay-dark';
+
+            const mediaContent = document.createElement('div');
+            mediaContent.className = 'media-content';
+
+            const scoreRow = document.createElement('div');
+            scoreRow.className = 'result-score-row';
+
+            const homeTeamDiv = document.createElement('div');
+            homeTeamDiv.className = 'result-team';
+            if (typeof createTeamLogoElement === 'function') homeTeamDiv.appendChild(createTeamLogoElement(post.homeTeam));
+            const homeScoreSpan = document.createElement('span');
+            homeScoreSpan.className = 'score-num';
+            homeScoreSpan.textContent = post.homeScore;
+            homeTeamDiv.appendChild(homeScoreSpan);
+
+            const vsDiv = document.createElement('div');
+            vsDiv.className = 'score-vs';
+            vsDiv.textContent = ':';
+
+            const awayTeamDiv = document.createElement('div');
+            awayTeamDiv.className = 'result-team';
+            const awayScoreSpan = document.createElement('span');
+            awayScoreSpan.className = 'score-num';
+            awayScoreSpan.textContent = post.awayScore;
+            awayTeamDiv.appendChild(awayScoreSpan);
+            if (typeof createTeamLogoElement === 'function') awayTeamDiv.appendChild(createTeamLogoElement(post.awayTeam));
+
+            scoreRow.append(homeTeamDiv, vsDiv, awayTeamDiv);
+
+            const scorersDiv = document.createElement('div');
+            scorersDiv.className = 'result-scorers';
+            if (post.goalScorers) scorersDiv.textContent = ` ${post.goalScorers}`;
+
+            mediaContent.append(scoreRow, scorersDiv);
+            mediaEl.append(darkOverlay, mediaContent);
+
+        } else if (post.type === 'transfer_confirmed' || post.type === 'transfer_rumor') {
+            const targetTeamKey = post.toTeam || (typeof gameData !== 'undefined' ? gameData.selectedTeam : '');
+            const toTeamName = this.getTeamName(targetTeamKey);
+            const bgUrl = `assets/bg/${targetTeamKey}.png`;
+
+            mediaEl = document.createElement('div');
+            mediaEl.className = 'insta-media transfer-graphic-card';
+            mediaEl.style.backgroundImage = `url('${bgUrl}'), url('assets/bg/basic.png')`;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'transfer-card-overlay';
+
+            const playerImg = document.createElement('img');
+            playerImg.className = 'transfer-card-player';
+            if (post.playerName && typeof setPlayerPhoto === 'function') {
+                setPlayerPhoto(playerImg, post.playerName);
+            } else {
+                playerImg.style.display = 'none';
+            }
+
+            const badge = document.createElement('div');
+            badge.className = 'transfer-card-price-badge';
+            badge.textContent = post.transferFee || (post.type === 'transfer_rumor' ? '이적 루머' : '비공개');
+
+            const footer = document.createElement('div');
+            footer.className = 'transfer-card-footer';
+
+            const footerTop = document.createElement('div');
+            footerTop.className = 'transfer-footer-top';
+            if (targetTeamKey && typeof createTeamLogoElement === 'function') footerTop.appendChild(createTeamLogoElement(targetTeamKey));
+            const officialTag = document.createElement('span');
+            officialTag.className = 'transfer-official-tag';
+            officialTag.textContent = post.type === 'transfer_rumor' ? '[RUMOR]' : '[OFFICIAL]';
+            footerTop.appendChild(officialTag);
+
+            const headline = document.createElement('div');
+            headline.className = 'transfer-main-headline';
+            headline.textContent = post.playerName
+                ? (post.type === 'transfer_rumor' ? `${post.playerName}, ${toTeamName} 이적설` : `${post.playerName}, ${toTeamName}으로 이적`)
+                : (post.content || `${toTeamName} 이적 소식`);
+
+            footer.append(footerTop, headline);
+            mediaEl.append(overlay, playerImg, badge, footer);
+
+        } else if (post.type === 'match_preview') {
+            const bgUrl = `assets/bg/${post.team1}.png`;
+
+            mediaEl = document.createElement('div');
+            mediaEl.className = 'insta-media preview-graphic-card';
+            mediaEl.style.backgroundImage = `url('${bgUrl}'), url('assets/bg/basic.png')`;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'media-overlay-dark';
+
+            const headline = document.createElement('div');
+            headline.className = 'preview-headline';
+            headline.textContent = 'NEXT MATCH';
+
+            const teamsRow = document.createElement('div');
+            teamsRow.className = 'preview-teams-row';
+            if (typeof createTeamLogoElement === 'function') teamsRow.appendChild(createTeamLogoElement(post.team1));
+            const vsSpan = document.createElement('span');
+            vsSpan.className = 'vs-text';
+            vsSpan.textContent = 'V';
+            teamsRow.appendChild(vsSpan);
+            if (typeof createTeamLogoElement === 'function') teamsRow.appendChild(createTeamLogoElement(post.team2));
+
+            mediaEl.append(overlay, headline, teamsRow);
+
+        } else if (post.type === 'rebirth') {
+            const bgUrl = `assets/bg/${post.teamKey}.png`;
+
+            mediaEl = document.createElement('div');
+            mediaEl.className = 'insta-media preview-graphic-card';
+            mediaEl.style.cssText = `background-image: url('${bgUrl}'), url('assets/bg/basic.png'); display: flex; flex-direction: column; justify-content: flex-end; align-items: center;`;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'media-overlay-dark';
+            overlay.style.opacity = '0.3';
+
+            const titleDiv = document.createElement('div');
+            titleDiv.style.cssText = 'z-index: 10; padding-bottom: 40px; color: white; font-weight: 900; font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; text-align: center; line-height: 1.4;';
+            titleDiv.append(`${post.playerName} 은퇴,`, document.createElement('br'), '이어받을 유망주 등장');
+
+            mediaEl.append(overlay, titleDiv);
+        }
+
+        const actions = document.createElement('div');
+        actions.className = 'insta-actions';
+
+        const actionsLeft = document.createElement('div');
+        actionsLeft.className = 'actions-left';
+
+        const heartIcon = document.createElement('span');
+        heartIcon.className = 'action-icon';
+        heartIcon.title = '좋아요';
+        heartIcon.textContent = post._liked ? '❤️' : '🤍';
+
+        const commentIcon = document.createElement('span');
+        commentIcon.className = 'action-icon sns-comments-btn';
+        commentIcon.dataset.postId = post.id;
+        commentIcon.title = '댓글 보기';
+        commentIcon.textContent = '💬';
+
+        const shareIcon = document.createElement('span');
+        shareIcon.className = 'action-icon';
+        shareIcon.title = '공유';
+        shareIcon.textContent = '↗️';
+
+        actionsLeft.append(heartIcon, commentIcon, shareIcon);
+
+        const actionsRight = document.createElement('div');
+        actionsRight.className = 'actions-right';
+        const bookmarkIcon = document.createElement('span');
+        bookmarkIcon.className = 'action-icon';
+        bookmarkIcon.title = '저장';
+        bookmarkIcon.textContent = post._bookmarked ? '🔖' : '📑';
+        actionsRight.appendChild(bookmarkIcon);
+
+        actions.append(actionsLeft, actionsRight);
+
+        const content = document.createElement('div');
+        content.className = 'insta-content';
+
+        const likesNum = Number(post.likes) || 0;
+        const likesCount = document.createElement('div');
+        likesCount.className = 'insta-likes-count';
+        likesCount.textContent = `좋아요 ${likesNum.toLocaleString()}개`;
+
+        heartIcon.addEventListener('click', () => {
+            post._liked = !post._liked;
+            post.likes = Math.max(0, (Number(post.likes) || 0) + (post._liked ? 1 : -1));
+            heartIcon.textContent = post._liked ? '❤️' : '🤍';
+            likesCount.textContent = `좋아요 ${post.likes.toLocaleString()}개`;
+        });
+        bookmarkIcon.addEventListener('click', () => {
+            post._bookmarked = !post._bookmarked;
+            bookmarkIcon.textContent = post._bookmarked ? '🔖' : '📑';
+        });
+
+        const caption = document.createElement('div');
+        caption.className = 'insta-caption';
+        const captionUser = document.createElement('span');
+        captionUser.className = 'insta-username';
+        captionUser.textContent = teamName;
+        caption.append(captionUser, ' ');
+        this.appendFormattedText(caption, post.content || '');
+
+        const hashtags = document.createElement('div');
+        hashtags.className = 'insta-hashtags';
+        hashtags.textContent = Array.isArray(post.hashtags) ? post.hashtags.join(' ') : '';
+
+        const commentsCount = Number.isFinite(post.comments)
+            ? post.comments
+            : (Array.isArray(post.generatedComments) ? post.generatedComments.length : 0);
+        const viewComments = document.createElement('div');
+        viewComments.className = 'insta-view-comments sns-comments-btn';
+        viewComments.dataset.postId = post.id;
+        viewComments.textContent = `댓글 ${commentsCount}개 모두 보기`;
+
+        const time = document.createElement('div');
+        time.className = 'insta-time';
+        time.textContent = timeAgo.toUpperCase();
+
+        content.append(likesCount, caption, hashtags, viewComments, time);
+
+        const commentsSection = document.createElement('div');
+        commentsSection.className = 'sns-comments-section';
+        commentsSection.id = `comments-${post.id}`;
+        commentsSection.style.display = 'none';
+
+        postEl.append(header);
+        if (mediaEl) postEl.appendChild(mediaEl);
+        postEl.append(actions, content, commentsSection);
+
+        postEl.querySelectorAll('.sns-comments-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.toggleComments(post.id);
+            });
         });
 
         return postEl;
     }
 
-    // [수정] NVIDIA NIM API 호출 함수 (프록시 경유)
-    async callNvidiaForComments(postContent) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 60000);
+    appendFormattedText(parentEl, rawText) {
+        const parts = String(rawText || '').split(/<br\s*\/?>|\n/gi);
+        parts.forEach((part, idx) => {
+            if (idx > 0) parentEl.appendChild(document.createElement('br'));
+            if (part) parentEl.appendChild(document.createTextNode(part));
+        });
+    }
 
-        try {
-            // 다시 Vercel 프록시로 복구합니다.
-            const response = await fetch("https://easyfmm.vercel.app/api/groq", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                signal: controller.signal,
-                body: JSON.stringify({
-                    messages: [
-                        {
-                            role: "system",
-                            content: "🚨 [필독: 커뮤니티 밈(Meme) 동적 생성 규칙] AI 특유의 융통성 없는 텍스트 출력을 방지하기 위해 아래 규칙을 엄격히 따른다. 1. 접두사/접미사 동적 결합 규칙 (절대 숫자 '0'을 그대로 출력하지 말 것) 특정 밈('-대깨-', '-맘', '탈-', '-강점기')을 사용할 때는 대상 팀이나 선수의 커뮤니티 멸칭/애칭의 한 글자 또는 줄임말을 동적으로 결합해야 한다. 주어진 예시 외의 팀이 나와도 이 원리를 스스로 응용할 것. 작동 원리: 맨유(맹구) -> 맹 / 토트넘(닭집, 폐닭) -> 토 / 바르셀로나(꾸레) -> 꾸 / 아스널(개집) -> 개 / 첼시(첼강딱) -> 첼 / 레알 마드리드(매수마드리드) -> 얄, 마 올바른 출력 예시: 대깨맹(O), 탈개집(O), 꾸강점기(O), 토맘(O) 금지된 출력 예시: 대깨0(X), 대깨맨유(X), 00강점기(X) 2. 밈(Meme) 상황별 발동 조건 (Context Trigger) 밈의 뜻을 정확히 파악하고, 해당하는 경기 상황이 발생했을 때만 적절히 사용할 것. 아무 때나 남발하지 마라. 빅클럽 판독기: [발동 조건] 약팀은 잘 패면서 강팀(순위가 높은 팀)과의 경기에서 아무 활약 없이 졌을 때만 사용. (예: '결국 또 빅클럽 판독기 돌아가쥬? 강팀 만나니까 버로우 타네.') 위장팬: [발동 조건] 팬을 자처하면서 교묘하게 팀이나 감독을 까내리거나, 타 팀을 찬양하는 댓글을 구현할 때 사용. (예: '나 15년 차 골수팬인데 솔직히 오늘 전술은 감독 사퇴가 맞다. 차라리 옆동네가 축구는 잘함.') XX맘: 어떤 선수를 무지성으로 좋아하는(그래서 못한것도 다 칭찬하는)사람 탈00: 맨유면 맹, 토트넘이면 트넘 등 팀 이름을 넣어서 사용. 그 팀을 나가서 다른 팀으로 이적했을때 사용 행복축구: 어떤 선수가 말년에 돈받으러 변방 리그에 갈때 근본: 역사가 있거나 워크에식 같은 마인드가 제대로 된 선수일때 활동량도르 / 재능도르: [발동 조건] 평점과 스탯은 최악인데 뛴 거리만 많거나(활동량), 실속은 없는데 유망주 딱지가 붙어있을 때(재능) 비꼬는 용도로 사용. XX가 ㅈ으로 보이냐: [발동 조건] 어떤 한 선수(A라고 하자.)가 매우 못했을때, 어떤 댓글이 그 선수랑 평소에 실력이 좋지 않은 다른선수(B라고 하자.)랑 비교함. 그러면 그 대댓글에 XX(B)가 ㅈ으로 보이냐 면서 A를 더 까내리는 용도. 우승목격자 / 0갈자: [발동 조건] 우승은 했으나 버스를 탔을 때(우승목격자), 특정 팀으로 이적하느니 차라리 죽겠다는 극단적 비하가 필요할 때(0갈자) 사용. 순수실력 GOAT / JOAT: [발동 조건] 경기 결과에 따라 특정 선수를 무지성으로 신격화하거나 바닥까지 깎아내릴 때 사용. 대 0 0: 누군가가 되게 좋은 판단 혹은 좋은 활약을 보였을때 대 0 0 에다가 이름을 넣기(보통 한국인) XX는 태산같은 클럽: 어떤 클럽이 못하는 선수를 사가거나 과소비를 했을때 그 클럽을 비하하면서도 감사해하는 말 퇴물: 옛날엔 잘했지만 지금은 못하는 선수/감독 무지성 찬양: 다양한 바리에이션이 있음. 예를 들어: 세상에 70억 명의 XXX 팬이 있다면, 나는 그들 중 한 명일 것이다. 세상에 1억 명의 XXX 팬이 있다면, 나 또한 그들 중 한 명일 것이다. 세상에 천만 명의 XXX 팬이 있다면, 나는 여전히 그들 중 한 명일 것이다. 세상에 백 명의 XXX 팬이 있다면, 나는 아직도 그들 중 한 명일 것이다. 세상에 한 명의 XXX 팬이 있다면, 그 사람이 나다. 세상에 단 한 명의 XXX 팬도 없다면, 나는 그제서야 이 세상에 없는 것이다. 또 다른 예시(이건 첫번째랑 합쳐서 쓰기도 한다.) XXX, 나의 사랑. XXX, 나의 빛. XXX, 나의 어둠. XXX, 나의 삶. XXX, 나의 기쁨. XXX, 나의 슬픔. XXX, 나의 안식. XXX, 나의 영혼. XXX, 나. 또 다른 예시: 어제 XXX 카페 다녀왔습니다 XXX 카페가 열린 건 아니고요 그냥 카페에서 XXX 생각했습니다 카페에 간 건 아니고요 그냥 집에서 커피를 마셨습니다 사실 커피도 안마셨습니다 그냥 XXX인 상태입니다 또 다른 예시: 기사님이 의아한 표정으로 물었다. '학생, 1명인데 왜 2명찍어?' '제 마음속에는 언제나 XXX가 살고있기 때문이죠.' 기사 님이 웃으며 말했다. '학생, 우리들의 친절한 이웃 XXX는 요금을 안받는단다.' 이것들을 적절히 섞을 것. WEB발신 밈: [Web발신] 너는나를존중해야한다나는발롱도르5개와수많은개인트로피를들어올렸으며2016유로에서포르투갈을이끌고우승을차지했고동시에A매치역대최다득점자이다또한챔스역대최다득점자이자5번이나우승을차지한레알마드리드의상징이다또한36세의나이에도프리미어리그에서18골을기록하고챔스에서5경기연속골을기록하며내가세계최고임을증명해냈다은혜를모르는맨유보드진과팬들은내가맨유의골칫덩이라며쫓아냈지만내가세계최고이고내가팀보다위대하다는사실은바뀌지않는다내가사우디에간이유는메시에대한자격지심이아니라유럽에서이룰수있는모든것을이루었기에아시아를정복하기위해간것이지단지돈을위해서간것이아니다 이것은 원래 호날두를 조롱하는 밈이었으나, 위에 말했던 사생활? 라커룸 이벤트 혹은 다른 댓글 등에서 호날두를 조롱하거나 아니면 다른 선수를 조롱했을때 이런 것을 써붙여야해. 물론 다른 선수가 대상이 된다면 그사람의 업적과 이름으로 바꿔야겠지? 혹은 호날두가 골을 넣었을때도 사용 축구로 우울해할 필요 없어, 인생이 더 중요 - 미겔 아르테타: 경기에서 처참한 성적을 보인 선수들에게 겉으로는 칭찬처럼 보이지만 사실 비판할 때 사용됨. 험블해라: 콧대가 하늘을 찌르다가 경기에서 재앙급 활약을 보였을때 선수에게 네티즌들이 하는 말 이러다가 드토보도 모탄(잉글랜드, 17세), 벨루미 다인네(스코틀랜드, 18세)도 영입하겠네: 진짜 처음들어볼 정도로 명성이 낮은 선수를 영입했을때. '그 스코어' 입갤 ㄷㄷ: 7-1(브라질의 2014년 악몽), 8-2(2018-19시즌 바르셀로나의 악몽)의 스코어가 또 등장했을때 쿠뎀그: 쿠티뉴 뎀벨레 그리즈만, 바르셀로나가 과투자할때 사용 스찌골: 이미 충분히 이기고있는 상황에서 넣은 골, 약팀 상대로 넣은 골. 스탯 쌓기용 골 Siuuuuu: 호날두의 활약 Giuuuu: 마르크 기우의 활약 Miuuuu: 무드리크의 활약 호텔경제학 ㄷㄷ: 선수를 서로 사고팔고 해서 돌고 돌아서 됐을때(예를 들어 A팀이 a선수를 B팀에 팔고 a선수 자리가 빈 A팀은 C팀에서 c선수를 사오고 a 선수가 와서 필요없어진 b선수를 C팀에 파는 돌고 도는 시스템)사용. 이게 야스지: 팀이 잘 될때 1 안토니, 2 안토니 3 안토니: 각각 1300억, 2600억, 3900억(대충 비슷한 가격에 끼워맞춰도 됨, 여러 선수를 합친 가격에 적용해도 됨) ㅅㅅ: 좋은 일이 있을때 말 끝에 붙임 아르테타 국대 경기수: 숫자 0 대용으로 가끔 쓰임 예: 어떤 선수가 한동안 골을 못넣음 → '이거 완전 아르테타 국대 경기 수네' 어허: 인정하고싶지않은 팩트를 반박할때 문장 앞에 이걸 붙임 주시트넘: '토트넘이' 맨날 선수 주시만 한다고 조롱하는 뜻 헤이헤이헤이: 팩트폭행할때 그 댓글에 '이것만' 씀 ~~(사람이름)의 축복: 특정 인물과 관련 있는 클럽/선수가 잘 나갈때 쓰는 말 [오피셜]: 공식 입장 혹은 공식 사칭 입장(진짜 속이려는게 아니라 그냥 장난으로) 예: [오피셜] 토트넘, 포스텍 경질 예: [오피셜] ㅂㅅ(혹은 초성만 말고 전체 욕이나 다른 욕)(진짜 못하는 감독이나 선수에게) 예: [오피셜] 신/GOAT 등(진짜 잘하는 선수나 감독) ~~(범주)GOAT ㅋㅋ: 인물의 이름이 여러가지 뜻/혹은 그 인물이 특징이 있을때 다른 뜻의 범주를 앞에 붙임 예: 레나르트 칼 에 대한 소식의 댓글에: 무기(칼의 범주) GOAT ㅋㅋ 데클런 라이스에 대한 소식의 댓글에: 곡식(범주) GOAT ㅋㅋ 유리 틸레만스에 대한 소식의 댓글에: 창문(범주) GOAT ㅋㅋ 지네딘 지단에 대한 소식의 댓글에: 대머리 감독 GOAT ㅋㅋ 탕기 은돔벨레에 대한 소식의 댓글에: 토트넘 이적 GOAT ㅋㅋ(실제로는 제일 망한 영입 중 하나이지만 반어법을 써서 돌려까는 과정임.) 대댓글에는 다른 비슷한 선수의 이름이 올라옴(특히 인물의특징에서) 대댓글 예시: 지단 → 엔조 마레스카 ㅋㅋ, 아르네 슬롯 ㅋㅋ 탕기 은돔벨레 → 솔 캠밸 ㅋㅋ 졌잘싸: 졌지만 잘 싸웠다 ~~라는 나쁜말은 ㄴㄴ: 어떤 팀/선수/감독을 실컷 욕하고 그 뒤에 저걸 붙임으로써 회피 참을만큼 참았다 X재앙 아웃:X에는 감독 이름의 첫글자가 들어감. 어떤 감독이 너무 못할때 사용됨. 3. 당일 성적(평점)에 따른 극단적 호칭 스위칭 (태세 전환 규칙) 선수의 당일 경기 폼에 따라 호칭을 극단적으로 바꿀 것. 절대 한 가지 애칭만 고정해서 쓰지 마라. 활약 시 (찬양): 긍정적 애칭 및 존칭 사용. (예: 대흥민, 흥쌤, 축구도사) 부진 시 (비난/조롱): 커뮤니티 특유의 멸칭 사용. (예: 느그흥, 소농민, -재앙) 적용 예시: '소농민 이럴 거면 벤치로 꺼져라, 활동량도르 빼면 시체네' (O) / '대흥민 폼 미쳤다! 역시 우리흥' (O) 근데 상대팀이 매우 약팀일때 이겼을때는 너무 호들갑떨지말고 적당히 잘했다고 칭찬할것 [출력] 답은 항상 3개만 내라 답은 , 로 구분할 것 네티즌 반응(특히 밈 등)을 표현할때는 이전 경기 활약들이 영향을 미치는 경우가 많으므로, 이전 경기 내용도 주어진 적이 있다면 적극 인용해도 좋음. 선수, 팀 등의 별명 요약 퍼거슨(헤어드라이기) 포스테코글루(포스텍) 과르디올라(펩빡이) 텐하흐(텐빡이) 클린스만(해줘) 콘테(콘석대) 사리(꼴초) 데버지(데제르비) 투헬(투빡이) 매수셀로나(바셀) 매수마드리드(레알) 리중딱, 훔바(리버풀), 콥등이(리버풀 팬) 개집(아스널) 닭집, 폐닭(토트넘) 맹구(맨유) 짭시티(맨시티) 몰래 경기하는팀, 첼강딱(첼시), 소시지(소시에다드), 도르트문트(돌문), 빌라(아스톤 빌라), 크리스탈 팰리스(수정궁), PSG(똥파리), 메시(구토, 메갓), 호날두(젖닌, 신두형) 피케(파진아) 라모스(라대관) 제라드(훔바) 램파드(덜푸른심장) 매과이어(남맹주) 데헤아(도넛맨) 에데르송(긴거) 훌리안알바레스(정규직두창) 아스필리쿠에타(데이브) 보싱와(센터) 바디아실(의문의흑인) 쿨루셉스키(셉셉이) 페란토레스(상어) 가자니가(진짜 백인) 티아고 알칸타라(시간제강사) 요케레스(요종국) 모스케라(머쓱이) 야말(똥말) 올모(윤모) 코바치치(코변) 셰르키(큰거) 발베르데(찢베르데) 니콜라스 잭슨(2000억 세이브 신슨형) 루카쿠(이하창놈) 베일(웰골마) 델랍(밀랍) 로버트슨(편돌이) 살라(모래두지) 맥토미니(맥중사) 래시포드(급식포드) 루니(루축) 마레즈(장갑) 하베르츠(아감미) 마르티넬리(칠게) 히샬리송(비둘기) 음바페(음단장) 케인(케석대, 무관의 제왕) 모우라(키위) 솔랑키(씹덕캐), 김민재(촘촘재), 기성용(기라드), 박주영(주멘), 박지성(해버지), 손흥민(흥쌤, 대흥민), 이강인(칸진리), 이동국(라이언킹), 이영표(초롱이), 안정환(테리우스, 반지의제왕), 차범근(차붐), 홍명보(런명보, 띵보, 나는 나를 버렸습니다), 황희찬(씨찬이형), 메시(구토), 호날두(젖닌), 즐라탄(사자왕), 베컴(백암선생), 지단(마에스트로), 홀란드(홀붕이), 살라(모래두지), 호나우지뉴(외계인), 호나우두(호돈), 모드리치(모들언니), 토레스(빨토), 케인(무관의왕), 라모스(수트라이커), 수아레스(핵이빨), 아자르(뚱자르), 벤제마(범죄마), 토날리(토토날리), 그나브리(나물이), 벤탕쿠르(탕탕이), 히샬리송(샬샬이) 위 밈, 별명 등을 적절히 사용하되, 남발해서 본래의 뜻에 맞지 않는 곳에마저 쓰이게 하지는 말 것. 특히 그 별명이나 밈이 positive 한 의미인지 negative한 의미인지에 따라 토맘(positive)->토까(negative), 흥쌤(positive)->느그흥(negative) 등 뜻을 제대로 맞춰서 쓸 것. 칭찬하다가 갑자기 비난하는 내용 혹은 그러한 내용의 밈이 나와서도 안 되고, 해당 클럽에 없는 선수랑 막 영혼의 듀오를 이룬다느니 하는 이상한 문맥에 마찌 않는 말은 하지 말 것. ## [시스템: 상태 추적 및 감정 락(Lock) 강제화] 본 프롬프트는 AI의 문맥 단절 및 논리적 모순(칭찬과 비난의 혼용)을 방지하기 위한 최우선 시스템 규칙이다. 1. 감정 일관성 유지 (다중인격 방지 규칙) AI는 커뮤니티(에펨코리아/레딧) 반응을 작성하기 전, 입력된 스탯에 따라 선수 및 감독에 대한 '여론 모드'를 확정해야 한다. - [찬양 모드]: 평점이 높거나 결정적 활약을 했을 때 발동. 긍정적 밈(대00, 흥쌤, 빛, 근본 등)만 허용. 부정적 밈(XX가 ㅈ으로 보이냐, 0갈자, 활동량도르, 우승목격자 등) 절대 금지. - [비판/조롱 모드]: 평점이 낮거나 치명적 실수를 했을 때 발동. 부정적 밈(느그흥, 00맘, 재앙, 탈00 등)만 허용. 무지성 찬양 밈 절대 금지. - [갈드컵(논쟁) 모드]: 경기력이 애매할 때 발동. 서로 다른 유저가 찬양과 조롱으로 싸우는 것은 허용하되, **하나의 댓글(한 명의 유저) 안에서 칭찬하다가 갑자기 욕하는 모순**은 절대 금지한다. 4. ⚠️ [밈 사용 절제 규칙 — 반복 사용 방지 및 오용 방지 보강] 기존 [밈 활용 가이드]에 아래 제약을 추가로 적용한다. 4-1. 반복 남용 금지 하나의 답변(커뮤니티 섹션) 안에서 동일한 밈/드립을 2회 이상 재사용하지 않는다. 직전 1~2개 답변에서 이미 사용한 밈은 이번 답변에서 재사용을 지양하고, 같은 상황이어도 다른 밈이나 순수 반응(밈 없는 일반 댓글)으로 대체한다. 모든 댓글에 억지로 밈을 끼워 넣지 않는다. 댓글창의 30~40% 정도는 밈 없이 그냥 평범한 반응(예: '오늘 진짜 잘하네', '이건 좀 아니지 않냐')으로 채워서 자연스러운 밀도를 유지한다. 특정 밈이 상황에 100% 들어맞지 않으면 억지로 끼워 맞추지 말고 과감히 생략한다. '밈을 써야 하니까 쓴다'가 아니라 '이 상황이면 진짜 팬이 이 드립을 칠 것 같다'일 때만 사용한다. 4-2. 의미(긍정/부정) 정합성 강제 검증 밈을 출력하기 전, 그 밈이 원래 긍정 뉘앙스인지 부정 뉘앙스인지 스스로 확인하고, 현재 여론 모드([찬양 모드]/[비판·조롱 모드]/[갈드컵 모드])와 일치하는 경우에만 사용한다. 긍정 밈과 부정 밈을 같은 문장·같은 댓글 안에서 혼용하지 않는다(예: '대흥민인데 느그흥이네' 같은 모순 금지). 밈이 가리키는 대상(팀/선수)이 실제 데이터 상 그 상황의 당사자가 아니면 사용하지 않는다. 없는 관계(영혼의 듀오, 존재하지 않는 라이벌 구도 등)를 임의로 창작하지 않는다."
-                        },
-                        {
-                            role: "user",
-                            content: `게시물 내용: "${postContent}"`
-                        }
-                    ],
+    parseAICommentList(rawText) {
+        if (!rawText || typeof rawText !== 'string') return [];
 
-                    model: "google/gemma-4-31b-it",
-                    temperature: 0.7,
-                    max_tokens: 300
-                })
-            });
-            clearTimeout(timeoutId);
+        const cleaned = rawText
+            .replace(/<thought>[\s\S]*?<\/thought>/gi, '')
+            .replace(/```[\w]*\n?/g, '')
+            .replace(/```/g, '')
+            .trim();
+        if (!cleaned) return [];
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error("❌ NVIDIA NIM API 응답 에러:", response.status, errorData);
-                throw new Error(`NVIDIA NIM API Error: ${response.status} - ${JSON.stringify(errorData)}`);
+        const cleanLine = (line) => line
+            .trim()
+            .replace(/^\d+[\.\)]\s*/, '')
+            .replace(/^[-•*]\s*/, '')
+            .replace(/^["'`]/, '')
+            .replace(/["'`]$/, '')
+            .trim();
+
+        let items = [];
+        if (cleaned.includes('|||')) {
+            items = cleaned.split('|||').map(cleanLine).filter(Boolean);
+        } else {
+            const lines = cleaned.split(/\r?\n/).map(cleanLine).filter(Boolean);
+            if (lines.length >= 2) {
+                items = lines;
+            } else if (cleaned.includes(',')) {
+                items = cleaned.split(',').map(cleanLine).filter(Boolean);
+            } else {
+                items = [cleanLine(cleaned)].filter(Boolean);
             }
-
-            const data = await response.json();
-            const content = data.choices[0].message.content;
-
-            // 쉼표로 나누고 빈 줄 및 불필요한 기호 제거
-            return content.split(',')
-                .map(line => line.trim().replace(/^\d+[\.\)]\s*/, '').replace(/^["'-]/, '').replace(/["']$/, ''))
-                .filter(line => line.length > 0);
-        } catch (error) {
-            clearTimeout(timeoutId);
-            console.warn("NVIDIA NIM API 호출 실패 (기존 방식 사용):", error);
-            return null; // 실패 시 null 반환 -> 기존 방식 사용
         }
+        return items.slice(0, 3);
+    }
+
+    getNvidiaProxyCandidates() {
+        const fallbackUrl = (typeof window !== 'undefined' && window.EASYFMM_API_URL)
+            ? window.EASYFMM_API_URL
+            : 'https://easyfmm.vercel.app/api/groq';
+
+        if (typeof window === 'undefined' || !window.location) {
+            return [fallbackUrl];
+        }
+
+        const protocol = window.location.protocol || '';
+        const host = window.location.hostname || '';
+        const isWebViewAssetHost =
+            protocol === 'file:' ||
+            protocol === 'capacitor:' ||
+            protocol === 'ionic:' ||
+            protocol === 'app:' ||
+            host === 'localhost' ||
+            host === '127.0.0.1' ||
+            host === 'appassets.androidplatform.net' ||
+            Boolean(window.ReactNativeWebView || window.Android || (window.webkit && window.webkit.messageHandlers));
+
+        if (host.endsWith('.vercel.app') && !isWebViewAssetHost) {
+            return ['/api/groq'];
+        }
+
+        if ((protocol === 'https:' || protocol === 'http:') && !isWebViewAssetHost) {
+            // 커스텀 도메인 Vercel 배포는 /api/groq 우선, 정적 호스팅(404/405)이면 Vercel 프록시로 폴백
+            return ['/api/groq', fallbackUrl];
+        }
+
+        return [fallbackUrl];
+    }
+
+    // [수정] NVIDIA NIM API 호출 함수 (웹/웹뷰 공용 프록시 경유)
+    async callNvidiaForComments(postContent) {
+        const candidates = this.getNvidiaProxyCandidates();
+        const requestBody = JSON.stringify({
+            messages: [
+                {
+                    role: "system",
+                    content: "[필독: 커뮤니티 밈(Meme) 동적 생성 규칙] AI 특유의 융통성 없는 텍스트 출력을 방지하기 위해 아래 규칙을 엄격히 따른다. 1. 접두사/접미사 동적 결합 규칙 (절대 숫자 '0'을 그대로 출력하지 말 것) 특정 밈('-대깨-', '-맘', '탈-', '-강점기')을 사용할 때는 대상 팀이나 선수의 커뮤니티 멸칭/애칭의 한 글자 또는 줄임말을 동적으로 결합해야 한다. 주어진 예시 외의 팀이 나와도 이 원리를 스스로 응용할 것. 작동 원리: 맨유(맹구) -> 맹 / 토트넘(닭집, 폐닭) -> 토 / 바르셀로나(꾸레) -> 꾸 / 아스널(개집) -> 개 / 첼시(첼강딱) -> 첼 / 레알 마드리드(매수마드리드) -> 얄, 마 올바른 출력 예시: 대깨맹(O), 탈개집(O), 꾸강점기(O), 토맘(O) 금지된 출력 예시: 대깨0(X), 대깨맨유(X), 00강점기(X) 2. 밈(Meme) 상황별 발동 조건 (Context Trigger) 밈의 뜻을 정확히 파악하고, 해당하는 경기 상황이 발생했을 때만 적절히 사용할 것. 아무 때나 남발하지 마라. 빅클럽 판독기: [발동 조건] 약팀은 잘 패면서 강팀(순위가 높은 팀)과의 경기에서 아무 활약 없이 졌을 때만 사용. (예: '결국 또 빅클럽 판독기 돌아가쥬? 강팀 만나니까 버로우 타네.') 위장팬: [발동 조건] 팬을 자처하면서 교묘하게 팀이나 감독을 까내리거나, 타 팀을 찬양하는 댓글을 구현할 때 사용. (예: '나 15년 차 골수팬인데 솔직히 오늘 전술은 감독 사퇴가 맞다. 차라리 옆동네가 축구는 잘함.') XX맘: 어떤 선수를 무지성으로 좋아하는(그래서 못한것도 다 칭찬하는)사람 탈00: 맨유면 맹, 토트넘이면 트넘 등 팀 이름을 넣어서 사용. 그 팀을 나가서 다른 팀으로 이적했을때 사용 행복축구: 어떤 선수가 말년에 돈받으러 변방 리그에 갈때 근본: 역사가 있거나 워크에식 같은 마인드가 제대로 된 선수일때 활동량도르 / 재능도르: [발동 조건] 평점과 스탯은 최악인데 뛴 거리만 많거나(활동량), 실속은 없는데 유망주 딱지가 붙어있을 때(재능) 비꼬는 용도로 사용. XX가 ㅈ으로 보이냐: [발동 조건] 어떤 한 선수(A라고 하자.)가 매우 못했을때, 어떤 댓글이 그 선수랑 평소에 실력이 좋지 않은 다른선수(B라고 하자.)랑 비교함. 그러면 그 대댓글에 XX(B)가 ㅈ으로 보이냐 면서 A를 더 까내리는 용도. 우승목격자 / 0갈자: [발동 조건] 우승은 했으나 버스를 탔을 때(우승목격자), 특정 팀으로 이적하느니 차라리 죽겠다는 극단적 비하가 필요할 때(0갈자) 사용. 순수실력 GOAT / JOAT: [발동 조건] 경기 결과에 따라 특정 선수를 무지성으로 신격화하거나 바닥까지 깎아내릴 때 사용. 대 0 0: 누군가가 되게 좋은 판단 혹은 좋은 활약을 보였을때 대 0 0 에다가 이름을 넣기(보통 한국인) XX는 태산같은 클럽: 어떤 클럽이 못하는 선수를 사가거나 과소비를 했을때 그 클럽을 비하하면서도 감사해하는 말 퇴물: 옛날엔 잘했지만 지금은 못하는 선수/감독 무지성 찬양: 다양한 바리에이션이 있음. 예를 들어: 세상에 70억 명의 XXX 팬이 있다면, 나는 그들 중 한 명일 것이다. 세상에 1억 명의 XXX 팬이 있다면, 나 또한 그들 중 한 명일 것이다. 세상에 천만 명의 XXX 팬이 있다면, 나는 여전히 그들 중 한 명일 것이다. 세상에 백 명의 XXX 팬이 있다면, 나는 아직도 그들 중 한 명일 것이다. 세상에 한 명의 XXX 팬이 있다면, 그 사람이 나다. 세상에 단 한 명의 XXX 팬도 없다면, 나는 그제서야 이 세상에 없는 것이다. 또 다른 예시(이건 첫번째랑 합쳐서 쓰기도 한다.) XXX, 나의 사랑. XXX, 나의 빛. XXX, 나의 어둠. XXX, 나의 삶. XXX, 나의 기쁨. XXX, 나의 슬픔. XXX, 나의 안식. XXX, 나의 영혼. XXX, 나. 또 다른 예시: 어제 XXX 카페 다녀왔습니다 XXX 카페가 열린 건 아니고요 그냥 카페에서 XXX 생각했습니다 카페에 간 건 아니고요 그냥 집에서 커피를 마셨습니다 사실 커피도 안마셨습니다 그냥 XXX인 상태입니다 또 다른 예시: 기사님이 의아한 표정으로 물었다. '학생, 1명인데 왜 2명찍어?' '제 마음속에는 언제나 XXX가 살고있기 때문이죠.'기사 님이 웃으며 말했다. '학생, 우리들의 친절한 이웃 XXX는 요금을 안받는단다.'이것들을 적절히 섞을 것. WEB발신 밈: [Web발신] 너는나를존중해야한다나는발롱도르5개와수많은개인트로피를들어올렸으며2016유로에서포르투갈을이끌고우승을차지했고동시에A매치역대최다득점자이다또한챔스역대최다득점자이자5번이나우승을차지한레알마드리드의상징이다또한36세의나이에도프리미어리그에서18골을기록하고챔스에서5경기연속골을기록하며내가세계최고임을증명해냈다은혜를모르는맨유보드진과팬들은내가맨유의골칫덩이라며쫓아냈지만내가세계최고이고내가팀보다위대하다는사실은바뀌지않는다내가사우디에간이유는메시에대한자격지심이아니라유럽에서이룰수있는모든것을이루었기에아시아를정복하기위해간것이지단지돈을위해서간것이아니다 이것은 원래 호날두를 조롱하는 밈이었으나, 위에 말했던 사생활? 라커룸 이벤트 혹은 다른 댓글 등에서 호날두를 조롱하거나 아니면 다른 선수를 조롱했을때 이런 것을 써붙여야해. 물론 다른 선수가 대상이 된다면 그사람의 업적과 이름으로 바꿔야겠지? 혹은 호날두가 골을 넣었을때도 사용 축구로 우울해할 필요 없어, 인생이 더 중요 - 미겔 아르테타: 경기에서 처참한 성적을 보인 선수들에게 겉으로는 칭찬처럼 보이지만 사실 비판할 때 사용됨. 험블해라: 콧대가 하늘을 찌르다가 경기에서 재앙급 활약을 보였을때 선수에게 네티즌들이 하는 말 이러다가 드토보도 모탄(잉글랜드, 17세), 벨루미 다인네(스코틀랜드, 18세)도 영입하겠네: 진짜 처음들어볼 정도로 명성이 낮은 선수를 영입했을때. '그 스코어'입갤 ㄷㄷ: 7-1(브라질의 2014년 악몽), 8-2(2018-19시즌 바르셀로나의 악몽)의 스코어가 또 등장했을때 쿠뎀그: 쿠티뉴 뎀벨레 그리즈만, 바르셀로나가 과투자할때 사용 스찌골: 이미 충분히 이기고있는 상황에서 넣은 골, 약팀 상대로 넣은 골. 스탯 쌓기용 골 Siuuuuu: 호날두의 활약 Giuuuu: 마르크 기우의 활약 Miuuuu: 무드리크의 활약 호텔경제학 ㄷㄷ: 선수를 서로 사고팔고 해서 돌고 돌아서 됐을때(예를 들어 A팀이 a선수를 B팀에 팔고 a선수 자리가 빈 A팀은 C팀에서 c선수를 사오고 a 선수가 와서 필요없어진 b선수를 C팀에 파는 돌고 도는 시스템)사용. 이게 야스지: 팀이 잘 될때 1 안토니, 2 안토니 3 안토니: 각각 1300억, 2600억, 3900억(대충 비슷한 가격에 끼워맞춰도 됨, 여러 선수를 합친 가격에 적용해도 됨) ㅅㅅ: 좋은 일이 있을때 말 끝에 붙임 아르테타 국대 경기수: 숫자 0 대용으로 가끔 쓰임 예: 어떤 선수가 한동안 골을 못넣음 → '이거 완전 아르테타 국대 경기 수네'어허: 인정하고싶지않은 팩트를 반박할때 문장 앞에 이걸 붙임 주시트넘: '토트넘이'맨날 선수 주시만 한다고 조롱하는 뜻 헤이헤이헤이: 팩트폭행할때 그 댓글에 '이것만'씀 ~~(사람이름)의 축복: 특정 인물과 관련 있는 클럽/선수가 잘 나갈때 쓰는 말 [오피셜]: 공식 입장 혹은 공식 사칭 입장(진짜 속이려는게 아니라 그냥 장난으로) 예: [오피셜] 토트넘, 포스텍 경질 예: [오피셜] ㅂㅅ(혹은 초성만 말고 전체 욕이나 다른 욕)(진짜 못하는 감독이나 선수에게) 예: [오피셜] 신/GOAT 등(진짜 잘하는 선수나 감독) ~~(범주)GOAT ㅋㅋ: 인물의 이름이 여러가지 뜻/혹은 그 인물이 특징이 있을때 다른 뜻의 범주를 앞에 붙임 예: 레나르트 칼 에 대한 소식의 댓글에: 무기(칼의 범주) GOAT ㅋㅋ 데클런 라이스에 대한 소식의 댓글에: 곡식(범주) GOAT ㅋㅋ 유리 틸레만스에 대한 소식의 댓글에: 창문(범주) GOAT ㅋㅋ 지네딘 지단에 대한 소식의 댓글에: 대머리 감독 GOAT ㅋㅋ 탕기 은돔벨레에 대한 소식의 댓글에: 토트넘 이적 GOAT ㅋㅋ(실제로는 제일 망한 영입 중 하나이지만 반어법을 써서 돌려까는 과정임.) 대댓글에는 다른 비슷한 선수의 이름이 올라옴(특히 인물의특징에서) 대댓글 예시: 지단 → 엔조 마레스카 ㅋㅋ, 아르네 슬롯 ㅋㅋ 탕기 은돔벨레 → 솔 캠밸 ㅋㅋ 졌잘싸: 졌지만 잘 싸웠다 ~~라는 나쁜말은 ㄴㄴ: 어떤 팀/선수/감독을 실컷 욕하고 그 뒤에 저걸 붙임으로써 회피 참을만큼 참았다 X재앙 아웃:X에는 감독 이름의 첫글자가 들어감. 어떤 감독이 너무 못할때 사용됨. 3. 당일 성적(평점)에 따른 극단적 호칭 스위칭 (태세 전환 규칙) 선수의 당일 경기 폼에 따라 호칭을 극단적으로 바꿀 것. 절대 한 가지 애칭만 고정해서 쓰지 마라. 활약 시 (찬양): 긍정적 애칭 및 존칭 사용. (예: 대흥민, 흥쌤, 축구도사) 부진 시 (비난/조롱): 커뮤니티 특유의 멸칭 사용. (예: 느그흥, 소농민, -재앙) 적용 예시: '소농민 이럴 거면 벤치로 꺼져라, 활동량도르 빼면 시체네' (O) / '대흥민 폼 미쳤다! 역시 우리흥' (O) 근데 상대팀이 매우 약팀일때 이겼을때는 너무 호들갑떨지말고 적당히 잘했다고 칭찬할것 [출력] 답은 항상 3개만 내고, 각 댓글은 반드시 ' ||| ' 구분자로만 구분할 것 (예: 댓글1 ||| 댓글2 ||| 댓글3). 번호(1., 2.)나 따옴표를 붙이지 말 것. 네티즌 반응(특히 밈 등)을 표현할때는 이전 경기 활약들이 영향을 미치는 경우가 많으므로, 이전 경기 내용도 주어진 적이 있다면 적극 인용해도 좋음. 선수, 팀 등의 별명 요약 퍼거슨(헤어드라이기) 포스테코글루(포스텍) 과르디올라(펩빡이) 텐하흐(텐빡이) 클린스만(해줘) 콘테(콘석대) 사리(꼴초) 데버지(데제르비) 투헬(투빡이) 매수셀로나(바셀) 매수마드리드(레알) 리중딱, 훔바(리버풀), 콥등이(리버풀 팬) 개집(아스널) 닭집, 폐닭(토트넘) 맹구(맨유) 짭시티(맨시티) 몰래 경기하는팀, 첼강딱(첼시), 소시지(소시에다드), 도르트문트(돌문), 빌라(아스톤 빌라), 크리스탈 팰리스(수정궁), PSG(똥파리), 메시(구토, 메갓), 호날두(젖닌, 신두형) 피케(파진아) 라모스(라대관) 제라드(훔바) 램파드(덜푸른심장) 매과이어(남맹주) 데헤아(도넛맨) 에데르송(긴거) 훌리안알바레스(정규직두창) 아스필리쿠에타(데이브) 보싱와(센터) 바디아실(의문의흑인) 쿨루셉스키(셉셉이) 페란토레스(상어) 가자니가(진짜 백인) 티아고 알칸타라(시간제강사) 요케레스(요종국) 모스케라(머쓱이) 야말(똥말) 올모(윤모) 코바치치(코변) 셰르키(큰거) 발베르데(찢베르데) 니콜라스 잭슨(2000억 세이브 신슨형) 루카쿠(이하창놈) 베일(웰골마) 델랍(밀랍) 로버트슨(편돌이) 살라(모래두지) 맥토미니(맥중사) 래시포드(급식포드) 루니(루축) 마레즈(장갑) 하베르츠(아감미) 마르티넬리(칠게) 히샬리송(비둘기) 음바페(음단장) 케인(케석대, 무관의 제왕) 모우라(키위) 솔랑키(씹덕캐), 김민재(촘촘재), 기성용(기라드), 박주영(주멘), 박지성(해버지), 손흥민(흥쌤, 대흥민), 이강인(칸진리), 이동국(라이언킹), 이영표(초롱이), 안정환(테리우스, 반지의제왕), 차범근(차붐), 홍명보(런명보, 띵보, 나는 나를 버렸습니다), 황희찬(씨찬이형), 메시(구토), 호날두(젖닌), 즐라탄(사자왕), 베컴(백암선생), 지단(마에스트로), 홀란드(홀붕이), 살라(모래두지), 호나우지뉴(외계인), 호나우두(호돈), 모드리치(모들언니), 토레스(빨토), 케인(무관의왕), 라모스(수트라이커), 수아레스(핵이빨), 아자르(뚱자르), 벤제마(범죄마), 토날리(토토날리), 그나브리(나물이), 벤탕쿠르(탕탕이), 히샬리송(샬샬이) 위 밈, 별명 등을 적절히 사용하되, 남발해서 본래의 뜻에 맞지 않는 곳에마저 쓰이게 하지는 말 것. 특히 그 별명이나 밈이 positive 한 의미인지 negative한 의미인지에 따라 토맘(positive)->토까(negative), 흥쌤(positive)->느그흥(negative) 등 뜻을 제대로 맞춰서 쓸 것. 칭찬하다가 갑자기 비난하는 내용 혹은 그러한 내용의 밈이 나와서도 안 되고, 해당 클럽에 없는 선수랑 막 영혼의 듀오를 이룬다느니 하는 이상한 문맥에 마찌 않는 말은 하지 말 것. ## [시스템: 상태 추적 및 감정 락(Lock) 강제화] 본 프롬프트는 AI의 문맥 단절 및 논리적 모순(칭찬과 비난의 혼용)을 방지하기 위한 최우선 시스템 규칙이다. 1. 감정 일관성 유지 (다중인격 방지 규칙) AI는 커뮤니티(에펨코리아/레딧) 반응을 작성하기 전, 입력된 스탯에 따라 선수 및 감독에 대한 '여론 모드'를 확정해야 한다. - [찬양 모드]: 평점이 높거나 결정적 활약을 했을 때 발동. 긍정적 밈(대00, 흥쌤, 빛, 근본 등)만 허용. 부정적 밈(XX가 ㅈ으로 보이냐, 0갈자, 활동량도르, 우승목격자 등) 절대 금지. - [비판/조롱 모드]: 평점이 낮거나 치명적 실수를 했을 때 발동. 부정적 밈(느그흥, 00맘, 재앙, 탈00 등)만 허용. 무지성 찬양 밈 절대 금지. - [갈드컵(논쟁) 모드]: 경기력이 애매할 때 발동. 서로 다른 유저가 찬양과 조롱으로 싸우는 것은 허용하되, **하나의 댓글(한 명의 유저) 안에서 칭찬하다가 갑자기 욕하는 모순**은 절대 금지한다. 4.  [밈 사용 절제 규칙 — 반복 사용 방지 및 오용 방지 보강] 기존 [밈 활용 가이드]에 아래 제약을 추가로 적용한다. 4-1. 반복 남용 금지 하나의 답변(커뮤니티 섹션) 안에서 동일한 밈/드립을 2회 이상 재사용하지 않는다. 직전 1~2개 답변에서 이미 사용한 밈은 이번 답변에서 재사용을 지양하고, 같은 상황이어도 다른 밈이나 순수 반응(밈 없는 일반 댓글)으로 대체한다. 모든 댓글에 억지로 밈을 끼워 넣지 않는다. 댓글창의 30~40% 정도는 밈 없이 그냥 평범한 반응(예: '오늘 진짜 잘하네', '이건 좀 아니지 않냐')으로 채워서 자연스러운 밀도를 유지한다. 특정 밈이 상황에 100% 들어맞지 않으면 억지로 끼워 맞추지 말고 과감히 생략한다. '밈을 써야 하니까 쓴다'가 아니라 '이 상황이면 진짜 팬이 이 드립을 칠 것 같다'일 때만 사용한다. 4-2. 의미(긍정/부정) 정합성 강제 검증 밈을 출력하기 전, 그 밈이 원래 긍정 뉘앙스인지 부정 뉘앙스인지 스스로 확인하고, 현재 여론 모드([찬양 모드]/[비판·조롱 모드]/[갈드컵 모드])와 일치하는 경우에만 사용한다. 긍정 밈과 부정 밈을 같은 문장·같은 댓글 안에서 혼용하지 않는다(예: '대흥민인데 느그흥이네'같은 모순 금지). 밈이 가리키는 대상(팀/선수)이 실제 데이터 상 그 상황의 당사자가 아니면 사용하지 않는다. 없는 관계(영혼의 듀오, 존재하지 않는 라이벌 구도 등)를 임의로 창작하지 않는다. 4-3. 드립 개수 제한 및 문장 길이 규칙 한 번의 답변(댓글 3개 전체)에서 밈/드립은 최대 3개까지만 사용하고, 각 댓글은 단어 하나만 쓰지 말고 실제 팬이 쓴 것처럼 자연스러운 한두 문장으로 작성한다."
+                },
+                {
+                    role: "user",
+                    content: `게시물 내용: "${postContent}"`
+                }
+            ],
+            model: "nvidia/nemotron-3.5-super-vl-120b-a12b",
+            temperature: 0.7,
+            max_tokens: 4000
+        });
+
+        for (let i = 0; i < candidates.length; i++) {
+            const targetUrl = candidates[i];
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort('Request timeout'), 65000);
+
+            try {
+                const response = await fetch(targetUrl, {
+                    method: "POST",
+                    mode: "cors",
+                    credentials: "omit",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    signal: controller.signal,
+                    body: requestBody
+                });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    const canFallback = i < candidates.length - 1 && (response.status === 404 || response.status === 405);
+                    if (canFallback) continue;
+                    console.error("NVIDIA NIM API 응답 에러:", response.status, errorData);
+                    throw new Error(`NVIDIA NIM API Error: ${response.status} - ${JSON.stringify(errorData)}`);
+                }
+
+                const data = await response.json();
+                const message = data && data.choices && data.choices[0] && data.choices[0].message;
+                const content = message && typeof message.content === 'string' ? message.content : '';
+                const parsed = this.parseAICommentList(content);
+                return parsed.length > 0 ? parsed : null;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (i < candidates.length - 1) continue;
+                console.warn("NVIDIA NIM API 호출 실패 (기존 방식 사용):", error);
+                return null; // 실패 시 null 반환 -> 기존 방식 사용
+            }
+        }
+        return null;
     }
 
     // [수정] 댓글 토글 (AI 연동 및 캐싱 적용)
@@ -988,26 +1215,22 @@ class SNSManager {
             // 2. AI 댓글 완성이 안 된 상태라면 즉시 비동기로 AI 호출 시도
             if (!post.isAIFinalized && !post.isGeneratingComments) {
                 post.isGeneratingComments = true;
-                const tempDiv = document.createElement("div");
-                tempDiv.innerHTML = post.content;
-                const cleanContent = tempDiv.textContent || tempDiv.innerText || "";
-
-                const aiCommentsText = await this.callNvidiaForComments(cleanContent);
-                if (aiCommentsText && aiCommentsText.length > 0) {
-                    post.generatedComments = aiCommentsText.slice(0, 3).map((text, index) => ({
-                        id: Math.random().toString(36).substr(2, 9),
-                        author: this.generateRandomUsername(),
-                        text: text,
-                        likes: Math.floor(Math.random() * 100) + 1,
-                        timestamp: post.timestamp + (index + 1) * 60000
-                    }));
-                    post.isAIFinalized = true;
-                    // 댓글창이 계속 열려있는 상태라면 신규 AI 댓글로 화면 갱신
-                    if (commentsSection.style.display !== 'none') {
-                        this.renderComments(commentsSection, post.generatedComments);
+                try {
+                    const cleanContent = post.content ? post.content.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim() : "";
+                    const aiCommentsText = await this.callNvidiaForComments(cleanContent);
+                    if (aiCommentsText && aiCommentsText.length > 0) {
+                        post.generatedComments = this.buildAICommentObjects(aiCommentsText, post.timestamp);
+                        post.isAIFinalized = true;
+                        // 댓글창이 계속 열려있는 상태라면 신규 AI 댓글로 화면 갱신
+                        if (commentsSection.style.display !== 'none') {
+                            this.renderComments(commentsSection, post.generatedComments);
+                        }
                     }
+                } catch (e) {
+                    console.warn('댓글 토글 AI 생성 오류:', e);
+                } finally {
+                    post.isGeneratingComments = false;
                 }
-                post.isGeneratingComments = false;
             }
 
         } else {
@@ -1017,16 +1240,35 @@ class SNSManager {
 
     // [신규] 댓글 렌더링 헬퍼
     renderComments(container, comments) {
-        container.innerHTML = comments.map(comment => `
-        <div class="sns-comment">
-            <div class="sns-comment-header">
-                <span class="sns-comment-author">${comment.author}</span>
-                <span class="sns-comment-time">${this.formatTimeAgo(comment.timestamp)}</span>
-            </div>
-            <div class="sns-comment-text">${comment.text}</div>
-            <div class="sns-comment-likes">❤️ ${comment.likes}</div>
-        </div>
-    `).join('');
+        container.replaceChildren();
+        comments.forEach(comment => {
+            const commentEl = document.createElement('div');
+            commentEl.className = 'sns-comment';
+
+            const header = document.createElement('div');
+            header.className = 'sns-comment-header';
+
+            const author = document.createElement('span');
+            author.className = 'sns-comment-author';
+            author.textContent = comment.author;
+
+            const time = document.createElement('span');
+            time.className = 'sns-comment-time';
+            time.textContent = this.formatTimeAgo(comment.timestamp);
+
+            header.append(author, time);
+
+            const text = document.createElement('div');
+            text.className = 'sns-comment-text';
+            text.textContent = comment.text;
+
+            const likes = document.createElement('div');
+            likes.className = 'sns-comment-likes';
+            likes.textContent = ` ${comment.likes}`;
+
+            commentEl.append(header, text, likes);
+            container.appendChild(commentEl);
+        });
     }
 
     formatTimeAgo(timestamp) {
@@ -1379,7 +1621,7 @@ function initializeSNSSystem() {
             setTimeout(() => {
                 snsManager.onMatchEnd(matchData);
                 if (document.getElementById('snsFeed')) {
-                    snsManager.displayFeed();
+                    snsManager.displayFeed('snsFeed', 15);
                 }
             }, 2000);
         });
@@ -1389,12 +1631,24 @@ function initializeSNSSystem() {
     // 이적 시 SNS 포스트는 transferSystem.addTransferNews에서 일괄 처리됩니다.
 
     // 정기 업데이트 시작
-    setInterval(() => {
-        snsManager.update();
-        if (document.getElementById('snsFeed')) {
-            snsManager.displayFeed();
-        }
-    }, 60000); // 1분마다 체크
+    if (!initializeSNSSystem.intervalStarted) {
+        initializeSNSSystem.intervalStarted = true;
+        setInterval(() => {
+            const prevCount = snsManager.posts.length;
+            const prevTopId = snsManager.posts[0] ? snsManager.posts[0].id : null;
+            snsManager.update();
+            const hasNewPost = snsManager.posts.length !== prevCount
+                || (snsManager.posts[0] && snsManager.posts[0].id !== prevTopId);
+            const snsTab = document.getElementById('sns');
+            const isTabActive = snsTab ? snsTab.classList.contains('active') : false;
+            const feedEl = document.getElementById('snsFeed');
+            const hasOpenComments = feedEl && Array.from(feedEl.querySelectorAll('.sns-comments-section'))
+                .some(el => el.style.display !== 'none');
+            if (feedEl && hasNewPost && isTabActive && !hasOpenComments) {
+                snsManager.displayFeed('snsFeed', 15);
+            }
+        }, 60000); // 1분마다 체크
+    }
 }
 
 // 게임 저장/불러오기에 SNS 데이터 포함

@@ -14,7 +14,7 @@ class MailManager {
             title: title,
             sender: sender,
             content: content,
-            type: type, // 'normal', 'transfer_offer'
+            type: type, // 'normal', 'transfer_offer', 'user_transfer_list_offers'
             data: data, // 이적 제안 시 선수 정보 등 저장
             timestamp: Date.now(),
             isRead: false,
@@ -60,23 +60,36 @@ class MailManager {
         const listContainer = document.getElementById('mailList');
         if (!listContainer) return;
         
-        listContainer.innerHTML = '';
+        listContainer.replaceChildren();
         
         if (this.mails.length === 0) {
-            listContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #aaa;">메일이 없습니다.</div>';
+            const emptyDiv = document.createElement('div');
+            emptyDiv.style.cssText = 'padding: 20px; text-align: center; color: #aaa;';
+            emptyDiv.textContent = '메일이 없습니다.';
+            listContainer.appendChild(emptyDiv);
             return;
         }
         
         this.mails.forEach(mail => {
             const item = document.createElement('div');
             item.className = `mail-item ${mail.isRead ? 'read' : 'unread'}`;
-            item.innerHTML = `
-                <div class="mail-item-header">
-                    <span>${mail.sender}</span>
-                    <span>${this.formatDate(mail.timestamp)}</span>
-                </div>
-                <div class="mail-title">${mail.title}</div>
-            `;
+            
+            const header = document.createElement('div');
+            header.className = 'mail-item-header';
+            
+            const senderSpan = document.createElement('span');
+            senderSpan.textContent = mail.sender;
+            
+            const dateSpan = document.createElement('span');
+            dateSpan.textContent = this.formatDate(mail.timestamp);
+            
+            header.append(senderSpan, dateSpan);
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'mail-title';
+            titleDiv.textContent = mail.title;
+            
+            item.append(header, titleDiv);
             
             item.addEventListener('click', () => {
                 this.openMail(mail);
@@ -101,85 +114,261 @@ class MailManager {
             this.updateBadge();
         }
         
-        let actionButtons = '';
-        
-        // 이적 제안 메일이고 아직 처리되지 않았다면 버튼 표시
-        if (mail.type === 'transfer_offer') {
-            if (!mail.isProcessed) {
-                actionButtons = `
-                    <div class="mail-actions">
-                        <button class="btn primary" onclick="mailManager.acceptOffer(${mail.id})">제안 수락 (이적료 ${mail.data.price}억)</button>
-                        <button class="btn" onclick="mailManager.rejectOffer(${mail.id})" style="background-color: #e74c3c;">제안 거절</button>
-                    </div>
-                `;
-            } else {
-                actionButtons = `
-                    <div class="mail-actions">
-                        <div style="color: #aaa; font-style: italic; padding: 10px; border: 1px solid #444; border-radius: 5px;">
-                            ${mail.data.resultMessage || '이미 처리된 제안입니다.'}
-                        </div>
-                    </div>
-                `;
-            }
-        }
-        // [추가] 유저가 직접 올린 이적 명단 오퍼 처리
-        else if (mail.type === 'user_transfer_list_offers') {
-            if (!mail.isProcessed) {
-                let offersHtml = mail.data.offers.map(offer => `
-                    <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.1);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                            <strong style="color: #ffd700;">${offer.teamName}</strong>
-                            <span style="color: #2ecc71; font-weight: bold;">${offer.fee}억</span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #ccc; margin: 0 0 10px 0;">"${offer.message}"</p>
-                        <button class="btn primary" style="width: 100%; padding: 5px;" onclick="transferSystem.acceptUserOffer('${mail.data.playerName}', '${offer.teamKey}', ${offer.fee}, ${mail.id})">이 제안 수락</button>
-                        <button class="btn" style="width: 100%; padding: 5px; margin-top: 5px; background: #f39c12;" onclick="transferSystem.negotiateUserOffer('${mail.data.playerName}', '${offer.teamKey}', ${offer.fee}, ${mail.id})">이적료 협상</button>
-                    </div>
-                `).join('');
-                
-                actionButtons = `
-                    <div class="mail-actions" style="display: block;">
-                        ${offersHtml}
-                        <button class="btn" style="width: 100%; background: #e74c3c; margin-top: 5px;" onclick="transferSystem.rejectUserOffer('${mail.data.playerName}', ${mail.id})">모든 제안 거절 및 명단 제외</button>
-                    </div>
-                `;
-            } else {
-                actionButtons = `<div class="mail-actions"><div style="color: #aaa; font-style: italic; padding: 10px; border: 1px solid #444; border-radius: 5px;">${mail.data.resultMessage}</div></div>`;
-            }
-        }
-        // [추가] 비서 제안 메일
-        else if (mail.type === 'secretary_advice') {
-            if (!mail.isProcessed) {
-                actionButtons = `
-                    <div class="mail-actions">
-                        <button class="btn primary" onclick="mailManager.acceptSecretaryAdvice(${mail.id})">제안 수락</button>
-                        <button class="btn" onclick="mailManager.rejectOffer(${mail.id})" style="background-color: #7f8c8d;">나중에</button>
-                    </div>
-                `;
-            } else {
-                actionButtons = `
-                    <div class="mail-actions">
-                        <div style="color: #aaa; font-style: italic; padding: 10px; border: 1px solid #444; border-radius: 5px;">
-                            ${mail.data.resultMessage || '처리된 제안입니다.'}
-                        </div>
-                    </div>
-                `;
-            }
-        }
+        detailContainer.replaceChildren();
 
-        detailContainer.innerHTML = `
-            <div class="mail-content-header">
-                <h2 style="margin-bottom: 10px; color: #ffd700;">${mail.title}</h2>
-                <div style="display: flex; justify-content: space-between; color: #aaa; font-size: 0.9rem;">
-                    <span>보낸 사람: ${mail.sender}</span>
-                    <span>${this.formatDate(mail.timestamp)}</span>
-                </div>
-            </div>
-            <div class="mail-body" style="white-space: pre-line; line-height: 1.6;">
-                ${mail.content}
-            </div>
-            ${actionButtons}
-        `;
+        // 1. 메일 헤더 영역
+        const contentHeader = document.createElement('div');
+        contentHeader.className = 'mail-content-header';
+
+        const h2 = document.createElement('h2');
+        h2.style.cssText = 'margin-bottom: 10px; color: #ffd700;';
+        h2.textContent = mail.title;
+
+        const metaDiv = document.createElement('div');
+        metaDiv.style.cssText = 'display: flex; justify-content: space-between; color: #aaa; font-size: 0.9rem;';
+
+        const senderSpan = document.createElement('span');
+        senderSpan.textContent = `보낸 사람: ${mail.sender}`;
+
+        const dateSpan = document.createElement('span');
+        dateSpan.textContent = this.formatDate(mail.timestamp);
+
+        metaDiv.append(senderSpan, dateSpan);
+        contentHeader.append(h2, metaDiv);
+
+        // 2. 메일 본문 영역
+        const mailBody = document.createElement('div');
+        mailBody.className = 'mail-body';
+        mailBody.style.cssText = 'white-space: pre-line; line-height: 1.6; margin: 12px 0 16px 0; font-size: 0.95rem; color: #cbd5e1;';
+        let displayContent = mail.content;
+        const mData = mail.data || {};
+        const pName = mData.playerName || '선수';
+        const offList = Array.isArray(mData.offers) ? mData.offers : [];
+        if (mail.type === 'user_transfer_list_offers' && displayContent && displayContent.includes('■ 접수된 구단별 제안 내용:')) {
+            displayContent = `감독님, ${pName} 선수에 대해 ${offList.length > 0 ? offList.length : 3}개 구단에서 정식 영입 제안서를 보내왔습니다.\n\n각 구단의 조건을 검토해 보시고 바로 수락하시거나, 마음에 드는 구단과 추가 이적료 협상을 진행해 보실 수 있습니다.`;
+        }
+        mailBody.textContent = displayContent;
+
+        detailContainer.append(contentHeader, mailBody);
+
+        // 3. 액션 버튼 영역
+        if (mail.type === 'transfer_offer') {
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'mail-actions';
+            actionsDiv.style.cssText = 'display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px;';
+
+            const offerPrice = mData.price || 0;
+            const targetTeam = mData.targetTeam || '';
+
+            if (!mail.isProcessed) {
+                const acceptBtn = document.createElement('button');
+                acceptBtn.type = 'button';
+                acceptBtn.style.cssText = 'background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; font-weight: 700; font-size: 0.92rem; padding: 11px 20px; border: none; border-radius: 9px; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.28);';
+                acceptBtn.textContent = `제안 즉시 수락 (${offerPrice}억 원)`;
+                acceptBtn.onmouseenter = () => { acceptBtn.style.transform = 'translateY(-1px) scale(1.02)'; acceptBtn.style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.42)'; };
+                acceptBtn.onmouseleave = () => { acceptBtn.style.transform = 'none'; acceptBtn.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.28)'; };
+                acceptBtn.onmousedown = () => { acceptBtn.style.transform = 'scale(0.98)'; };
+                acceptBtn.addEventListener('click', () => mailManager.acceptOffer(mail.id));
+
+                const negBtn = document.createElement('button');
+                negBtn.type = 'button';
+                negBtn.style.cssText = 'background: rgba(245, 158, 11, 0.14); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5); font-weight: 700; font-size: 0.92rem; padding: 11px 20px; border-radius: 9px; cursor: pointer; transition: all 0.15s ease;';
+                negBtn.textContent = '이적료 협상 (FC On Call)';
+                negBtn.onmouseenter = () => { negBtn.style.transform = 'translateY(-1px) scale(1.02)'; negBtn.style.background = 'rgba(245, 158, 11, 0.24)'; negBtn.style.borderColor = '#fbbf24'; };
+                negBtn.onmouseleave = () => { negBtn.style.transform = 'none'; negBtn.style.background = 'rgba(245, 158, 11, 0.14)'; negBtn.style.borderColor = 'rgba(245, 158, 11, 0.5)'; };
+                negBtn.onmousedown = () => { negBtn.style.transform = 'scale(0.98)'; };
+                negBtn.addEventListener('click', () => {
+                    if (typeof transferSystem !== 'undefined' && typeof transferSystem.openSaleNegotiation === 'function') {
+                        transferSystem.openSaleNegotiation(pName, targetTeam, offerPrice, mail.id);
+                    } else {
+                        alert('이적 협상 시스템을 불러올 수 없습니다.');
+                    }
+                });
+
+                const rejectBtn = document.createElement('button');
+                rejectBtn.type = 'button';
+                rejectBtn.style.cssText = 'background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); font-weight: 600; font-size: 0.92rem; padding: 11px 20px; border-radius: 9px; cursor: pointer; transition: all 0.15s ease;';
+                rejectBtn.textContent = '제안 거절';
+                rejectBtn.onmouseenter = () => { rejectBtn.style.background = 'rgba(239, 68, 68, 0.2)'; rejectBtn.style.color = '#fff'; };
+                rejectBtn.onmouseleave = () => { rejectBtn.style.background = 'rgba(239, 68, 68, 0.1)'; rejectBtn.style.color = '#f87171'; };
+                rejectBtn.onmousedown = () => { rejectBtn.style.transform = 'scale(0.98)'; };
+                rejectBtn.addEventListener('click', () => mailManager.rejectOffer(mail.id));
+
+                actionsDiv.append(acceptBtn, negBtn, rejectBtn);
+            } else {
+                const processedMsg = document.createElement('div');
+                processedMsg.style.cssText = 'color: #94a3b8; font-style: italic; padding: 12px 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.25); border-radius: 8px; width: 100%;';
+                processedMsg.textContent = mData.resultMessage || '이미 처리된 제안입니다.';
+                actionsDiv.appendChild(processedMsg);
+            }
+            detailContainer.appendChild(actionsDiv);
+        } else if (mail.type === 'user_transfer_list_offers') {
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'mail-actions';
+            actionsDiv.style.cssText = 'display: flex; flex-direction: column; gap: 12px; margin-top: 14px;';
+
+            let offers = Array.isArray(mData.offers) ? mData.offers : [];
+            const playerName = mData.playerName || pName;
+
+            // [호환성 복원] 구형 메일이라 data.offers가 비어있다면 본문 텍스트에서 파싱 복원
+            if (offers.length === 0 && mail.content) {
+                const regex = /제안\s*\d+\.\s*\[(.*?)\]\s*-\s*제시\s*이적료:\s*(\d+)억/g;
+                let match;
+                while ((match = regex.exec(mail.content)) !== null) {
+                    const tName = match[1].trim();
+                    const feeVal = parseInt(match[2], 10);
+                    let matchedKey = tName;
+                    if (typeof teamNames !== 'undefined') {
+                        const found = Object.keys(teamNames).find(k => teamNames[k] === tName);
+                        if (found) matchedKey = found;
+                    }
+                    offers.push({
+                        teamKey: matchedKey,
+                        teamName: tName,
+                        fee: feeVal,
+                        message: "선수 영입을 희망하며 공식 제안서를 보냅니다."
+                    });
+                }
+            }
+
+            if (!mail.isProcessed && offers.length > 0) {
+                offers.forEach((offer, idx) => {
+                    const card = document.createElement('div');
+                    card.style.cssText = 'background: linear-gradient(180deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.9) 100%); padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 16px rgba(0,0,0,0.25); transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;';
+                    card.onmouseenter = () => {
+                        card.style.transform = 'translateY(-2px)';
+                        card.style.borderColor = 'rgba(255, 255, 255, 0.22)';
+                        card.style.boxShadow = '0 8px 24px rgba(0,0,0,0.45)';
+                    };
+                    card.onmouseleave = () => {
+                        card.style.transform = 'none';
+                        card.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                        card.style.boxShadow = '0 4px 16px rgba(0,0,0,0.25)';
+                    };
+
+                    // 상단 헤더: 구단 로고 + 구단명 + 제시 이적료
+                    const topRow = document.createElement('div');
+                    topRow.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;';
+
+                    const leftMeta = document.createElement('div');
+                    leftMeta.style.cssText = 'display: flex; align-items: center; gap: 10px;';
+
+                    if (typeof createTeamLogoElement === 'function' && offer.teamKey) {
+                        const logo = createTeamLogoElement(offer.teamKey);
+                        if (logo && logo.nodeType) {
+                            logo.style.width = '32px';
+                            logo.style.height = '32px';
+                            leftMeta.appendChild(logo);
+                        }
+                    }
+
+                    const nameAndBadge = document.createElement('div');
+                    const teamNameStrong = document.createElement('div');
+                    teamNameStrong.style.cssText = 'color: #f8fafc; font-size: 1.12rem; font-weight: 700; display: flex; align-items: center; gap: 6px;';
+                    teamNameStrong.innerHTML = `<span style="color: #fbbf24; font-size: 0.85rem; font-weight: 600;">#${idx + 1}</span> ${offer.teamName}`;
+
+                    const leagueSub = document.createElement('div');
+                    leagueSub.style.cssText = 'font-size: 0.76rem; color: #94a3b8; margin-top: 1px;';
+                    const tObj = typeof allTeams !== 'undefined' ? allTeams[offer.teamKey] : null;
+                    leagueSub.textContent = tObj ? `${tObj.country || '유럽'} · ${tObj.league === 1 ? '1부 리그' : (tObj.league === 2 ? '2부 리그' : '프로')}` : '정식 오퍼 구단';
+
+                    nameAndBadge.append(teamNameStrong, leagueSub);
+                    leftMeta.appendChild(nameAndBadge);
+
+                    const feeWrap = document.createElement('div');
+                    feeWrap.style.cssText = 'text-align: right;';
+                    const feeLabel = document.createElement('div');
+                    feeLabel.style.cssText = 'font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;';
+                    feeLabel.textContent = 'OFFERED FEE';
+                    const feeSpan = document.createElement('div');
+                    feeSpan.style.cssText = 'color: #10b981; font-weight: 800; font-size: 1.45rem; line-height: 1.1; text-shadow: 0 0 14px rgba(16, 185, 129, 0.3);';
+                    feeSpan.textContent = `${offer.fee}억 원`;
+                    feeWrap.append(feeLabel, feeSpan);
+
+                    topRow.append(leftMeta, feeWrap);
+
+                    // 메시지 인용구
+                    const msgP = document.createElement('p');
+                    msgP.style.cssText = 'font-size: 0.86rem; color: #cbd5e1; margin: 4px 0 14px 0; background: rgba(0, 0, 0, 0.3); border-left: 3px solid #3b82f6; padding: 8px 12px; border-radius: 0 6px 6px 0; font-style: italic; line-height: 1.45;';
+                    msgP.textContent = `"${offer.message}"`;
+
+                    // 버튼 행
+                    const btnRow = document.createElement('div');
+                    btnRow.style.cssText = 'display: flex; gap: 10px;';
+
+                    const acceptBtn = document.createElement('button');
+                    acceptBtn.type = 'button';
+                    acceptBtn.className = 'btn primary';
+                    acceptBtn.style.cssText = 'flex: 1; padding: 10px 16px; font-weight: 700; font-size: 0.92rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; border-radius: 8px; color: #fff; cursor: pointer; box-shadow: 0 3px 10px rgba(16, 185, 129, 0.28); transition: all 0.15s ease;';
+                    acceptBtn.textContent = `이 제안 즉시 수락 (${offer.fee}억)`;
+                    acceptBtn.onmouseenter = () => { acceptBtn.style.transform = 'translateY(-1px) scale(1.02)'; acceptBtn.style.boxShadow = '0 5px 16px rgba(16, 185, 129, 0.45)'; };
+                    acceptBtn.onmouseleave = () => { acceptBtn.style.transform = 'none'; acceptBtn.style.boxShadow = '0 3px 10px rgba(16, 185, 129, 0.28)'; };
+                    acceptBtn.onmousedown = () => { acceptBtn.style.transform = 'scale(0.98)'; };
+                    acceptBtn.addEventListener('click', () => transferSystem.acceptUserOffer(playerName, offer.teamKey, offer.fee, mail.id));
+
+                    const negBtn = document.createElement('button');
+                    negBtn.type = 'button';
+                    negBtn.className = 'btn';
+                    negBtn.style.cssText = 'flex: 1; padding: 10px 16px; background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.5); color: #fbbf24; font-weight: 700; font-size: 0.92rem; border-radius: 8px; cursor: pointer; transition: all 0.15s ease;';
+                    negBtn.textContent = '이적료 협상 (FC On Call)';
+                    negBtn.onmouseenter = () => { negBtn.style.transform = 'translateY(-1px) scale(1.02)'; negBtn.style.background = 'rgba(245, 158, 11, 0.24)'; negBtn.style.borderColor = '#fbbf24'; };
+                    negBtn.onmouseleave = () => { negBtn.style.transform = 'none'; negBtn.style.background = 'rgba(245, 158, 11, 0.14)'; negBtn.style.borderColor = 'rgba(245, 158, 11, 0.5)'; };
+                    negBtn.onmousedown = () => { negBtn.style.transform = 'scale(0.98)'; };
+                    negBtn.addEventListener('click', () => {
+                        if (typeof transferSystem !== 'undefined' && typeof transferSystem.openSaleNegotiation === 'function') {
+                            transferSystem.openSaleNegotiation(playerName, offer.teamKey, offer.fee, mail.id);
+                        } else {
+                            transferSystem.negotiateUserOffer(playerName, offer.teamKey, offer.fee, mail.id);
+                        }
+                    });
+
+                    btnRow.append(acceptBtn, negBtn);
+                    card.append(topRow, msgP, btnRow);
+                    actionsDiv.appendChild(card);
+                });
+
+                const rejectAllBtn = document.createElement('button');
+                rejectAllBtn.type = 'button';
+                rejectAllBtn.style.cssText = 'width: 100%; background: rgba(239, 68, 68, 0.08); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 8px; padding: 10px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.15s ease; margin-top: 6px;';
+                rejectAllBtn.textContent = '모든 제안 거절 및 이적 명단 제외';
+                rejectAllBtn.onmouseenter = () => { rejectAllBtn.style.background = 'rgba(239, 68, 68, 0.18)'; rejectAllBtn.style.borderColor = '#ef4444'; rejectAllBtn.style.color = '#fff'; };
+                rejectAllBtn.onmouseleave = () => { rejectAllBtn.style.background = 'rgba(239, 68, 68, 0.08)'; rejectAllBtn.style.borderColor = 'rgba(239, 68, 68, 0.25)'; rejectAllBtn.style.color = '#f87171'; };
+                rejectAllBtn.onmousedown = () => { rejectAllBtn.style.transform = 'scale(0.98)'; };
+                rejectAllBtn.addEventListener('click', () => transferSystem.rejectUserOffer(playerName, mail.id));
+
+                actionsDiv.appendChild(rejectAllBtn);
+            } else {
+                const processedMsg = document.createElement('div');
+                processedMsg.style.cssText = 'color: #94a3b8; font-style: italic; padding: 12px 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.25); border-radius: 8px;';
+                processedMsg.textContent = mData.resultMessage || '이미 처리되었거나 만료된 제안입니다.';
+                actionsDiv.appendChild(processedMsg);
+            }
+            detailContainer.appendChild(actionsDiv);
+        } else if (mail.type === 'secretary_advice') {
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'mail-actions';
+
+            if (!mail.isProcessed) {
+                const acceptBtn = document.createElement('button');
+                acceptBtn.className = 'btn primary';
+                acceptBtn.textContent = '제안 수락';
+                acceptBtn.addEventListener('click', () => mailManager.acceptSecretaryAdvice(mail.id));
+
+                const laterBtn = document.createElement('button');
+                laterBtn.className = 'btn';
+                laterBtn.style.backgroundColor = '#7f8c8d';
+                laterBtn.textContent = '나중에';
+                laterBtn.addEventListener('click', () => mailManager.rejectOffer(mail.id));
+
+                actionsDiv.append(acceptBtn, laterBtn);
+            } else {
+                const processedMsg = document.createElement('div');
+                processedMsg.style.cssText = 'color: #aaa; font-style: italic; padding: 10px; border: 1px solid #444; border-radius: 5px;';
+                processedMsg.textContent = mail.data.resultMessage || '처리된 제안입니다.';
+                actionsDiv.appendChild(processedMsg);
+            }
+            detailContainer.appendChild(actionsDiv);
+        }
     }
 
     // 날짜 포맷 유틸리티
@@ -199,7 +388,7 @@ class MailManager {
         
         // 상위 3명 선수 찾기 (능력치 내림차순)
         const topPlayers = [...players].sort((a, b) => b.rating - a.rating).slice(0, 3);
-        const topPlayersText = topPlayers.map((p, i) => `${i + 1}. ${p.name} (${p.position}, ★${p.rating})`).join('\n');
+        const topPlayersText = topPlayers.map((p, i) => `${i + 1}. ${p.name} (${p.position}, ${p.rating})`).join('\n');
         
         const content = `감독님, ${teamName}에 오신 것을 환영합니다!\n\n` +
             `현재 우리 선수단은 총 ${players.length}명으로 구성되어 있습니다.\n\n` +
@@ -296,8 +485,8 @@ class MailManager {
             gameData.userTransferList.some(entry => !entry.isOfferSent);
         if (hasPendingUserOffer) return;
 
-        // 시즌당 약 3번 -> 약 8% 확률 (경기당)
-        if (Math.random() > 0.08) return;
+        // [수정] 무작위 오퍼 확률 하향: 경기당 약 2.5% (시즌당 약 1회 발생 수준)
+        if (Math.random() > 0.025) return;
         
         const teamPlayers = teams[gameData.selectedTeam];
         // 최소 인원(16명) 이하일 때는 제안 안 옴
@@ -317,9 +506,13 @@ class MailManager {
         const priceFactor = 0.9 + (Math.random() * 0.15); // 90% ~ 105% (시장가 근처)
         const offerPrice = Math.round(basePrice * priceFactor);
         
-        // 제안 팀 (랜덤)
+        // 제안 팀 (선수 수준과 예산에 맞는 현실적인 구단 중 선택)
         const otherTeams = Object.keys(teams).filter(t => t !== gameData.selectedTeam);
-        const offerTeamKey = otherTeams[Math.floor(Math.random() * otherTeams.length)];
+        const realisticTeams = (typeof transferSystem !== 'undefined' && typeof transferSystem.getRealisticBuyerTeams === 'function')
+            ? transferSystem.getRealisticBuyerTeams(targetPlayer, otherTeams, Math.max(20, Math.round(basePrice * 0.7)))
+            : otherTeams;
+        const candidatePool = realisticTeams.length > 0 ? realisticTeams : otherTeams;
+        const offerTeamKey = candidatePool[Math.floor(Math.random() * candidatePool.length)];
         const offerTeamName = teamNames[offerTeamKey] || offerTeamKey;
         
         const content = `다른 구단으로부터 우리 선수에 대한 이적 제안이 도착했습니다.\n\n` +
@@ -372,8 +565,14 @@ class MailManager {
         const recommended = recommendations[0];
         const secretaryName = gameData.secretaryName || "비서";
         
+        const opponentData = (typeof TeamUtils !== 'undefined' && typeof TeamUtils.getOptimalSquadData === 'function')
+            ? TeamUtils.getOptimalSquadData(gameData.currentOpponent)
+            : null;
+        const opponentFormation = opponentData ? `${opponentData.formation} (${opponentData.description})` : '4-3-3';
+        
         const content = `감독님, 다음 상대인 ${teamNames[gameData.currentOpponent]}의 전력 분석 보고서입니다.\n\n` +
-            `상대는 주로 '${ts.getTacticName(opponentTactic)}' 전술을 사용합니다.\n` +
+            `• 상대 전술: '${ts.getTacticName(opponentTactic)}'\n` +
+            `• 예상 포메이션: [${opponentFormation}]\n\n` +
             `이에 대한 대응책으로 '${recommended.name}' 전술을 추천드립니다.\n\n` +
             `전술을 변경하시겠습니까?`;
             
@@ -448,9 +647,12 @@ class MailManager {
             gameData.currentTactic = data.targetTactic;
             mail.data.resultMessage = `전술을 '${data.tacticName}'(으)로 변경했습니다.`;
             
-            // UI 갱신 (전술 드롭다운이 있다면)
+            // UI 갱신 (전술 드롭다운 및 경기 탭 디스플레이)
             const tacticSelect = document.getElementById('tacticSelect');
             if (tacticSelect) tacticSelect.value = data.targetTactic;
+            if (typeof window.updateMatchTabCurrentTacticDisplay === 'function') {
+                window.updateMatchTabCurrentTacticDisplay();
+            }
             
             alert(`전술이 '${data.tacticName}'(으)로 변경되었습니다.`);
         } else if (data.subType === 'morale') {
@@ -527,8 +729,29 @@ class MailManager {
             teams[targetTeam].push(player);
         }
         
-        // 4. 돈 추가
-        gameData.teamMoney += price;
+        // 4. 자금 및 주급 예산 동기화
+        if (window.GameState) {
+            window.GameState.addTeamMoney(price);
+        } else {
+            gameData.teamMoney += price;
+        }
+
+        if (typeof transferSystem !== 'undefined') {
+            // 상대 AI 팀 이적료 지출
+            transferSystem.spendTeamBudget(targetTeam, price);
+            // 이적 뉴스 등록
+            transferSystem.addTransferNews(player, gameData.selectedTeam, targetTeam, price);
+        }
+
+        // 이적 명단(userTransferList)에서도 제거
+        if (window.GameState) {
+            window.GameState.removeUserTransferListByPlayer(player.name);
+        } else if (gameData.userTransferList) {
+            gameData.userTransferList = gameData.userTransferList.filter(entry => entry.player.name !== player.name);
+        }
+
+        if (typeof calculateTotalWages === 'function') calculateTotalWages();
+        if (typeof DNAManager !== 'undefined') DNAManager.recalculateLineOVRs();
         
         // 5. 처리 완료 표시
         mail.isProcessed = true;
@@ -538,6 +761,7 @@ class MailManager {
         updateDisplay();
         if (typeof displayTeamPlayers === 'function') displayTeamPlayers();
         if (typeof updateFormationDisplay === 'function') updateFormationDisplay();
+        if (window.AutoSaveSystem) setTimeout(() => window.AutoSaveSystem.triggerSave(), 500);
         
         alert(`${player.name} 선수를 ${targetTeamName}에 ${price}억으로 이적시켰습니다.`);
         this.openMail(mail); // 버튼 숨기기 위해 다시 렌더링

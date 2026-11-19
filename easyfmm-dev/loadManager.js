@@ -4,6 +4,7 @@ const LoadManager = {
     progress: 0,
     // 각 로딩 단계 정의
     tasks: [
+        { name: "저장소 시스템 초기화", weight: 10, action: () => (typeof SaveStorage !== 'undefined' ? SaveStorage.init() : null) },
         { name: "리그 데이터베이스 동기화", weight: 10, action: () => initializeLeagueData() },
         { name: "글로벌 이벤트 리스너 바인딩", weight: 15, action: () => setupEventListeners() },
         { name: "이적 시장 시스템 가동", weight: 15, action: () => { if (typeof initTransfer === 'function') initTransfer(); } },
@@ -29,35 +30,11 @@ const LoadManager = {
     },
 
     createLoadingScreen() {
-        const overlay = document.createElement('div');
-        overlay.id = 'game-loader-overlay';
-        overlay.style.cssText = `
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #12122b 0%, #1a1a3e 100%);
-            z-index: 999999; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center;
-            transition: opacity 0.8s ease, visibility 0.8s;
-            font-family: 'Segoe UI', sans-serif;
-        `;
-
-        overlay.innerHTML = `
-        <div style="text-align: center;">
-        <div class="loader-logo" style="margin-bottom: 25px;">
-        <h1 style="color: #ffd700; font-size: 3.5rem; margin: 0; letter-spacing: -2px; text-shadow: 0 0 30px rgba(255,215,0,0.3);">EasyFMM</h1>
-        <div style="color: #a46dff; font-size: 0.8rem; letter-spacing: 5px; font-weight: bold; margin-top: 5px;">NEXT GEN MANAGER</div>
-        <div style="color: rgba(255,255,255,0.4); font-size: 0.65rem; font-weight: normal; margin-top: 6px;">꿀팁을 원한다면 채팅으로 여러 사람들과 이야기를 나눠 보세요!</div>
-        </div>
-        <div style="width: 280px; height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; margin: 0 auto; border: 1px solid rgba(255,255,255,0.1);">
-        <div id="loader-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #a46dff, #7c4dff); box-shadow: 0 0 15px rgba(164,109,255,0.6); transition: width 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);"></div>
-        </div>
-        <div id="loader-status" style="margin-top: 20px; color: #fff; font-size: 0.85rem; opacity: 0.7; font-weight: 300; text-transform: uppercase;">데이터 분석 중...</div>
-        <div style="position: absolute; bottom: 40px; color: rgba(255,255,255,0.2); font-size: 0.7rem;">
-        © 2026 FCM_CHRONICLE. ALL SYSTEMS OPERATIONAL.
-        </div>
-        </div>
-        `;
-
-        document.body.appendChild(overlay);
+        const overlay = document.getElementById('game-loader-overlay');
+        if (overlay) {
+            overlay.style.opacity = '1';
+            overlay.style.visibility = 'visible';
+        }
     },
 
     async runTasks() {
@@ -73,9 +50,9 @@ const LoadManager = {
             await new Promise(resolve => setTimeout(resolve, 150 + Math.random() * 200));
 
             try {
-                task.action();
+                await task.action();
             } catch (e) {
-                console.error(`[LoadManager] '${task.name}' 실행 중 오류:`, e);
+                console.error(`[LoadManager] '${task.name}'실행 중 오류:`, e);
             }
 
             completedWeight += task.weight;

@@ -1,12 +1,83 @@
-// scouting.js - 유스 스카우트 시스템
+// scouting.js - 유스 스카우트 시스템 (상시 고용 & 10경기 주기 4단계 포텐셜)
+
+const POTENTIAL_TIERS = {
+    poor: {
+        id: 'poor',
+        name: '수준 이하',
+        color: '#94A3B8',
+        bg: 'rgba(148, 163, 184, 0.15)',
+        border: 'rgba(148, 163, 184, 0.4)',
+        minPot: 54,
+        maxPot: 65,
+        desc: '프로 1군 무대 적응이 어렵고 성장의 한계가 낮습니다.'
+    },
+    average: {
+        id: 'average',
+        name: '평범함',
+        color: '#34D399',
+        bg: 'rgba(52, 211, 153, 0.15)',
+        border: 'rgba(52, 211, 153, 0.4)',
+        minPot: 66,
+        maxPot: 74,
+        desc: '1부 리그 로테이션 및 백업 자원으로 활용 가능한 자원입니다.'
+    },
+    promising: {
+        id: 'promising',
+        name: '재능 있음',
+        color: '#38BDF8',
+        bg: 'rgba(56, 189, 248, 0.15)',
+        border: 'rgba(56, 189, 248, 0.4)',
+        minPot: 75,
+        maxPot: 82,
+        desc: '빅클럽 주전 및 리그 상위권급으로 도약할 확실한 재능입니다.'
+    },
+    wonderkid: {
+        id: 'wonderkid',
+        name: '원더키드',
+        color: '#FBBF24',
+        bg: 'linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(168, 85, 247, 0.25))',
+        border: 'rgba(251, 191, 36, 0.6)',
+        minPot: 83,
+        maxPot: 88,
+        desc: '차세대 국가대표 및 세계적인 수준으로 성장할 극소수 초신성입니다.'
+    }
+};
 
 class ScoutingSystem {
     constructor() {
         this.scouts = {
-            novice: { name: '초급 스카우터 (1성)', cost: 100, chance: 0.5, playersFound: 1, minRating: 50, maxRating: 65, contract: 5 },
-            professional: { name: '프로 스카우터 (2성)', cost: 300, chance: 0.7, playersFound: 1, minRating: 55, maxRating: 70, contract: 5 },
-            worldClass: { name: '월드클래스 스카우터 (3성)', cost: 700, chance: 1.0, playersFound: 1, minRating: 60, maxRating: 74, contract: 5 }
+            novice: {
+                id: 'novice',
+                name: '초급 스카우터 (1성)',
+                stars: '★☆☆',
+                cost: 100, // 100억원
+                interval: 10,
+                potChances: { poor: 0.70, average: 0.28, promising: 0.02, wonderkid: 0.00 },
+                minRating: 48,
+                maxRating: 60
+            },
+            professional: {
+                id: 'professional',
+                name: '프로 스카우터 (2성)',
+                stars: '★★☆',
+                cost: 300, // 300억원
+                interval: 10,
+                potChances: { poor: 0.45, average: 0.45, promising: 0.098, wonderkid: 0.002 },
+                minRating: 54,
+                maxRating: 66
+            },
+            worldClass: {
+                id: 'worldClass',
+                name: '월드클래스 스카우터 (3성)',
+                stars: '★★★',
+                cost: 700, // 700억원
+                interval: 10,
+                potChances: { poor: 0.25, average: 0.55, promising: 0.19, wonderkid: 0.01 },
+                minRating: 60,
+                maxRating: 72
+            }
         };
+
         this.namesByNationality = {
             korean: {
                 first: ["김", "이", "박", "최", "정", "강", "조", "윤", "장", "임", "송", "유", "한"],
@@ -27,38 +98,10 @@ class ScoutingSystem {
         };
     }
 
-    // 스카우터 고용 및 선수 발굴
-    scoutForPlayers(tier) {
-        const scout = this.scouts[tier];
-        if (!scout) {
-            return { success: false, message: "존재하지 않는 스카우터입니다." };
-        }
-
-        const foundPlayers = [];
-        for (let i = 0; i < scout.playersFound; i++) {
-            const newPlayer = this.generateYouthPlayer(scout);
-            
-            // 중복 이름 방지
-            while (this.isPlayerNameDuplicate(newPlayer.name)) {
-                newPlayer.name = this.generateRandomName();
-            }
-
-            gameData.youthSquad.push(newPlayer);
-            console.log(`✅ 유망주 발굴 및 gameData.youthSquad에 추가됨: ${newPlayer.name}`, gameData.youthSquad);
-            foundPlayers.push(newPlayer);
-        }
-
-        return {
-            success: true,
-            message: `${scout.name}이(가) ${foundPlayers.length}명의 유망주를 발굴했습니다!`,
-            players: foundPlayers
-        };
-    }
-
-    // 스카우터 고용
+    // 스카우터 상시 고용
     hireScout(tier) {
         if (gameData.hiredScout) {
-            return { success: false, message: "이미 고용된 스카우터가 있습니다." };
+            return { success: false, message: "이미 고용된 스카우터가 있습니다. 새 스카우터를 고용하려면 기존 스카우터를 해지하세요." };
         }
 
         const scout = this.scouts[tier];
@@ -67,46 +110,107 @@ class ScoutingSystem {
         }
 
         if (gameData.teamMoney < scout.cost) {
-            return { success: false, message: `자금이 부족합니다. (필요: ${scout.cost}억)` };
-        }
-
-        // 확률 기반 스카우트 (월드클래스는 100%)
-        if (Math.random() > scout.chance) {
-            // 실패 시 비용은 차감하지 않음
-            return {
-                success: false,
-                message: `${scout.name}이(가) 유망주 발굴에 실패했습니다.`,
-                noCost: true // 비용 차감 없음을 알리는 플래그
-            };
+            return { success: false, message: `자금이 부족합니다. (필요: ${scout.cost}억원 / 보유: ${gameData.teamMoney}억원)` };
         }
 
         // 비용 차감
-        gameData.teamMoney -= scout.cost;
+        gameData.teamMoney = Math.round((gameData.teamMoney - scout.cost) * 10) / 10;
 
-        // 스카우터 고용 정보 저장
+        // 상시 고용 상태 저장 (유저가 능동적으로 해지하기 전까지 영구 유지)
         gameData.hiredScout = {
             tier: tier,
-            remainingMatches: scout.contract
+            name: scout.name,
+            progressMatches: 0,
+            targetInterval: scout.interval || 10,
+            totalFound: 0,
+            hiredAt: Date.now()
         };
 
         return {
             success: true,
-            message: `${scout.name}과(와) ${scout.contract}경기 계약을 체결했습니다.`
+            message: `🎉 [스카우터 고용 완료!]\n'${scout.name}'과(와) 상시 계약을 체결했습니다!\n감독님이 직접 해지하기 전까지 10경기마다 1명의 유망주를 발굴해옵니다.`
         };
     }
 
-    // 유망주 선수 생성
+    // 스카우터 계약 능동적 해지
+    fireScout() {
+        if (!gameData.hiredScout) {
+            return { success: false, message: "현재 고용된 스카우터가 없습니다." };
+        }
+
+        const scoutName = (this.scouts[gameData.hiredScout.tier] || {}).name || "스카우터";
+        if (!confirm(`정말 '${scoutName}'과의 계약을 해지하시겠습니까?\n해지 시 진행 중이던 유망주 탐색 카운트는 초기화됩니다.`)) {
+            return { success: false, cancelled: true };
+        }
+
+        gameData.hiredScout = null;
+        return {
+            success: true,
+            message: `[계약 해지]\n${scoutName}과의 고용 계약이 정상적으로 해지되었습니다.`
+        };
+    }
+
+    // 10경기 도달 시 선수 1명 확정 발굴
+    discoverYouthPlayer() {
+        if (!gameData.hiredScout) return null;
+
+        const scout = this.scouts[gameData.hiredScout.tier] || this.scouts.novice;
+        const newPlayer = this.generateYouthPlayer(scout);
+
+        // 중복 이름 방지
+        while (this.isPlayerNameDuplicate(newPlayer.name)) {
+            newPlayer.name = this.generateRandomName();
+        }
+
+        if (!gameData.youthSquad) gameData.youthSquad = [];
+        gameData.youthSquad.push(newPlayer);
+
+        gameData.hiredScout.totalFound = (gameData.hiredScout.totalFound || 0) + 1;
+        console.log(`[Scouting] 10경기 주기 유망주 발굴: ${newPlayer.name} (포텐: ${newPlayer.potentialName}, OVR: ${newPlayer.rating})`);
+
+        return newPlayer;
+    }
+
+    // 4단계 포텐셜 기반 유망주 생성
     generateYouthPlayer(scout) {
         const positions = ['GK', 'DF', 'MF', 'FW'];
         const position = positions[Math.floor(Math.random() * positions.length)];
-        const rating = Math.floor(Math.random() * (scout.maxRating - scout.minRating + 1)) + scout.minRating;
-        const age = Math.floor(Math.random() * 3) + 16; // 16-18세
+        const age = Math.floor(Math.random() * 3) + 16; // 16~18세
+
+        // 1. 4단계 포텐셜 등급 결정
+        const rand = Math.random();
+        let cumulative = 0;
+        let selectedTierKey = 'average';
+
+        const chances = scout.potChances;
+        for (const [tierKey, prob] of Object.entries(chances)) {
+            cumulative += prob;
+            if (rand <= cumulative) {
+                selectedTierKey = tierKey;
+                break;
+            }
+        }
+
+        const tierInfo = POTENTIAL_TIERS[selectedTierKey];
+        // 포텐셜 상한 산출
+        const maxPotential = Math.floor(Math.random() * (tierInfo.maxPot - tierInfo.minPot + 1)) + tierInfo.minPot;
+
+        // 2. 현재 오버롤 (rating) 산출 (스카우터 범위 내, 단 잠재력보다 최소 6~12 낮게 설정하여 성장 폭 보장)
+        let rating = Math.floor(Math.random() * (scout.maxRating - scout.minRating + 1)) + scout.minRating;
+        if (rating >= maxPotential - 5) {
+            rating = Math.max(50, maxPotential - (6 + Math.floor(Math.random() * 6)));
+        }
 
         return {
             name: this.generateRandomName(),
             position: position,
             rating: rating,
-            age: age
+            age: age,
+            potentialTier: selectedTierKey, // 'poor' | 'average' | 'promising' | 'wonderkid'
+            potentialName: tierInfo.name,
+            maxPotential: maxPotential,
+            isWonderkid: selectedTierKey === 'wonderkid',
+            scoutedAtRound: gameData.currentRound || 1
         };
     }
 
@@ -122,130 +226,124 @@ class ScoutingSystem {
         if (randomNationality === 'korean') {
             return `${firstName}${lastName}`;
         } else if (randomNationality === 'spanish') {
-            // 스페인 이름은 '이름 성' 순서
             return `${lastName} ${firstName}`;
         } else {
             return `${firstName} ${lastName}`;
         }
     }
 
-    // 선수 이름 중복 확인
+    // 중복 이름 방지
     isPlayerNameDuplicate(name) {
-        // 모든 팀, 이적시장, 유스팀에서 이름 확인
-        for (const teamKey in teams) {
-            if (teams[teamKey].some(p => p.name === name)) return true;
+        if (typeof teams !== 'undefined') {
+            for (const teamKey in teams) {
+                if (teams[teamKey].some(p => p.name === name)) return true;
+            }
         }
-        if (gameData.youthSquad.some(p => p.name === name)) return true;
-        if (typeof transferSystem !== 'undefined' && transferSystem.transferMarket.some(p => p.name === name)) return true;
-        
+        if (gameData && gameData.youthSquad && gameData.youthSquad.some(p => p.name === name)) return true;
+        if (typeof transferSystem !== 'undefined' && transferSystem.transferMarket && transferSystem.transferMarket.some(p => p.name === name)) return true;
         return false;
     }
 }
 
-// 전역 스카우팅 시스템 인스턴스
+// 싱글톤 인스턴스
 const scoutingSystem = new ScoutingSystem();
-
-// 스카우팅 화면 표시
-function displayScoutingScreen() {
-    const container = document.getElementById('scoutingSection');
-    if (!container) return;
-
-    container.innerHTML = `
-        <div class="scouting-header" style="margin-top: 40px; border-top: 1px solid #444; padding-top: 20px;">
-            <h3>스카우터 고용</h3>
-            <p>스카우터를 고용하여 새로운 유망주를 발굴하세요. 발굴된 선수는 '유스' 탭에서 확인할 수 있습니다.</p>
-        </div>
-        <div id="scoutList" class="scout-list"></div>
-        <div id="scoutingResults" class="scouting-results">
-            <h4>발굴된 선수 목록</h4>
-            <div id="scoutedPlayerList">
-                <p style="text-align: center; opacity: 0.7;">스카우터를 고용하여 유망주를 찾아보세요.</p>
-            </div>
-        </div>
-    `;
-
-    // 현재 고용된 스카우터 정보 표시
-    if (gameData.hiredScout) {
-        const hiredScoutInfo = document.createElement('div');
-        hiredScoutInfo.className = 'hired-scout-info';
-        const scout = scoutingSystem.scouts[gameData.hiredScout.tier];
-        hiredScoutInfo.innerHTML = `
-            <h4>현재 고용된 스카우터</h4>
-            <p><strong>${scout.name}</strong></p>
-            <p>남은 계약 기간: ${gameData.hiredScout.remainingMatches} 경기</p>
-        `;
-        hiredScoutInfo.style.cssText = `
-            background: rgba(46, 204, 113, 0.2);
-            border: 1px solid #2ecc71;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 20px;
-        `;
-        container.insertBefore(hiredScoutInfo, container.querySelector('.scout-list'));
-    }
-
-    const scoutList = document.getElementById('scoutList');
-    scoutList.innerHTML = ''; // 목록 초기화
-    Object.entries(scoutingSystem.scouts).forEach(([tier, scout]) => {
-        const scoutCard = document.createElement('div');
-        scoutCard.className = 'scout-card';
-        const isHired = !!gameData.hiredScout;
-
-        if (isHired) {
-            scoutCard.classList.add('disabled');
-        }
-
-        scoutCard.innerHTML = `
-            <h4>${scout.name}</h4>
-            <p>비용: ${scout.cost}억</p>
-            <p>발굴 성공 확률: ${scout.chance * 100}% (경기당)</p>
-            <p>예상 능력치: ${scout.minRating}~${scout.maxRating}</p>
-            <button class="btn primary" ${isHired ? 'disabled' : ''}>고용하기</button>
-        `;
-        if (!isHired) {
-            scoutCard.querySelector('button').addEventListener('click', () => hireScoutAndRefresh(tier));
-        }
-        scoutList.appendChild(scoutCard);
-    });
+if (typeof window !== 'undefined') {
+    window.scoutingSystem = scoutingSystem;
 }
 
-// 스카우터 고용 후 UI 새로고침
+// 스카우팅 화면 UI 표시 및 갱신
+function displayScoutingScreen() {
+    const hiredScoutInfo = document.getElementById('hiredScoutInfo');
+
+    if (hiredScoutInfo) {
+        if (gameData && gameData.hiredScout) {
+            const scout = scoutingSystem.scouts[gameData.hiredScout.tier];
+            const currentProgress = gameData.hiredScout.progressMatches || 0;
+            const target = gameData.hiredScout.targetInterval || 10;
+            const progressPct = Math.min(100, Math.round((currentProgress / target) * 100));
+
+            hiredScoutInfo.style.display = 'block';
+            hiredScoutInfo.innerHTML = `
+                <div class="hired-scout-top-row">
+                    <div class="hired-scout-title-wrap">
+                        <span class="hired-badge-permanent">상시 고용 중</span>
+                        <strong class="hired-scout-title">${scout ? scout.name : '스카우터'}</strong>
+                        <span class="hired-scout-total">누적 발굴: ${gameData.hiredScout.totalFound || 0}명</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-fire-scout" onclick="fireScoutAndRefresh()">
+                        계약 해지
+                    </button>
+                </div>
+                <div class="scout-progress-container">
+                    <div class="scout-progress-labels">
+                        <span>유망주 발굴 진행도</span>
+                        <strong>${currentProgress} / ${target} 경기 (${Math.max(0, target - currentProgress)}경기 후 1명 발굴)</strong>
+                    </div>
+                    <div class="scout-progress-bar-wrap">
+                        <div class="scout-progress-bar-fill" style="width: ${progressPct}%"></div>
+                    </div>
+                </div>
+            `;
+        } else {
+            hiredScoutInfo.style.display = 'none';
+        }
+    }
+
+    // 스카우터 목록 UI 버튼 활성화/비활성화 처리
+    const scoutList = document.getElementById('scoutList');
+    if (scoutList) {
+        const isHired = !!(gameData && gameData.hiredScout);
+        const cards = scoutList.querySelectorAll('.scout-card');
+        cards.forEach(card => {
+            card.classList.toggle('disabled', isHired);
+            const btn = card.querySelector('button');
+            if (btn) {
+                btn.disabled = isHired;
+                btn.textContent = isHired ? '고용 중인 스카우터 있음' : '스카우터 고용';
+            }
+        });
+    }
+}
+
+// 스카우터 고용
 function hireScoutAndRefresh(tier) {
     const result = scoutingSystem.hireScout(tier);
     alert(result.message);
 
     if (result.success) {
-        updateDisplay(); // 자금 업데이트
-        displayScoutingScreen(); // 스카우트 섹션 UI 새로고침
+        if (typeof updateDisplay === 'function') updateDisplay();
+        displayScoutingScreen();
     }
 }
 
-// 발굴된 선수 목록 표시
-function displayScoutedPlayers(players) {
-    const listContainer = document.getElementById('scoutedPlayerList');
-    if (!listContainer) return;
+// 스카우터 해지
+function fireScoutAndRefresh() {
+    const result = scoutingSystem.fireScout();
+    if (result.cancelled) return;
+    alert(result.message);
 
-    listContainer.innerHTML = '';
-
-    if (!players || players.length === 0) {
-        listContainer.innerHTML = '<p style="text-align: center; opacity: 0.7;">발굴된 선수가 없습니다.</p>';
-        return;
+    if (result.success) {
+        if (typeof updateDisplay === 'function') updateDisplay();
+        displayScoutingScreen();
     }
-
-    players.forEach(player => {
-        const playerCard = document.createElement('div');
-        playerCard.className = 'player-card small'; // 작은 카드 스타일
-        playerCard.innerHTML = `
-            <div class="name">${player.name}</div>
-            <div class="details">
-                ${player.position} | 능력치: ${Math.round(player.rating)} | 나이: ${player.age}
-            </div>
-        `;
-        listContainer.appendChild(playerCard);
-    });
 }
 
-// 전역으로 함수 노출
-window.displayScoutingScreen = displayScoutingScreen;
-window.hireScoutAndRefresh = hireScoutAndRefresh;
+// 4단계 포텐셜 뱃지 HTML 헬퍼 함수
+function getPotentialBadgeHTML(tierKey) {
+    const tier = POTENTIAL_TIERS[tierKey] || POTENTIAL_TIERS.average;
+    return `<span class="potential-badge tier-${tier.id}" style="background: ${tier.bg}; color: ${tier.color}; border: 1px solid ${tier.border}; padding: 2px 7px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; gap: 3px;">
+        ${tier.id === 'wonderkid' ? '★ ' : ''}${tier.name}
+    </span>`;
+}
+
+// 전역 함수 노출
+if (typeof window !== 'undefined') {
+    window.displayScoutingScreen = displayScoutingScreen;
+    window.hireScoutAndRefresh = hireScoutAndRefresh;
+    window.fireScoutAndRefresh = fireScoutAndRefresh;
+    window.getPotentialBadgeHTML = getPotentialBadgeHTML;
+    window.POTENTIAL_TIERS = POTENTIAL_TIERS;
+}
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { ScoutingSystem, scoutingSystem, POTENTIAL_TIERS, getPotentialBadgeHTML };
+}

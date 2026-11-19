@@ -57,10 +57,10 @@ try {
     // window 객체 대신 global에 넣어줌
     global.window = global;
     eval(code);
-    console.log('✅ V3 엔진 로드 성공!');
-    console.log('  exports:', Object.keys(global).filter(k => ['RealSoccerEngine','SimBall','SimPlayer','BallState','DeepTacticManager'].includes(k)));
+    console.log('V3 엔진 로드 성공!');
+    console.log('exports:', Object.keys(global).filter(k => ['RealSoccerEngine','SimBall','SimPlayer','BallState','DeepTacticManager'].includes(k)));
 } catch (e) {
-    console.error('❌ 엔진 로드 실패:', e.message);
+    console.error('엔진 로드 실패:', e.message);
     console.error(e.stack);
     process.exit(1);
 }
@@ -107,14 +107,14 @@ console.log('\n=== 엔진 인스턴스 생성 ===');
 let engine;
 try {
     engine = new RealSoccerEngine(homeSquad, awaySquad, 'gegenpress', 'counter');
-    console.log('✅ 인스턴스 생성 성공!');
-    console.log('  홈팀 선수 수:', engine.players.filter(p=>p.teamId==='home').length);
-    console.log('  어웨이팀 선수 수:', engine.players.filter(p=>p.teamId==='away').length);
-    console.log('  총 선수 수:', engine.players.length);
-    console.log('  초기 위상:', engine._phase);
-    console.log('  초기 볼 소유:', engine._possession);
+    console.log('인스턴스 생성 성공!');
+    console.log('홈팀 선수 수:', engine.players.filter(p=>p.teamId==='home').length);
+    console.log('어웨이팀 선수 수:', engine.players.filter(p=>p.teamId==='away').length);
+    console.log('총 선수 수:', engine.players.length);
+    console.log('초기 위상:', engine._phase);
+    console.log('초기 볼 소유:', engine._possession);
 } catch (e) {
-    console.error('❌ 인스턴스 생성 실패:', e.message);
+    console.error('인스턴스 생성 실패:', e.message);
     console.error(e.stack);
     process.exit(1);
 }
@@ -123,9 +123,9 @@ try {
 console.log('\n=== 킥오프 (홈팀) ===');
 engine.resetPositions('home');
 let snap = engine.getSnapshot();
-console.log('  초기 볼 위치:', snap.ball.x, snap.ball.y);
-console.log('  소유자 이름:', snap.players.find(p=>p.hasBall)?.id || '(없음)');
-console.log('  hasBall 선수 수:', snap.players.filter(p=>p.hasBall).length);
+console.log('초기 볼 위치:', snap.ball.x, snap.ball.y);
+console.log('소유자 이름:', snap.players.find(p=>p.hasBall)?.id || '(없음)');
+console.log('hasBall 선수 수:', snap.players.filter(p=>p.hasBall).length);
 
 // ===== 2000프레임 시뮬레이션 =====
 console.log('\n=== 2000 프레임 시뮬레이션 시작 ===');
@@ -139,7 +139,8 @@ let possessionChanges = 0;
 let lastPossessionTeam = null;
 let phaseFrames = { home:{building:0,progressing:0,finalThird:0,counter:0}, away:{building:0,progressing:0,finalThird:0,counter:0} };
 
-const MAX_FRAMES = 5000;
+// 엔진 기준 10프레임 = 1분이므로 실제 정규시간 90분을 검증한다.
+const MAX_FRAMES = 900;
 try {
     for (let f = 0; f < MAX_FRAMES; f++) {
         const minute = Math.floor(f / 10);
@@ -152,17 +153,17 @@ try {
             eventsCount[ev.type] = (eventsCount[ev.type] || 0) + 1;
             if (ev.type === 'goal') {
                 goals[ev.team]++;
-                console.log(`  ⚽ [프레임 ${f}] 골! ${ev.team} - 득점자: ${ev.scorer}${ev.assister?' (도움: '+ev.assister+')':''}`);
+                console.log(`[프레임 ${f}] 골! ${ev.team} - 득점자: ${ev.scorer}${ev.assister?' (도움: '+ev.assister+')':''}`);
             }
         }
 
         // 소유권 변경 집계
         const ballOwnerPlayer = snap.players.find(p=>p.hasBall);
-        const currentTeam = ballOwnerPlayer ? ballOwnerPlayer.team : (snap.ball.state===2 ? null : null);
+        const currentTeam = ballOwnerPlayer ? ballOwnerPlayer.team : (snap.possessionTeam || null);
         if (currentTeam && lastPossessionTeam && currentTeam !== lastPossessionTeam) {
             possessionChanges++;
         }
-        lastPossessionTeam = currentTeam;
+        if (currentTeam) lastPossessionTeam = currentTeam;
 
         // 멈춤 감지 (볼이 10프레임 이상 거의 안 움직일 때)
         const dBall = Math.hypot(snap.ball.x - lastBallX, snap.ball.y - lastBallY);
@@ -175,15 +176,15 @@ try {
         lastBallY = snap.ball.y;
 
         if (stuckFrames >= 30) {
-            console.error(`\n❌ [프레임 ${f}] 30프레임 이상 볼이 정지됨!`);
-            console.error('  ball state:', snap.ball.state, 'x/y:', snap.ball.x, snap.ball.y);
-            console.error('  소유자:', ballOwnerPlayer?.id, '팀:', ballOwnerPlayer?.teamId);
-            console.error('  home phase:', engine._phase.home, 'away phase:', engine._phase.away);
-            console.error('  possession:', engine._possession);
+            console.error(`\n [프레임 ${f}] 30프레임 이상 볼이 정지됨!`);
+            console.error('ball state:', snap.ball.state, 'x/y:', snap.ball.x, snap.ball.y);
+            console.error('소유자:', ballOwnerPlayer?.id, '팀:', ballOwnerPlayer?.teamId);
+            console.error('home phase:', engine._phase.home, 'away phase:', engine._phase.away);
+            console.error('possession:', engine._possession);
             const owner = engine.ball.owner;
             if (owner) {
-                console.error('  소유자 포지션/역할:', owner.position, owner.role, 'x/y:', owner.x, owner.y);
-                console.error('  소유자 vx/vy:', owner.vx, owner.vy);
+                console.error('소유자 포지션/역할:', owner.position, owner.role, 'x/y:', owner.x, owner.y);
+                console.error('소유자 vx/vy:', owner.vx, owner.vy);
             }
             break;
         }
@@ -198,23 +199,23 @@ try {
         }
     }
 } catch (e) {
-    console.error(`\n❌ [프레임 ${frames}] 런타임 에러:`, e.message);
+    console.error(`\n [프레임 ${frames}] 런타임 에러:`, e.message);
     console.error(e.stack);
     process.exit(1);
 }
 
 // ===== 결과 출력 =====
 console.log(`\n=== 시뮬레이션 완료 (${frames} 프레임) ===`);
-console.log('  📊 스코어: Home', goals.home, ':', goals.away, 'Away');
-console.log('  🔄 소유권 변경 횟수:', possessionChanges);
-console.log('  📋 이벤트 발생 통계:');
+console.log('스코어: Home', goals.home, ':', goals.away, 'Away');
+console.log('소유권 변경 횟수:', possessionChanges);
+console.log('이벤트 발생 통계:');
 for (const [type, count] of Object.entries(eventsCount).sort((a,b)=>b[1]-a[1])) {
     console.log(`     - ${type}: ${count}회`);
 }
-console.log('  ⚽ 최종 볼 위치:', snap.ball.x.toFixed(1), snap.ball.y.toFixed(1), 'state:', snap.ball.state);
-console.log('  🎯 최종 위상: home=', engine._phase.home, '(진척:', engine._attackProgressX.home.toFixed(0)+')', 
-                              ' away=', engine._phase.away, '(진척:', engine._attackProgressX.away.toFixed(0)+')');
-console.log('  🧭 위상별 프레임 통계:');
+console.log('최종 볼 위치:', snap.ball.x.toFixed(1), snap.ball.y.toFixed(1), 'state:', snap.ball.state);
+console.log('최종 위상: home=', engine._phase.home, '(진척:', engine._attackProgressX.home.toFixed(0)+')', 
+                              'away=', engine._phase.away, '(진척:', engine._attackProgressX.away.toFixed(0)+')');
+console.log('위상별 프레임 통계:');
 for (const tid of ['home','away']) {
     const total = frames;
     const p = phaseFrames[tid];
@@ -236,4 +237,4 @@ for (const teamId of ['home','away']) {
     }
 }
 
-console.log('\n✅ 모든 테스트 통과! V3 엔진 정상 작동 중');
+console.log('\n 모든 테스트 통과! V3 엔진 정상 작동 중');

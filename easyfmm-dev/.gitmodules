@@ -1,0 +1,3 @@
+[submodule "hangulize_repo"]
+	path = hangulize_repo
+	url = https://github.com/sublee/hangulize.git

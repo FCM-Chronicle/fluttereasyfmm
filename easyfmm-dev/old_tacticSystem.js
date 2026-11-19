@@ -326,7 +326,7 @@ class TacticSystem {
         if (this.teamTactics[opponentTeam]) {
             return this.teamTactics[opponentTeam];
         }
-        // 매핑된 전술이 없으면 랜덤으로 하나 배정 (기본값 'possession' 제거)
+        // 매핑된 전술이 없으면 랜덤으로 하나 배정 (기본값 'possession'제거)
         const tacticKeys = Object.keys(this.tactics);
         return tacticKeys[Math.floor(Math.random() * tacticKeys.length)];
     }
@@ -554,99 +554,99 @@ const AIStatGenerator = {
 const CommentaryData = {
     midfield: {
         bypass: [
-            "🚀 {team}, 중원을 거치지 않는 긴 패스로 단숨에 공격 기회를 잡습니다!",
-            "🚀 {team}, 롱볼 한 방으로 상대 허를 찌릅니다!",
-            "🚀 {team}, 미드필더를 생략하고 전방으로 바로 연결합니다.",
-            "🚀 {team}, 다이렉트 패스로 수비 뒷공간을 노립니다!",
-            "🚀 {team}, 후방에서 한 번에 넘어오는 패스! 공격수에게 연결됩니다.",
-            "🚀 {team}, 중원 싸움을 피하고 측면으로 길게 벌려줍니다."
+            "{team}, 중원을 거치지 않는 긴 패스로 단숨에 공격 기회를 잡습니다!",
+            "{team}, 롱볼 한 방으로 상대 허를 찌릅니다!",
+            "{team}, 미드필더를 생략하고 전방으로 바로 연결합니다.",
+            "{team}, 다이렉트 패스로 수비 뒷공간을 노립니다!",
+            "{team}, 후방에서 한 번에 넘어오는 패스! 공격수에게 연결됩니다.",
+            "{team}, 중원 싸움을 피하고 측면으로 길게 벌려줍니다."
         ],
         win: [
-            "💪 {team}, {reason}(으)로 중원을 장악하며 공격을 전개합니다.",
-            "💪 {team}, 허리 싸움에서 승리하며 주도권을 가져옵니다.",
-            "💪 {team}, 미드필더진의 유기적인 패스워크가 돋보입니다.",
-            "💪 중원에서 상대를 완전히 압도하는 {team}입니다.",
-            "💪 {team}, 중원에서 상대를 완전히 갖고 노네요!",
-            "💪 {team}, 지금 중원 싸움에서 우세한 모습을 보입니다"
+            "{team}, {reason}(으)로 중원을 장악하며 공격을 전개합니다.",
+            "{team}, 허리 싸움에서 승리하며 주도권을 가져옵니다.",
+            "{team}, 미드필더진의 유기적인 패스워크가 돋보입니다.",
+            "중원에서 상대를 완전히 압도하는 {team}입니다.",
+            "{team}, 중원에서 상대를 완전히 갖고 노네요!",
+            "{team}, 지금 중원 싸움에서 우세한 모습을 보입니다"
         ]
     },
     defense: {
         success: [
-            "🛡️ {team}, {reason}으로 {opponent}의 공격을 무력화합니다.",
-            "🛡️ {team}, 견고한 수비벽을 세우며 상대 공격을 차단합니다.",
-            "🛡️ {team}, 침착한 수비로 위기를 넘깁니다.",
-            "🛡️ {team}, 상대의 패스 길목을 완벽하게 읽어냅니다.",
-            "🛡️ {team}, 협력 수비로 상대 공격수를 고립시킵니다.",
-            "🛡️ {team}, 몸을 사리지 않는 수비로 실점을 막아냅니다."
+            "{team}, {reason}으로 {opponent}의 공격을 무력화합니다.",
+            "{team}, 견고한 수비벽을 세우며 상대 공격을 차단합니다.",
+            "{team}, 침착한 수비로 위기를 넘깁니다.",
+            "{team}, 상대의 패스 길목을 완벽하게 읽어냅니다.",
+            "{team}, 협력 수비로 상대 공격수를 고립시킵니다.",
+            "{team}, 몸을 사리지 않는 수비로 실점을 막아냅니다."
         ],
         counter: [
-            "⚡️ {team}, 공을 뺏어내자마자 빛같은 역습! 수비 뒷공간을 파고듭니다!",
-            "⚡️ {team}, 수비 성공 후 빠른 전환! 역습 찬스입니다!",
-            "⚡️ {team}, 상대가 라인을 올린 틈을 타 날카로운 역습을 전개합니다!",
-            "⚡️ {team}, 총알 같은 역습! 수비수들이 따라잡지 못합니다!",
-            "⚡️ {team}, 역습 기회! 공격 숫자가 더 많습니다!",
-            "⚡️ {team}, 전광석화 같은 역습으로 상대 진영을 흔듭니다!"
+            "{team}, 공을 뺏어내자마자 빛같은 역습! 수비 뒷공간을 파고듭니다!",
+            "{team}, 수비 성공 후 빠른 전환! 역습 찬스입니다!",
+            "{team}, 상대가 라인을 올린 틈을 타 날카로운 역습을 전개합니다!",
+            "{team}, 총알 같은 역습! 수비수들이 따라잡지 못합니다!",
+            "{team}, 역습 기회! 공격 숫자가 더 많습니다!",
+            "{team}, 전광석화 같은 역습으로 상대 진영을 흔듭니다!"
         ],
         block: [
-            "🧱 {team}, 수비수가 몸을 날려 결정적인 슈팅을 막아냅니다!",
-            "🧱 {team}, 육탄 방어! 슈팅이 수비수 몸에 맞고 굴절됩니다!",
-            "🧱 {team}, 상대의 슈팅을 수비수가 블록해냅니다! 대단한 헌신입니다!",
-            "🧱 {team}, 골문으로 향하던 공을 수비수가 막아냅니다!",
-            "🧱 {team}, 수비벽에 막힙니다! 슈팅이 통과하지 못합니다."
+            "{team}, 수비수가 몸을 날려 결정적인 슈팅을 막아냅니다!",
+            "{team}, 육탄 방어! 슈팅이 수비수 몸에 맞고 굴절됩니다!",
+            "{team}, 상대의 슈팅을 수비수가 블록해냅니다! 대단한 헌신입니다!",
+            "{team}, 골문으로 향하던 공을 수비수가 막아냅니다!",
+            "{team}, 수비벽에 막힙니다! 슈팅이 통과하지 못합니다."
         ]
     },
     miss: {
         counter: [
-            "😱 {team} {player}, 결정적인 역습 찬스에서 슈팅이 빗나갑니다!",
-            "😱 {team}, {player}의 마무리 슈팅이 골문을 외면합니다.",
-            "😱 {team}, 역습 상황에서 {player}의 슛이 뜨고 맙니다.",
-            "😱 {team} {player}, 골키퍼와 1대1 기회를 놓칩니다!",
-            "😱 {team}, {player}의 칩슛이 골대 위로 넘어갑니다.",
-            "😱 {team} {player}, 너무 급하게 찼나요? 역습 찬스가 무산됩니다.",
-            "😱 {team}, 거의 빈골대나 다름 없었는데요, {player}선수. 이걸 놓칩니다",
-            "😱 {team} 역습 찬스에서 슈팅이 골대를 강타합니다! {player}, 많이 아쉽겠어요"
+            "{team} {player}, 결정적인 역습 찬스에서 슈팅이 빗나갑니다!",
+            "{team}, {player}의 마무리 슈팅이 골문을 외면합니다.",
+            "{team}, 역습 상황에서 {player}의 슛이 뜨고 맙니다.",
+            "{team} {player}, 골키퍼와 1대1 기회를 놓칩니다!",
+            "{team}, {player}의 칩슛이 골대 위로 넘어갑니다.",
+            "{team} {player}, 너무 급하게 찼나요? 역습 찬스가 무산됩니다.",
+            "{team}, 거의 빈골대나 다름 없었는데요, {player}선수. 이걸 놓칩니다",
+            "{team} 역습 찬스에서 슈팅이 골대를 강타합니다! {player}, 많이 아쉽겠어요"
         ],
         strong: [
-            "🥅 {team} {player}, 완벽한 찬스를 허공으로 날려버립니다.",
-            "🥅 {team}, {player}의 회심의 슈팅이 골대를 맞고 나갑니다!",
-            "🥅 {team} {player}, 결정적인 기회였는데 슈팅이 빗나갑니다.",
-            "🥅 {team}, {player}의 슈팅이 골문 옆으로 살짝 벗어납니다.",
-            "🥅 {team} {player}, 노마크 찬스에서 실축합니다! 믿을 수 없네요.",
-            "🥅 {team} {player}, 이걸 놓쳐요?? 이건 많이 아쉽겠는데요.",
-            "🥅 {team}, {player}의 발리슛이 빗맞으며 기회가 무산됩니다.",
-            "🥅 {team} 오늘 {player}선수가 컨디션이 좋지 않나봅니다. 이걸 놓쳐요...",
-            "🥅 {player} 선수 이건 거의 아마추어급 실수인데요.."
+            "{team} {player}, 완벽한 찬스를 허공으로 날려버립니다.",
+            "{team}, {player}의 회심의 슈팅이 골대를 맞고 나갑니다!",
+            "{team} {player}, 결정적인 기회였는데 슈팅이 빗나갑니다.",
+            "{team}, {player}의 슈팅이 골문 옆으로 살짝 벗어납니다.",
+            "{team} {player}, 노마크 찬스에서 실축합니다! 믿을 수 없네요.",
+            "{team} {player}, 이걸 놓쳐요?? 이건 많이 아쉽겠는데요.",
+            "{team}, {player}의 발리슛이 빗맞으며 기회가 무산됩니다.",
+            "{team} 오늘 {player}선수가 컨디션이 좋지 않나봅니다. 이걸 놓쳐요...",
+            "{player} 선수 이건 거의 아마추어급 실수인데요.."
         ],
         normal: [
-            "🥅 {team} {player}의 중거리 슛, 골문을 크게 벗어납니다.",
-            "🥅 {team}, {player}의 슈팅이 수비수 맞고 굴절되어 나갑니다.",
-            "🥅 {team} {player}, 과감하게 때려봤지만 골문과는 거리가 멉니다.",
-            "🥅 {team}, {player}의 슛이 힘없이 골대 옆으로 흘러갑니다.",
-            "🥅 {team} {player}, 공간이 열리자마자 슈팅! 아쉽게 빗나갑니다.",
-            "🥅 {team}, {player}의 터닝 슛이 골대 위로 넘어갑니다.",
-            "🥅 {team} {player}, 수비수를 제치고 슈팅했으나 골문을 벗어납니다.",
-            "🥅 {team}, {player}의 기습적인 슈팅! 하지만 골대 옆을 때립니다.",
-            "🥅 {team} {player}, 아쉽습니다! 깻잎 한장 차이로 나갑니다."
+            "{team} {player}의 중거리 슛, 골문을 크게 벗어납니다.",
+            "{team}, {player}의 슈팅이 수비수 맞고 굴절되어 나갑니다.",
+            "{team} {player}, 과감하게 때려봤지만 골문과는 거리가 멉니다.",
+            "{team}, {player}의 슛이 힘없이 골대 옆으로 흘러갑니다.",
+            "{team} {player}, 공간이 열리자마자 슈팅! 아쉽게 빗나갑니다.",
+            "{team}, {player}의 터닝 슛이 골대 위로 넘어갑니다.",
+            "{team} {player}, 수비수를 제치고 슈팅했으나 골문을 벗어납니다.",
+            "{team}, {player}의 기습적인 슈팅! 하지만 골대 옆을 때립니다.",
+            "{team} {player}, 아쉽습니다! 깻잎 한장 차이로 나갑니다."
         ]
     },
     save: {
         counter: [
-            "🧤 키퍼, {player}의 1대1 슈팅을 막아냅니다! 슈퍼 세이브!",
-            "🧤  키퍼, {player}의 결정적인 역습 슈팅을 몸을 날려 쳐냅니다!",
-            "🧤  키퍼, 팀을 구합니다! {player}의 슛을 막았습니다."
+            "키퍼, {player}의 1대1 슈팅을 막아냅니다! 슈퍼 세이브!",
+            "키퍼, {player}의 결정적인 역습 슈팅을 몸을 날려 쳐냅니다!",
+            "키퍼, 팀을 구합니다! {player}의 슛을 막았습니다."
         ],
         strong: [
-            "🧤 골키퍼가 {player}의 슛을 막아냅니다! 엄청난 선방쇼!",
-            "🧤 골키퍼, {player}의 구석을 노린 슛을 쳐냅니다!",
-            "🧤 골키퍼, {player}의 골이나 다름없는 슈팅을 선방합니다!",
-            "🧤 골키퍼, 슈퍼 세이브! {player}의 머리를 감싸쥐게 만듭니다."
+            "골키퍼가 {player}의 슛을 막아냅니다! 엄청난 선방쇼!",
+            "골키퍼, {player}의 구석을 노린 슛을 쳐냅니다!",
+            "골키퍼, {player}의 골이나 다름없는 슈팅을 선방합니다!",
+            "골키퍼, 슈퍼 세이브! {player}의 머리를 감싸쥐게 만듭니다."
         ],
         normal: [
-            "🧤 골키퍼, {player}의 정면 슈팅을 안전하게 잡아냅니다.",
-            "🧤 골키퍼, {player}의 슛을 침착하게 처리합니다.",
-            "🧤 골키퍼, {player}의 중거리 슛을 어렵지 않게 막아냅니다.",
-            "🧤 골키퍼, {player}의 슛을 펀칭으로 걷어냅니다.",
-            "🧤 {team} {player}, 잘 찼네요! 그러나 골키퍼의 슈퍼세이브에 막힙니다!"
+            "골키퍼, {player}의 정면 슈팅을 안전하게 잡아냅니다.",
+            "골키퍼, {player}의 슛을 침착하게 처리합니다.",
+            "골키퍼, {player}의 중거리 슛을 어렵지 않게 막아냅니다.",
+            "골키퍼, {player}의 슛을 펀칭으로 걷어냅니다.",
+            "{team} {player}, 잘 찼네요! 그러나 골키퍼의 슈퍼세이브에 막힙니다!"
         ]
     }
 };
@@ -1005,7 +1005,7 @@ class RealMatchEngine {
             const event = {
                 minute: minute,
                 type: 'pass',
-                description: `⚽ ${teamName} ${this.ballHolder.name}, ${receiver.name}에게 연결하며 공격을 전개합니다.`,
+                description: ` ${teamName} ${this.ballHolder.name}, ${receiver.name}에게 연결하며 공격을 전개합니다.`,
                 from: this.ballHolder.name,
                 to: receiver.name
             };
@@ -1074,13 +1074,13 @@ class RealMatchEngine {
         // 5. 이벤트 생성
         if (this.ballHolder && receiver) {
             const msgs = isShortPass ? [
-                `⚽ ${this.ballHolder.name}, ${receiver.name}에게 짧게 내줍니다.`,
-                `⚽ ${this.ballHolder.name}, 빈 공간의 ${receiver.name}를 보고 패스합니다.`,
-                `⚽ ${this.ballHolder.name}와 ${receiver.name}의 2대1 패스 연결!`
+                ` ${this.ballHolder.name}, ${receiver.name}에게 짧게 내줍니다.`,
+                ` ${this.ballHolder.name}, 빈 공간의 ${receiver.name}를 보고 패스합니다.`,
+                ` ${this.ballHolder.name}와 ${receiver.name}의 2대1 패스 연결!`
             ] : [
-                `🚀 ${this.ballHolder.name}, 전방의 ${receiver.name}를 향해 길게 찹니다!`,
-                `🚀 ${this.ballHolder.name}, ${receiver.name}에게 한 번에 연결하는 롱패스!`,
-                `🚀 ${this.ballHolder.name}, 반대편 ${receiver.name}를 보고 크게 벌려줍니다.`
+                ` ${this.ballHolder.name}, 전방의 ${receiver.name}를 향해 길게 찹니다!`,
+                ` ${this.ballHolder.name}, ${receiver.name}에게 한 번에 연결하는 롱패스!`,
+                ` ${this.ballHolder.name}, 반대편 ${receiver.name}를 보고 크게 벌려줍니다.`
             ];
             
             const msg = msgs[Math.floor(Math.random() * msgs.length)];
@@ -1111,9 +1111,9 @@ class RealMatchEngine {
         
         if (this.ballHolder) {
             const msgs = [
-                `💨 ${this.ballHolder.name}, 빠른 드리블로 치고 나갑니다!`,
-                `💨 ${this.ballHolder.name}, 수비수를 제치고 전진합니다.`,
-                `💨 ${this.ballHolder.name}, 개인기로 공간을 만듭니다.`
+                ` ${this.ballHolder.name}, 빠른 드리블로 치고 나갑니다!`,
+                ` ${this.ballHolder.name}, 수비수를 제치고 전진합니다.`,
+                ` ${this.ballHolder.name}, 개인기로 공간을 만듭니다.`
             ];
             const msg = msgs[Math.floor(Math.random() * msgs.length)];
             
@@ -1157,7 +1157,7 @@ class RealMatchEngine {
                 const event = {
                     minute: minute,
                     type: 'dribble',
-                    description: `💪 ${attacker.name}, 강력한 피지컬로 공을 지켜냅니다!`,
+                    description: ` ${attacker.name}, 강력한 피지컬로 공을 지켜냅니다!`,
                     player: attacker.name
                 };
                 displayEvent(event, this.matchData);
@@ -1174,7 +1174,7 @@ class RealMatchEngine {
         const event = {
             minute: minute,
             type: 'tackle',
-            description: `🛡️ ${defTeamName} ${defender ? defender.name : '수비수'}, 공을 뺏어냅니다!`,
+            description: ` ${defTeamName} ${defender ? defender.name : '수비수'}, 공을 뺏어냅니다!`,
             player: defender ? defender.name : null
         };
         displayEvent(event, this.matchData);
@@ -1186,7 +1186,7 @@ class RealMatchEngine {
         // 수비 라인이 'deep'이고 압박이 'low'일 때 공을 뺏으면 역습 찬스
         if (!isUserAttacking && gameData.deepTactics && gameData.deepTactics.defensiveLine === 'deep' && gameData.deepTactics.pressIntensity === 'low') {
             this.lastAction = 'counter_attack';
-            console.log("⚡ 텐백 후 역습 발동!");
+            console.log("텐백 후 역습 발동!");
         } else {
             this.lastAction = 'turnover';
         }
@@ -1285,19 +1285,19 @@ class RealMatchEngine {
         let event;
 
         if (outcome === 'goal') {
-            // ⚽ 골 성공
+            //  골 성공
             event = createGoalEvent(this.matchData, isUserAttacking);
             let context = "";
             if (this.lastAction === 'counter_attack') {
-                context = "⚡️ 역습의 마침표! ";
+                context = "역습의 마침표! ";
             } else if (shootingQuality === 'decisive') {
-                context = "🔥 압도적인 공격력! ";
+                context = "압도적인 공격력! ";
             } else if (shootingQuality === 'difficult') {
-                context = "💎 천금같은 기회! ";
+                context = "천금같은 기회! ";
             }
 
             // 기존 골 메시지에 문맥 추가
-            event.description = event.description.replace("⚽", "⚽ " + context);
+            event.description = event.description.replace("", " " + context);
 
             // [신규] 골 기록 시 컨트롤러 진동
             if (window.customCursorInstance && typeof window.customCursorInstance.triggerVibration === 'function') {
@@ -1309,7 +1309,7 @@ class RealMatchEngine {
             this.lastAction = 'kickoff';
             this.ballHolder = null; // [추가] 킥오프 대기 상태
         } else if (outcome === 'block') {
-            // 🧱 블록
+            //  블록
             const blockMsg = this.getRandomCommentary('defense', 'block', { team: defendingTeamName });
             event = { minute: minute, type: 'block', description: blockMsg };
             
@@ -1435,7 +1435,7 @@ class RealMatchEngine {
             const numPlayers = playersInLine.length;
             const newStamina = (currentStamina * (numPlayers - 1) + 100) / numPlayers;
             this.userStats[lineKey].stamina = Math.min(100, newStamina);
-            console.log(`🔄 교체 발생 (${lineKey}): ${playerOut.name} OUT. 스태미나 재계산: ${currentStamina.toFixed(1)} -> ${this.userStats[lineKey].stamina.toFixed(1)}`);
+            console.log(`교체 발생 (${lineKey}): ${playerOut.name} OUT. 스태미나 재계산: ${currentStamina.toFixed(1)} -> ${this.userStats[lineKey].stamina.toFixed(1)}`);
         }
     }
 }
@@ -1568,7 +1568,7 @@ function showKickoffButton(matchData, matchEngine, strengthDiff) {
     kickoffInfo.innerHTML = `
         <div class="event-time">준비 완료</div>
         <div>경기 시작 준비가 완료되었습니다.</div>
-        <button id="kickoffBtn" class="btn primary" style="margin-top: 10px;">⚽ 킥오프</button>
+        <button id="kickoffBtn" class="btn primary"style="margin-top: 10px;"> 킥오프</button>
     `;
     eventList.appendChild(kickoffInfo);
 
@@ -1580,7 +1580,7 @@ function showKickoffButton(matchData, matchEngine, strengthDiff) {
 }
 
 function startMatchSimulation(matchData, matchEngine, strengthDiff) {
-    console.log('▶️ [Match] 경기 시뮬레이션 시작 (Kickoff)');
+    console.log('[Match] 경기 시뮬레이션 시작 (Kickoff)');
     matchData.isRunning = true;
     matchData.strengthDiff = strengthDiff; // 전력 차이 데이터 저장
     matchData.intervalId = null; // 인터벌 ID 저장
@@ -1594,7 +1594,7 @@ function startMatchSimulation(matchData, matchEngine, strengthDiff) {
     const kickoffEvent = {
         minute: 0,
         type: 'kickoff',
-        description: `🟢 경기 시작! ${teamNames[matchData.homeTeam]} vs ${teamNames[matchData.awayTeam]}`
+        description: `경기 시작! ${teamNames[matchData.homeTeam]} vs ${teamNames[matchData.awayTeam]}`
     };
     displayEvent(kickoffEvent, matchData);
 
@@ -1826,26 +1826,26 @@ if (hasAssist && scorer) {
     const scoreDiff = Math.abs(matchData.homeScore - matchData.awayScore);
     
     if (totalGoals === 1) {
-        specialMessage = " 🚀 선제골!";
+        specialMessage = "선제골!";
     }
     
     if (matchData.minute >= 85) {
         if (scoreDiff <= 1) {
-            specialMessage += " 🔥 극적인 골!";
+            specialMessage += "극적인 골!";
         } else if (scoreDiff === 2) {
-            specialMessage += " ⚡ 결정적인 골!";
+            specialMessage += "결정적인 골!";
         }
     } else if (matchData.minute >= 75) {
         if (scoreDiff === 1) {
-            specialMessage += " ⚡ 후반 중요한 동점골!";
+            specialMessage += "후반 중요한 동점골!";
         } else {
-            specialMessage += " ⚡ 후반 중요한 골!";
+            specialMessage += "후반 중요한 골!";
         }
     } else if (matchData.minute <= 5) {
         if (totalGoals === 1) {
-            specialMessage = " 🚀 경기 시작과 함께 선제골!";
+            specialMessage = "경기 시작과 함께 선제골!";
         } else {
-            specialMessage += " 🚀 경기 초반 골!";
+            specialMessage += "경기 초반 골!";
         }
     }
     
@@ -1855,10 +1855,10 @@ if (hasAssist && scorer) {
             Math.abs(matchData.homeScore - (matchData.awayScore - 1));
         
         if (scoreDiff === 0) {
-            specialMessage += " ⚖️ 동점골!";
+            specialMessage += "동점골!";
         }
         else if (prevScoreDiff >= 2 && scoreDiff <= 1) {
-            specialMessage += " 🎯 추격골!";
+            specialMessage += "추격골!";
         }
         else if (totalGoals >= 3) {
             const prevHomeScore = isUserTeam ? matchData.homeScore - 1 : matchData.homeScore;
@@ -1866,7 +1866,7 @@ if (hasAssist && scorer) {
             
             if ((isUserTeam && prevHomeScore < prevAwayScore && matchData.homeScore > matchData.awayScore) ||
                 (!isUserTeam && prevAwayScore < prevHomeScore && matchData.awayScore > matchData.homeScore)) {
-                specialMessage += " 🔄 역전골!";
+                specialMessage += "역전골!";
             }
         }
     }
@@ -1954,11 +1954,11 @@ if (hasAssist && scorer) {
         const assistMessage = getAssistMessage(assister.position);
         const goalFinish = goalFinishMessages[Math.floor(Math.random() * goalFinishMessages.length)];
         
-        goalDescription = `⚽ ${teamName}의 ${assister.name}(${assister.rating})${assistMessage} ${scorer.name}(${scorer.rating})${goalFinish}${specialMessage}`;
+        goalDescription = ` ${teamName}의 ${assister.name}(${assister.rating})${assistMessage} ${scorer.name}(${scorer.rating})${goalFinish}${specialMessage}`;
     } else {
         
         const soloMessage = soloGoalMessages[Math.floor(Math.random() * soloGoalMessages.length)];
-        goalDescription = `⚽ ${teamName}의 ${scorer ? scorer.name : '선수'}(${scorer ? scorer.rating : '?'})${soloMessage}${specialMessage}`;
+        goalDescription = ` ${teamName}의 ${scorer ? scorer.name : '선수'}(${scorer ? scorer.rating : '?'})${soloMessage}${specialMessage}`;
     }
 
     return {
@@ -1997,11 +1997,11 @@ function createFoulEvent(matchData) {
     const isYellow = Math.random() < 0.2;
     
     const foulDescriptions = [
-        `⚠️ ${foulTeamName} ${player ? player.name + '의' : ''} 파울입니다.`,
-        `⚠️ ${foulTeamName}, 무리한 태클로 파울을 범합니다.`,
-        `⚠️ ${foulTeamName}, 상대의 공격 흐름을 끊는 파울.`,
-        `⚠️ ${foulTeamName}, 손을 써서 파울이 선언됩니다.`,
-        `⚠️ ${foulTeamName}, 공중볼 경합 과정에서 파울.`
+        ` ${foulTeamName} ${player ? player.name + '의' : ''} 파울입니다.`,
+        ` ${foulTeamName}, 무리한 태클로 파울을 범합니다.`,
+        ` ${foulTeamName}, 상대의 공격 흐름을 끊는 파울.`,
+        ` ${foulTeamName}, 손을 써서 파울이 선언됩니다.`,
+        ` ${foulTeamName}, 공중볼 경합 과정에서 파울.`
     ];
 
     return {
@@ -2010,7 +2010,7 @@ function createFoulEvent(matchData) {
         team: foulTeamName,
         player: player,
         isYellow: isYellow,
-        description: isYellow && player ? `🟨 ${foulTeamName}의 ${player.name}, 거친 파울로 경고를 받습니다.` : foulDescriptions[Math.floor(Math.random() * foulDescriptions.length)]
+        description: isYellow && player ? ` ${foulTeamName}의 ${player.name}, 거친 파울로 경고를 받습니다.` : foulDescriptions[Math.floor(Math.random() * foulDescriptions.length)]
     };
 }
 
@@ -2023,7 +2023,7 @@ function createPassEvent(matchData) {
         minute: matchData.minute,
         type: 'pass',
         team: teamNames[team],
-        description: `⚽ ${teamNames[team]}${message}`
+        description: ` ${teamNames[team]}${message}`
     };
 }
 
@@ -2035,7 +2035,7 @@ function createThrowInEvent(matchData) {
         minute: matchData.minute,
         type: 'throwin',
         team: teamNames[team],
-        description: `🤾 ${teamNames[team]}의 스로인입니다.`
+        description: ` ${teamNames[team]}의 스로인입니다.`
     };
 }
 
@@ -2047,7 +2047,7 @@ function createGoalKickEvent(matchData) {
         minute: matchData.minute,
         type: 'goalkick',
         team: teamNames[team],
-        description: `🥅 ${teamNames[team]}의 골킥입니다.`
+        description: ` ${teamNames[team]}의 골킥입니다.`
     };
 }
 
@@ -2059,7 +2059,7 @@ function createCornerEvent(matchData) {
         minute: matchData.minute,
         type: 'corner',
         team: teamNames[team],
-        description: `🚩 ${teamNames[team]}의 코너킥입니다.`
+        description: ` ${teamNames[team]}의 코너킥입니다.`
     };
 }
 
@@ -2079,7 +2079,7 @@ function createInjuryEvent(matchData, injuryResult) {
         minute: matchData.minute,
         type: 'injury',
         team: injuryResult.teamName,
-        description: `🚑 ${injuryResult.teamName}의 ${injuryResult.player.name}(${injuryResult.player.rating})이(가) ${message} ${injuryResult.gamesOut}경기 결장 예정.`
+        description: ` ${injuryResult.teamName}의 ${injuryResult.player.name}(${injuryResult.player.rating})이(가) ${message} ${injuryResult.gamesOut}경기 결장 예정.`
     };
 }
 
@@ -2114,7 +2114,7 @@ function displayEvent(event, matchData) {
 }
 
 function endMatch(matchData) {
-    console.log('🏁 [Match] 경기 종료 처리 시작 (endMatch)');
+    console.log('[Match] 경기 종료 처리 시작 (endMatch)');
     document.getElementById('endMatchBtn').style.display = 'block';
     document.getElementById('substituteBtn').style.display = 'none'; // 교체 버튼 숨기기
 
@@ -2211,9 +2211,9 @@ function endMatch(matchData) {
     
     if (isUpset) {
         if (result === '승리') {
-            finalMessage += `\n🎉 대이변! 전력상 불리했던 경기에서 승리!`;
+            finalMessage += `\n 대이변! 전력상 불리했던 경기에서 승리!`;
         } else if (result === '패배') {
-            finalMessage += `\n😱 충격! 전력상 유리했던 경기에서 패배...`;
+            finalMessage += `\n 충격! 전력상 유리했던 경기에서 패배...`;
         }
     }
     
@@ -2297,7 +2297,7 @@ function endMatch(matchData) {
                 gameData.lineStats[line].stamina = 100;
             }
         });
-        console.log('🔋 유저 팀 스태미나 100으로 회복 완료');
+        console.log('유저 팀 스태미나 100으로 회복 완료');
     }
 
     // 경기 종료 후 처리 (부상, 은퇴, 시즌종료 체크)
@@ -2306,13 +2306,13 @@ function endMatch(matchData) {
         // checkSeasonEnd는 인터뷰 후로 이동
     }, 1000);
     
-    // ✅✅ 부상 선수를 스쿼드에서 제거 (추가!)
+    //  부상 선수를 스쿼드에서 제거 (추가!)
     injurySystem.removeInjuredFromSquad();
 
     // [신규] 일시적 스탯 초기화 (다음 경기에는 적용 안 됨)
     if (gameData.temporaryStats) {
         gameData.temporaryStats = {};
-        console.log('🧹 경기 종료: 일시적 스탯(상담 효과)이 초기화되었습니다.');
+        console.log('경기 종료: 일시적 스탯(상담 효과)이 초기화되었습니다.');
     }
 }
 function updateLeagueData(matchData, points) {
@@ -2641,10 +2641,10 @@ function showMatchResultModal(matchData, ratings, result, userScore, opponentSco
             row.className = `rating-row ${isMom ? 'mom' : ''}`;
             
             let icons = '';
-            if (r.goals > 0) icons += ' ⚽'.repeat(r.goals);
-            if (r.assists > 0) icons += ' 👟'.repeat(r.assists);
-            if (r.hasYellow) icons += ' 🟨';
-            if (isMom) icons += ' ⭐MOM';
+            if (r.goals > 0) icons += ' '.repeat(r.goals);
+            if (r.assists > 0) icons += ' '.repeat(r.assists);
+            if (r.hasYellow) icons += ' ';
+            if (isMom) icons += 'MOM';
             
             row.innerHTML = `
                 <div class="player-name">
@@ -2798,7 +2798,7 @@ class InjurySystem {
         this.injuredPlayers.clear();
     }
 
-    // ✅ 부상 선수를 스쿼드에서 제거하는 함수 추가
+    //  부상 선수를 스쿼드에서 제거하는 함수 추가
     removeInjuredFromSquad() {
         if (!gameData.selectedTeam) return;
         
@@ -2856,7 +2856,7 @@ function openSubstitutionModal(matchData, isForced = false, injuredPlayer = null
     fieldPlayersList.innerHTML = '';
     benchPlayersList.innerHTML = '';
     subsLeftEl.textContent = `남은 교체 횟수: ${5 - matchData.substitutionsMade}`;
-    modalTitle.textContent = isForced ? `🚨 부상 선수 교체` : '선수 교체';
+    modalTitle.textContent = isForced ? `부상 선수 교체` : '선수 교체';
 
     // 현재 필드 위 선수 목록 생성
     const squad = gameData.squad;
@@ -2963,7 +2963,7 @@ function performSubstitution(playerOut, playerIn, matchData) {
     const subEvent = {
         minute: matchData.minute,
         type: 'substitution',
-        description: `🔄 교체: IN ${playerIn.name}(${playerIn.rating}) / OUT ${playerOut.name}(${playerOut.rating}).<br>
+        description: `교체: IN ${playerIn.name}(${playerIn.rating}) / OUT ${playerOut.name}(${playerOut.rating}).<br>
                       전력 재계산: ${newRating.toFixed(1)} + ${bonus}(보너스) = ${matchData.userTeamRating.toFixed(1)}`
     };
     displayEvent(subEvent, matchData);
@@ -2975,7 +2975,7 @@ function performSubstitution(playerOut, playerIn, matchData) {
     if (matchData.isPausedForInjury) {
         matchData.isPausedForInjury = false;
         matchData.isRunning = true;
-        console.log('🔄 부상 교체 완료, 경기 재개');
+        console.log('부상 교체 완료, 경기 재개');
     }
 
     // 6. 부상으로 인한 강제 교체였다면 경기 재개
@@ -2988,7 +2988,7 @@ function performSubstitution(playerOut, playerIn, matchData) {
 function handleForcedSubstitution(injuredPlayer, matchData) {
     matchData.isRunning = false; // 경기 일시정지
     matchData.isPausedForInjury = true;
-    alert(`🚨 ${injuredPlayer.name} 선수가 부상으로 경기를 뛸 수 없습니다! 교체해야 합니다.`);
+    alert(` ${injuredPlayer.name} 선수가 부상으로 경기를 뛸 수 없습니다! 교체해야 합니다.`);
     openSubstitutionModal(matchData, true, injuredPlayer);
 }
 
@@ -3015,14 +3015,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ✅✅✅ 이 부분이 **반드시** 있어야 합니다! ✅✅✅
+//  이 부분이 **반드시** 있어야 합니다! 
 const injurySystem = new InjurySystem();
 
 // 전역으로 노출 - 다른 파일에서 사용 가능하도록
 window.injurySystem = injurySystem;
 window.InjurySystem = InjurySystem;
 
-console.log('✅ Injury System 로드 완료');
+console.log('Injury System 로드 완료');
 
 // 전역으로 함수들 노출
 window.TacticSystem = TacticSystem;

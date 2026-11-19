@@ -100,20 +100,20 @@ function migrateDeepTactics() {
     const oldStyle = typeof dt.passStyle      === 'string' ? dt.passStyle      : null; // short|direct|long
     const oldSide  = typeof dt.attackingSide  === 'string' ? dt.attackingSide  : null; // all|middle|left|right
 
-    if (!('pressIntensity' in dt) && oldPress) {
+    if (!('pressIntensity'in dt) && oldPress) {
         dt.pressIntensity = oldPress === 'high' ? 'high'
                           : oldPress === 'low'  ? 'low'  : 'mid';
     }
-    if (!('passTempo' in dt) && oldTend) {
+    if (!('passTempo'in dt) && oldTend) {
         dt.passTempo = oldTend === 'offensive' ? 'fast'
                      : oldTend === 'defensive' ? 'slow' : 'normal';
     }
-    if (!('passLength' in dt) && oldStyle) {
+    if (!('passLength'in dt) && oldStyle) {
         dt.passLength = oldStyle === 'long'   ? 'long'
                       : oldStyle === 'short'  ? 'short' : 'mixed';
     }
-    if (!('defensiveLine' in dt)) dt.defensiveLine = 'standard';
-    if (!('attackFocus' in dt) && oldSide) {
+    if (!('defensiveLine'in dt)) dt.defensiveLine = 'standard';
+    if (!('attackFocus'in dt) && oldSide) {
         dt.attackFocus = oldSide === 'all' ? 'mixed' : oldSide;
     }
     // passStyle을 새 엔진이 기대하는 객체 형태로 정규화
@@ -154,51 +154,50 @@ const DeepTacticManager = {
             tacticsTab.appendChild(container);
         }
         const dt = gameData.deepTactics;
-        container.innerHTML = `
-            <h4 style="color:#ffd700;margin-top:0;">심층 전술 세부 설정</h4>
+        container.replaceChildren();
 
-            <div style="margin-bottom:10px;">
-                <label style="display:block;margin-bottom:4px;color:#ccc;">수비 라인</label>
-                <select id="dt-defensiveLine" style="width:100%;padding:5px;background:#333;color:white;">
-                    <option value="deep"     ${dt.defensiveLine==='deep'     ?'selected':''}>딥 (Deep)</option>
-                    <option value="standard" ${dt.defensiveLine==='standard' ?'selected':''}>표준</option>
-                    <option value="high"     ${dt.defensiveLine==='high'     ?'selected':''}>하이 (High)</option>
-                </select>
-            </div>
+        const title = document.createElement('h4');
+        title.style.cssText = 'color:#ffd700;margin-top:0;';
+        title.textContent = '심층 전술 세부 설정';
+        container.appendChild(title);
 
-            <div style="margin-bottom:10px;">
-                <label style="display:block;margin-bottom:4px;color:#ccc;">압박 강도</label>
-                <select id="dt-pressIntensity" style="width:100%;padding:5px;background:#333;color:white;">
-                    <option value="low"  ${dt.pressIntensity==='low'  ?'selected':''}>낮음</option>
-                    <option value="mid"  ${dt.pressIntensity==='mid'  ?'selected':''}>보통</option>
-                    <option value="high" ${dt.pressIntensity==='high' ?'selected':''}>높음</option>
-                </select>
-            </div>
+        const fields = [
+            ['defensiveLine', '수비 라인', [['deep', '딥 (Deep)'], ['standard', '표준'], ['high', '하이 (High)']]],
+            ['pressIntensity', '압박 강도', [['low', '낮음'], ['mid', '보통'], ['high', '높음']]],
+            ['passTempo', '패스 템포', [['slow', '느림'], ['normal', '보통'], ['fast', '빠름']]],
+            ['passLength', '패스 길이', [['short', '짧게'], ['mixed', '혼합'], ['long', '길게']]]
+        ];
 
-            <div style="margin-bottom:10px;">
-                <label style="display:block;margin-bottom:4px;color:#ccc;">패스 템포</label>
-                <select id="dt-passTempo" style="width:100%;padding:5px;background:#333;color:white;">
-                    <option value="slow"   ${dt.passTempo==='slow'   ?'selected':''}>느림</option>
-                    <option value="normal" ${dt.passTempo==='normal' ?'selected':''}>보통</option>
-                    <option value="fast"   ${dt.passTempo==='fast'   ?'selected':''}>빠름</option>
-                </select>
-            </div>
+        fields.forEach(([k, label, options]) => {
+            const div = document.createElement('div');
+            div.style.marginBottom = '10px';
 
-            <div style="margin-bottom:10px;">
-                <label style="display:block;margin-bottom:4px;color:#ccc;">패스 길이</label>
-                <select id="dt-passLength" style="width:100%;padding:5px;background:#333;color:white;">
-                    <option value="short" ${dt.passLength==='short' ?'selected':''}>짧게</option>
-                    <option value="mixed" ${dt.passLength==='mixed' ?'selected':''}>혼합</option>
-                    <option value="long"  ${dt.passLength==='long'  ?'selected':''}>길게</option>
-                </select>
-            </div>
+            const lbl = document.createElement('label');
+            lbl.style.cssText = 'display:block;margin-bottom:4px;color:#ccc;';
+            lbl.textContent = label;
 
-            <div style="color:#aaa;font-size:0.8rem;">* 설정은 자동 적용됩니다</div>
-        `;
-        ['defensiveLine','pressIntensity','passTempo','passLength'].forEach(key => {
-            document.getElementById(`dt-${key}`)
-                .addEventListener('change', e => { gameData.deepTactics[key] = e.target.value; });
+            const select = document.createElement('select');
+            select.id = `dt-${k}`;
+            select.style.cssText = 'width:100%;padding:5px;background:#333;color:white;';
+
+            options.forEach(([v, l]) => {
+                const opt = document.createElement('option');
+                opt.value = v;
+                opt.textContent = l;
+                if (dt[k] === v) opt.selected = true;
+                select.appendChild(opt);
+            });
+
+            select.addEventListener('change', e => { gameData.deepTactics[k] = e.target.value; });
+
+            div.append(lbl, select);
+            container.appendChild(div);
         });
+
+        const note = document.createElement('div');
+        note.style.cssText = 'color:#aaa;font-size:0.8rem;';
+        note.textContent = '* 설정은 자동 적용됩니다';
+        container.appendChild(note);
     }
 };
 
@@ -247,8 +246,7 @@ class SimPlayer {
         // Steal cooldown (anti-exploit)
         this._stealCooldown = 0;
 
-        // Turnover recovery state: 'immediate' | 'delayed' | 'frozen'
-        this._recoveryMode  = null;
+        // Turnover recovery state: 'immediate' | 'delayed' | 'frozen'this._recoveryMode  = null;
         this._recoveryDelay = 0;
 
         this.stats = this._buildStats(data, role, lineStats, morale, tacticMultiplier);
@@ -847,7 +845,7 @@ class RealSoccerEngine {
         } else if (isWingerOnFlank && distToGoal < 28) {
             prob = 0.90; // 크로스 구역에 도달하면 패스/크로스!
         } else {
-            // ⭐ MF/FW: 드리블로 침투/전진 하게 패스 확률 대폭 낮춤!
+            //  MF/FW: 드리블로 침투/전진 하게 패스 확률 대폭 낮춤!
             prob = 0.22; // 기존 0.55 → 0.22! (78% 확률로 드리블!)
             if (underPressure) prob = 0.48; // 압박 시에도 48%만 패스! (기존 88%→48%)
             // FW 침투 상황: 패스 더 적게!
@@ -912,7 +910,7 @@ class RealSoccerEngine {
         const distToOpp     = nearestOpp?.dist ?? 999;
         const isOneOnOne    = distToOpp > 18;
 
-        // ⭐ FORWARD DRIVE: 무조건 전진! 후진하는 일 없게!
+        //  FORWARD DRIVE: 무조건 전진! 후진하는 일 없게!
         let moveSpeed = 0.70 * clamp(speedFactor, 0.75, 1.8); // 0.55→0.70!
         let targetX   = player.x + moveDir * 48; // 35→48! 더 멀리 전진!
         let targetY   = player.y;
@@ -952,12 +950,12 @@ class RealSoccerEngine {
             }
         }
 
-        // ⭐⭐ ABSOLUTE: NO BACKWARD DRIBBLING! 절대 후진하지 않음!
+        //  ABSOLUTE: NO BACKWARD DRIBBLING! 절대 후진하지 않음!
         targetX = (moveDir === 1) ? Math.max(targetX, player.x + 8) : Math.min(targetX, player.x - 8);
 
         targetY = clamp(targetY, 3, 97);
 
-        // ⭐ USE _applyMovement for collision avoidance & position bands!
+        //  USE _applyMovement for collision avoidance & position bands!
         // (기존 직접 vx/vy 조작 대신 _applyMovement로 통일해서 충돌+포지션 밴드 적용!)
         this._applyMovement(player, targetX, targetY, moveSpeed);
 
@@ -1117,7 +1115,7 @@ class RealSoccerEngine {
         } else {
             this.ball.targetPos = { x: to.x, y: to.y };
             const desc = isThroughPass
-                ? `⚡ ${from.name}, ${to.name}에게 결정적인 스루패스!`
+                ? ` ${from.name}, ${to.name}에게 결정적인 스루패스!`
                 : `${from.name}, ${to.name}에게 연결!`;
             this.eventsQueue.push({ type: eventType, from: from.name, to: to.name, desc });
         }
@@ -1214,7 +1212,7 @@ class RealSoccerEngine {
             if (blockers.length > 0 && Math.random() < 0.1) {
                 const blocker = blockers[0];
                 this.eventsQueue.push({ type:'block', shooter: shooter.name, blocker: blocker.name,
-                    desc:`🛡️ ${blocker.name}, 몸을 날려 슈팅을 막아냅니다!` });
+                    desc:` ${blocker.name}, 몸을 날려 슈팅을 막아냅니다!` });
                 this.ball.state = BallState.LOOSE; this.ball.owner = null;
                 this.ball.x = blocker.x + (isHomeAtt ? -5 :  5);
                 this.ball.y = blocker.y + (Math.random() - 0.5) * 15;
@@ -1229,19 +1227,19 @@ class RealSoccerEngine {
 
                 if (Math.random() < 0.15) {
                     this.eventsQueue.push({ type:'save', shooter: shooter.name, gk: enemyGk.name,
-                        desc:`🧤 ${enemyGk.name}, 슈팅을 펀칭으로 쳐냅니다!` });
+                        desc:` ${enemyGk.name}, 슈팅을 펀칭으로 쳐냅니다!` });
                     this.ball.state = BallState.LOOSE; this.ball.owner = null;
                     this.ball.x = enemyGk.x + (isHomeAtt ? -10 : 10);
                     this.ball.y = enemyGk.y + (Math.random() - 0.5) * 30;
                 } else {
                     this.eventsQueue.push({ type:'save', shooter: shooter.name, gk: enemyGk.name,
-                        desc:`🧤 ${enemyGk.name}, 안정적으로 공을 잡아냅니다.` });
+                        desc:` ${enemyGk.name}, 안정적으로 공을 잡아냅니다.` });
                     this.ball.state = BallState.CONTROLLED; this.ball.owner = enemyGk;
                     this.ball.x = enemyGk.x; this.ball.y = enemyGk.y;
                 }
             } else {
                 this.eventsQueue.push({ type:'miss', shooter: shooter.name,
-                    desc:`🥅 ${shooter.name}의 슈팅이 골문을 벗어납니다.` });
+                    desc:` ${shooter.name}의 슈팅이 골문을 벗어납니다.` });
                 this.ball.state = BallState.LOOSE;
                 this.ball.x = goalX === 0 ? 5 : 95; this.ball.y = 50;
             }
@@ -1416,15 +1414,15 @@ class RealSoccerEngine {
                     const ab = behavior.attackBias || 0.5;
                     const db = behavior.defenseBias || 0;
 
-                    // 🚫 NO BALL.Y CLUSTERING! 공 Y 따라 다같이 몰리는 현상 제거!
+                    //  NO BALL.Y CLUSTERING! 공 Y 따라 다같이 몰리는 현상 제거!
                     // baseY weight를 극대화! ballY는 아주 조금만 반영!
                     let ballW = clamp(0.3 + ab * 0.15 - db * 0.05, 0.2, 0.55); // 0.5~1.0 → 0.2~0.55로 크게 낮춤!
                     targetX = p.baseX * (1 - ballW) + this.ball.x * ballW;
-                    // ⭐ targetY: baseY 우선! ball.y 영향 최소화!
+                    //  targetY: baseY 우선! ball.y 영향 최소화!
                     let yBallW = behavior.hugLine ? 0.05 : 0.22; // hugLine이면 거의 베이스Y!
                     targetY = p.baseY * (1 - yBallW) + this.ball.y * yBallW;
 
-                    // ⭐⭐ WIDE MF: FORCE hug line! 절대 센터로 몰려오지 않음!
+                    //  WIDE MF: FORCE hug line! 절대 센터로 몰려오지 않음!
                     if (behavior.hugLine) {
                         targetY = p.baseY < 50 ? 10 : 90; // 극단적으로 와이드 유지!
                     }
@@ -1493,8 +1491,7 @@ class RealSoccerEngine {
         // Initialize run state
         if (!p.burstTimer) p.burstTimer = 0;
         if (!p.forceReturnTimer) p.forceReturnTimer = 0;
-        if (p._runKind === undefined) p._runKind = 'neutral';   // 'burst','linkup','channel','neutral'
-        if (p._runTimer === undefined) p._runTimer = 0;
+        if (p._runKind === undefined) p._runKind = 'neutral';   // 'burst','linkup','channel','neutral'if (p._runTimer === undefined) p._runTimer = 0;
         if (p._curvPhase === undefined) p._curvPhase = Math.random() * Math.PI * 2;
 
         const hasFriendlyBall = this.ball.owner && this.ball.owner.teamId === p.teamId;

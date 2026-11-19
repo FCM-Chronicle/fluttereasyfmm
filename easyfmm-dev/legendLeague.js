@@ -359,40 +359,33 @@ const LegendLeagueManager = {
     },
 
     createLegendLeagueButton() {
-        if (document.getElementById('legendLeagueBtn')) return;
+        const existingBtn = document.getElementById('legendLeagueBtn');
+        if (existingBtn) {
+            existingBtn.onclick = () => this.startLegendLeague();
+            return;
+        }
 
         const btn = document.createElement('button');
         btn.id = 'legendLeagueBtn';
         btn.className = 'btn';
-        btn.innerHTML = '👑 레전드 리그';
-        btn.style.cssText = `
-            position: fixed; 
-            top: 70px; 
-            left: 20px; 
-            z-index: 100000; 
-            background: linear-gradient(45deg, #f1c40f, #e67e22); 
-            color: white; 
-            padding: 10px 20px; 
-            border: none; 
-            border-radius: 5px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-            cursor: pointer; 
-            font-weight: bold;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        `;
+        btn.type = 'button';
+        btn.title = '레전드 슈퍼 리그 시작';
+        btn.innerHTML = `${typeof iconSVG === 'function' ? iconSVG('crown') : ''} <span>레전드 리그</span>`;
         btn.onclick = () => this.startLegendLeague();
-        document.body.appendChild(btn);
+
+        const container = document.querySelector('.team-selection-extra-modes') || document.getElementById('teamSelection') || document.body;
+        container.appendChild(btn);
     },
 
     startLegendLeague() {
-        if (!confirm('👑 레전드 리그를 시작하시겠습니까?\n\n모든 팀이 아이콘 선수들로 교체되며, 새로운 게임이 시작됩니다.\n(기존 진행 상황은 저장되지 않은 경우 사라집니다)')) {
+        if (!confirm('[레전드 리그] 레전드 리그를 시작하시겠습니까?\n\n모든 팀이 아이콘 선수들로 교체되며, 새로운 게임이 시작됩니다.\n(기존 진행 상황은 저장되지 않은 경우 사라집니다)')) {
             return;
         }
 
         const btn = document.getElementById('legendLeagueBtn');
         if (btn) btn.style.display = 'none';
 
-        console.log("👑 레전드 리그 모드 진입...");
+        console.log("[LegendLeague] 레전드 리그 모드 진입...");
 
         // 1. 전역 데이터 교체
         // script.js의 const 변수 참조 유지를 위해 객체를 새로 할당하지 않고 내용만 비움
@@ -403,7 +396,7 @@ const LegendLeagueManager = {
         // 레전드 팀 데이터 로드
         Object.entries(this.legendTeams).forEach(([teamKey, teamData]) => {
             window.teams[teamKey] = JSON.parse(JSON.stringify(teamData.players)); // 깊은 복사
-            window.teamNames[teamKey] = teamData.description.split(', ')[1] || teamKey; // "전설의 바르셀로나" 등
+            window.teamNames[teamKey] = teamData.description.split(', ')[1] || teamKey; // "전설의 바르셀로나"등
             window.allTeams[teamKey] = {
                 league: 1, // 모든 레전드 팀은 1부 리그
                 players: window.teams[teamKey],
@@ -434,7 +427,7 @@ const LegendLeagueManager = {
             showScreen('teamSelection');
         }
 
-        alert("👑 레전드 리그에 오신 것을 환영합니다!\n감독을 맡을 전설의 팀을 선택해주세요.");
+        alert("[레전드 리그] 레전드 리그에 오신 것을 환영합니다!\n감독을 맡을 전설의 팀을 선택해주세요.");
     },
 
     getTacticsMap() {
@@ -450,11 +443,17 @@ const LegendLeagueManager = {
         if (!teamSelectionScreen) return;
 
         // 기존 내용 초기화
-        teamSelectionScreen.innerHTML = '<h1>팀 선택</h1>';
+        teamSelectionScreen.replaceChildren();
+        const titleH1 = document.createElement('h1');
+        titleH1.textContent = '팀 선택';
+        teamSelectionScreen.appendChild(titleH1);
         
         const section = document.createElement('div');
         section.className = 'league-section';
-        section.innerHTML = '<h2 class="league-title">👑 레전드 슈퍼 리그</h2>';
+        const titleH2 = document.createElement('h2');
+        titleH2.className = 'league-title';
+        titleH2.innerHTML = `${typeof iconSVG === 'function' ? iconSVG('crown') : ''} <span>레전드 슈퍼 리그</span>`;
+        section.appendChild(titleH2);
         
         const grid = document.createElement('div');
         grid.className = 'teams-grid';
@@ -468,19 +467,30 @@ const LegendLeagueManager = {
             // 대표 스타 3명
             const stars = teamData.players.slice(0, 3).map(p => p.name).join(', ');
 
-            const logoHtml = typeof getTeamLogoHTML === 'function' ? getTeamLogoHTML(teamKey) : '';
+            const headerRow = document.createElement('div');
+            headerRow.style.cssText = 'display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px;';
+            if (typeof createTeamLogoElement === 'function') {
+                headerRow.appendChild(createTeamLogoElement(teamKey));
+            }
+            const teamH3 = document.createElement('h3');
+            teamH3.style.margin = '0';
+            teamH3.textContent = window.teamNames[teamKey] || teamKey;
+            headerRow.appendChild(teamH3);
 
-            card.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px;">
-                    ${logoHtml}
-                    <h3 style="margin: 0;">${window.teamNames[teamKey]}</h3>
-                </div>
-                <div class="team-rating">오버롤: 95+</div>
-                <p class="team-description">${teamData.description}</p>
-                <div class="key-players" style="font-size: 0.8rem; color: #ffd700; margin-top: 5px;">
-                    ⭐ ${stars} 등
-                </div>
-            `;
+            const ratingDiv = document.createElement('div');
+            ratingDiv.className = 'team-rating';
+            ratingDiv.textContent = '오버롤: 95+';
+
+            const descP = document.createElement('p');
+            descP.className = 'team-description';
+            descP.textContent = teamData.description;
+
+            const starsDiv = document.createElement('div');
+            starsDiv.className = 'key-players';
+            starsDiv.style.cssText = 'font-size: 0.8rem; color: #ffd700; margin-top: 5px;';
+            starsDiv.textContent = ` ${stars} 등`;
+
+            card.append(headerRow, ratingDiv, descP, starsDiv);
 
             card.addEventListener('click', function() {
                 if (typeof selectTeam === 'function') {

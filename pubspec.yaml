@@ -1,7 +1,7 @@
 name: easyfmm_mobile
 description: "EasyFMM Offline App"
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -36,6 +36,11 @@ flutter:
     - easyfmm-dev/assets/logo/legend/
     - easyfmm-dev/assets/SFX/
     - easyfmm-dev/assets/WCost/
+    - easyfmm-dev/assets/cinematic/
+    - easyfmm-dev/assets/Uniform/
+    - easyfmm-dev/assets/team_logos/
+    - easyfmm-dev/assets/league_logos/
+    - easyfmm-dev/assets/cup_logos/
 
 flutter_launcher_icons:
   android: true

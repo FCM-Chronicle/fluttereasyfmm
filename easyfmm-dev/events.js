@@ -1,4 +1,4 @@
-// events.js - 라커룸 이벤트, 비서 상담, 주급 요구 등 랜덤 이벤트 및 처리 로직
+﻿// events.js - 라커룸 이벤트, 비서 상담, 주급 요구 등 랜덤 이벤트 및 처리 로직
 
 class EventManager {
     constructor() {
@@ -132,69 +132,90 @@ class EventManager {
                 type: 'locker_room',
                 event: event,
                 player: targetPlayer,
-                title: `[팀 소식] ${targetPlayer ? targetPlayer.name + ' 관련 소식' : '라커룸 소식'}`,
-                content: `감독님, ${targetPlayer ? targetPlayer.name + ' 선수가 ' : ''}${event.text}`
+                title: `[팀 소식] ${targetPlayer ? targetPlayer.name + '관련 소식' : '라커룸 소식'}`,
+                content: `감독님, ${targetPlayer ? targetPlayer.name + '선수가 ' : ''}${event.text}`
             };
         }
     }
     
-    // 모달을 표시하는 기능 추가
+    // 모달을 표시하는 기능
     showEventModal(eventData, callback) {
         if (!eventData) {
             if (callback) callback();
             return;
         }
 
-        const modalId = 'randomEventModal';
-        let modal = document.getElementById(modalId);
+        const modal = document.getElementById('randomEventModal');
         if (!modal) {
-            modal = document.createElement('div');
-            modal.id = modalId;
-            modal.className = 'modal';
-            modal.style.zIndex = '9999'; // 가장 위
-            document.body.appendChild(modal);
+            if (callback) callback();
+            return;
         }
+
+        const playerImg = document.getElementById('eventPlayerImg');
+        const titleEl = document.getElementById('eventTitle');
+        const contentEl = document.getElementById('eventContent');
+        const optionsContainer = document.getElementById('eventOptionsContainer');
+
+        if (playerImg) {
+            if (eventData.player) {
+                setPlayerPhoto(playerImg, eventData.player);
+                playerImg.style.display = 'block';
+            } else {
+                playerImg.style.display = 'none';
+            }
+        }
+
+        if (titleEl) titleEl.textContent = eventData.title;
+        if (contentEl) contentEl.textContent = eventData.content;
+
+        if (optionsContainer) {
+            optionsContainer.replaceChildren();
+
+            if (eventData.type === 'consulting') {
+                eventData.scenario.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn primary';
+                    btn.style.cssText = 'display: block; width: 100%; margin-bottom: 12px; padding: 15px; font-size: 1.1rem; text-align: left;';
+
+                    const textDiv = document.createElement('div');
+                    textDiv.style.marginBottom = '5px';
+                    textDiv.textContent = opt.text;
+
+                    const descSpan = document.createElement('span');
+                    descSpan.style.cssText = 'font-size: 0.85rem; color: #ffeb3b;';
+                    descSpan.textContent = `(효과: ${opt.desc})`;
+
+                    btn.append(textDiv, descSpan);
+                    btn.addEventListener('click', () => window.eventManager.handleEventChoice(idx));
+                    optionsContainer.appendChild(btn);
+                });
+            } else if (eventData.type === 'locker_room') {
+                let effectText = '';
+                if (eventData.event.effect.morale !== 0) effectText += `팀 사기 ${eventData.event.effect.morale > 0 ? '+' : ''}${eventData.event.effect.morale} `;
+                if (eventData.event.effect.rating !== 0) effectText += `능력치 ${eventData.event.effect.rating > 0 ? '+' : ''}${eventData.event.effect.rating} `;
+
+                const effectBox = document.createElement('div');
+                effectBox.style.cssText = 'margin-bottom: 25px; padding: 15px; background: rgba(46, 204, 113, 0.2); border-radius: 8px; border: 1px solid rgba(46, 204, 113, 0.5); color: #2ecc71; font-weight: bold; font-size: 1.1rem;';
+
+                const descText = document.createTextNode(`[발생 효과] ${eventData.event.desc} `);
+                const br = document.createElement('br');
+                const subSpan = document.createElement('span');
+                subSpan.style.cssText = 'color: #ffd700; font-size: 0.95rem;';
+                subSpan.textContent = `(${effectText.trim()})`;
+
+                effectBox.append(descText, br, subSpan);
+
+                const confirmBtn = document.createElement('button');
+                confirmBtn.className = 'btn';
+                confirmBtn.style.cssText = 'width: 100%; padding: 15px; font-size: 1.1rem;';
+                confirmBtn.textContent = '확인';
+                confirmBtn.addEventListener('click', () => window.eventManager.closeEventModal());
+
+                optionsContainer.append(effectBox, confirmBtn);
+            }
+        }
+
         modal.style.display = 'flex';
-
-        // 선수 사진 HTML
-        let playerImgHtml = '';
-        if (eventData.player) {
-            playerImgHtml = `<img src="assets/players/${eventData.player.name}.webp" onerror="this.onerror=null; this.src='assets/players/default.webp'" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #ffd700; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">`;
-        }
-
-        let optionsHtml = '';
-        
-        if (eventData.type === 'consulting') {
-            optionsHtml = eventData.scenario.options.map((opt, idx) => `
-                <button class="btn primary" style="display: block; width: 100%; margin-bottom: 12px; padding: 15px; font-size: 1.1rem; text-align: left;" onclick="window.eventManager.handleEventChoice(${idx})">
-                    <div style="margin-bottom: 5px;">${opt.text}</div>
-                    <span style="font-size: 0.85rem; color: #ffeb3b;">(효과: ${opt.desc})</span>
-                </button>
-            `).join('');
-        } else if (eventData.type === 'locker_room') {
-            let effectText = '';
-            if (eventData.event.effect.morale !== 0) effectText += `팀 사기 ${eventData.event.effect.morale > 0 ? '+' : ''}${eventData.event.effect.morale} `;
-            if (eventData.event.effect.rating !== 0) effectText += `능력치 ${eventData.event.effect.rating > 0 ? '+' : ''}${eventData.event.effect.rating} `;
-            
-            optionsHtml = `
-                <div style="margin-bottom: 25px; padding: 15px; background: rgba(46, 204, 113, 0.2); border-radius: 8px; border: 1px solid rgba(46, 204, 113, 0.5); color: #2ecc71; font-weight: bold; font-size: 1.1rem;">
-                    [발생 효과] ${eventData.event.desc} <br><span style="color: #ffd700; font-size: 0.95rem;">(${effectText})</span>
-                </div>
-                <button class="btn" style="width: 100%; padding: 15px; font-size: 1.1rem;" onclick="window.eventManager.closeEventModal()">확인</button>
-            `;
-        }
-
-        modal.innerHTML = `
-            <div class="modal-content" style="max-width: 500px; text-align: center; padding: 40px; background: #222; border: 2px solid #555;">
-                ${playerImgHtml}
-                <h2 style="margin: 0 0 20px 0; font-size: 1.8rem; color: #fff;">${eventData.title}</h2>
-                <p style="font-size: 1rem; color: #ddd; margin-bottom: 30px; line-height: 1.6; white-space: pre-wrap; text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">${eventData.content}</p>
-                <div style="font-size: 1.1rem;">
-                    ${optionsHtml}
-                </div>
-            </div>
-        `;
-
         this.currentEvent = eventData;
         this.onCloseCallback = callback;
     }

@@ -1,0 +1,28 @@
+# Vercel Ignore File
+# 배포 시 제외할 개발 도구, 백업, 임시 파일들
+
+tools/
+easyfmm_backup_initial/
+hangulize_repo/
+data/
+skills/
+skills-lock.json
+.agents/
+.claude/
+.continue/
+.taste-skill/
+.trae/
+.vscode/
+
+# 백업 및 테스트 파일
+.env
+.env.*
+*.bak
+*.backup.js
+*.backup_*.js
+match_tester.html
+test_*.js
+server.js
+국대
+바꿔야할것
+WCplayers.json

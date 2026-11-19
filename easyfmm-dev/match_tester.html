@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ EasyFMM 매치엔진 튜닝 샌드박스 (Match Engine Fast Tester)</title>
+    <style>
+        :root {
+            --bg-dark: #0f141c;
+            --bg-card: #18202c;
+            --bg-card-hover: #1f2a3a;
+            --accent-green: #2ecc71;
+            --accent-gold: #ffd700;
+            --accent-blue: #3498db;
+            --accent-red: #e74c3c;
+            --text-main: #f0f4f8;
+            --text-muted: #8ca0b8;
+            --border-color: #2a384c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        header h1 {
+            font-size: 1.35rem;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 컨트롤 바 */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        select, input[type="range"], button {
+            width: 100%;
+            background: #111822;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        select:focus, button:focus {
+            border-color: var(--accent-blue);
+        }
+
+        /* 재생 제어 바 */
+        .playback-bar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #131b26;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+        }
+
+        .btn-action {
+            background: #233144;
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s;
+            width: auto;
+        }
+
+        .btn-action:hover {
+            background: #2e415a;
+        }
+
+        .btn-action.active {
+            background: var(--accent-blue);
+            color: #fff;
+            border-color: #5dade2;
+        }
+
+        .btn-primary {
+            background: #27ae60;
+            border: none;
+            color: white;
+            padding: 9px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            width: auto;
+        }
+
+        .btn-primary:hover {
+            background: #2ecc71;
+        }
+
+        .btn-danger {
+            background: #c0392b;
+            border: none;
+            color: white;
+            padding: 9px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            width: auto;
+        }
+
+        .btn-danger:hover {
+            background: #e74c3c;
+        }
+
+        /* 스코어보드 */
+        .scoreboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0b0f16;
+            border: 1px solid #233042;
+            border-radius: 8px;
+            padding: 14px 20px;
+            margin-bottom: 14px;
+        }
+
+        .team-box {
+            display: flex;
+            flex-direction: column;
+            width: 35%;
+        }
+
+        .team-box.away {
+            text-align: right;
+        }
+
+        .team-name {
+            font-size: 1.15rem;
+            font-weight: bold;
+        }
+
+        .team-tactic-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-num {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+        }
+
+        .match-minute {
+            font-size: 0.85rem;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        /* 2D 캔버스 피치 */
+        #pitchCanvas {
+            width: 100%;
+            height: 380px;
+            background: #19461f;
+            border-radius: 8px;
+            border: 2px solid #2d6b35;
+            display: block;
+        }
+
+        /* 중계 로그 */
+        .commentary-box {
+            height: 200px;
+            overflow-y: auto;
+            background: #0d121a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 14px;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .commentary-line {
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 3px solid #7f8c8d;
+        }
+
+        .commentary-line.goal {
+            background: rgba(46, 204, 113, 0.2);
+            border-left-color: #2ecc71;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        .commentary-line.tactical {
+            background: rgba(243, 156, 18, 0.2);
+            border-left-color: #f39c12;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .commentary-line.shoot {
+            border-left-color: #f1c40f;
+            color: #f39c12;
+        }
+
+        /* 튜닝 슬라이더 패널 */
+        .slider-group {
+            margin-bottom: 14px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .slider-value {
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+
+        .slider-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* 벤치마크 요약 박스 */
+        .bench-summary {
+            background: #0d121a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        .bench-stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bench-stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .bench-stat-val {
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        .score-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .score-pill {
+            background: #1c2736;
+            border: 1px solid #2d3e54;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>⚽ EasyFMM 매치엔진 튜닝 샌드박스</h1>
+            <div class="header-sub">실시간 경기 시뮬레이션 및 초고속 벤치마크 테스트 도구</div>
+        </div>
+        <div>
+            <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 0.9rem;">← 본 게임으로 돌아가기</a>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <!-- 좌측: 경기장 및 관전 -->
+        <div>
+            <div class="card">
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label>홈 팀 (Home)</label>
+                        <select id="homeTeamSelect"></select>
+                    </div>
+                    <div class="control-group">
+                        <label>원정 팀 (Away)</label>
+                        <select id="awayTeamSelect"></select>
+                    </div>
+                    <div class="control-group">
+                        <label>홈 팀 전술</label>
+                        <select id="homeTacticSelect"></select>
+                    </div>
+                    <div class="control-group">
+                        <label>원정 팀 전술</label>
+                        <select id="awayTacticSelect"></select>
+                    </div>
+                </div>
+
+                <div class="playback-bar">
+                    <button class="btn-primary" id="btnPlayMatch">▶ 1경기 시뮬레이션 시작</button>
+                    <button class="btn-action" id="btnPauseMatch">⏸ 일시정지</button>
+                    <button class="btn-danger" id="btnInstantMatch">⚡ 90분 즉시 완료</button>
+                    
+                    <div style="display: flex; gap: 4px; margin-left: auto;">
+                        <button class="btn-action speed-btn" data-speed="1">1x</button>
+                        <button class="btn-action speed-btn" data-speed="3">3x</button>
+                        <button class="btn-action speed-btn active" data-speed="8">8x</button>
+                        <button class="btn-action speed-btn" data-speed="25">25x</button>
+                    </div>
+                </div>
+
+                <!-- 실시간 스코어보드 -->
+                <div class="scoreboard">
+                    <div class="team-box home">
+                        <div class="team-name" id="dispHomeName">바르셀로나</div>
+                        <div class="team-tactic-tag" id="dispHomeTactic">게겐프레싱</div>
+                    </div>
+                    <div class="score-box">
+                        <div class="match-minute" id="dispMinute">0' (대기 중)</div>
+                        <div class="score-num" id="dispScore">0 - 0</div>
+                    </div>
+                    <div class="team-box away">
+                        <div class="team-name" id="dispAwayName">레알_마드리드</div>
+                        <div class="team-tactic-tag" id="dispAwayTactic">카운터</div>
+                    </div>
+                </div>
+
+                <!-- 2D 피치 캔버스 -->
+                <canvas id="pitchCanvas" width="800" height="450"></canvas>
+
+                <!-- 실시간 텍스트 중계 피드 -->
+                <div class="commentary-box" id="commentaryFeed">
+                    <div class="commentary-line">[시스템] 경기를 시작하려면 '1경기 시뮬레이션 시작'을 누르세요.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 우측: 실시간 튜닝 슬라이더 & 일괄 벤치마크 -->
+        <div>
+            <!-- 실시간 슬라이더 카드 -->
+            <div class="card">
+                <div class="card-title">
+                    <span>🎛️ 매치엔진 실시간 튜너</span>
+                    <button id="btnResetTuning" class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;">기본값 초기화</button>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>골 확률 계수 (goalMultiplier)</span>
+                        <span class="slider-value" id="val_goalMultiplier">0.85</span>
+                    </div>
+                    <input type="range" id="slider_goalMultiplier" min="0.3" max="2.0" step="0.05" value="0.85">
+                    <div class="slider-desc">골 결정력 배율 (0.7~0.85 추천: 경기당 2~3골)</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>최대 골 상한 확률 (maxGoalChance)</span>
+                        <span class="slider-value" id="val_maxGoalChance">0.30</span>
+                    </div>
+                    <input type="range" id="slider_maxGoalChance" min="0.10" max="0.55" step="0.02" value="0.30">
+                    <div class="slider-desc">박스 안 완벽 찬스에서의 최대 골 확률 캡</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>슈팅 시도 빈도 (shotFrequency)</span>
+                        <span class="slider-value" id="val_shotFrequencyMultiplier">0.80</span>
+                    </div>
+                    <input type="range" id="slider_shotFrequencyMultiplier" min="0.3" max="1.8" step="0.05" value="0.80">
+                    <div class="slider-desc">패스 대비 슈팅 선호도 (낮출수록 패스 위주 전개)</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>골키퍼 선방 배율 (gkSaveMultiplier)</span>
+                        <span class="slider-value" id="val_gkSaveMultiplier">1.25</span>
+                    </div>
+                    <input type="range" id="slider_gkSaveMultiplier" min="0.6" max="2.2" step="0.05" value="1.25">
+                    <div class="slider-desc">GK 선방 능력 배율 (1.2 이상: 유효슈팅 방어력 상승)</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>수비 육탄 블록률 (defenseBlockChance)</span>
+                        <span class="slider-value" id="val_defenseBlockChance">0.25</span>
+                    </div>
+                    <input type="range" id="slider_defenseBlockChance" min="0.05" max="0.50" step="0.02" value="0.25">
+                    <div class="slider-desc">수비수가 몸을 던져 슛을 굴절/차단할 확률</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>원정 위압감 (awayHostilityFactor)</span>
+                        <span class="slider-value" id="val_awayHostilityFactor">1.0</span>
+                    </div>
+                    <input type="range" id="slider_awayHostilityFactor" min="0.0" max="2.0" step="0.1" value="1.0">
+                    <div class="slider-desc">대형 구장 원정팀의 판단력/패스 미스 페널티</div>
+                </div>
+
+                <button id="btnCopyConfig" class="btn-action" style="width: 100%; margin-top: 8px; background: #27ae60; color: white; border: none;">
+                    📋 현재 튜닝값 복사하기 (matchTuning.js 용)
+                </button>
+            </div>
+
+            <!-- 대량 벤치마크 카드 -->
+            <div class="card">
+                <div class="card-title">
+                    <span>⚡ 대량 일괄 벤치마크 (1초 테스트)</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
+                    현재 설정된 수치로 수십 경기를 즉시 돌려 평균 골 수와 승률을 통계로 검증합니다.
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-action" id="btnBench10" style="flex: 1; font-weight: bold;">🚀 10경기 시뮬</button>
+                    <button class="btn-action" id="btnBench50" style="flex: 1; font-weight: bold;">🔥 50경기 시뮬</button>
+                </div>
+
+                <div class="bench-summary" id="benchSummary" style="display: none;">
+                    <div class="bench-stat-row">
+                        <span>총 경기 수</span>
+                        <span class="bench-stat-val" id="benchTotalMatches">0경기</span>
+                    </div>
+                    <div class="bench-stat-row">
+                        <span>경기당 평균 골</span>
+                        <span class="bench-stat-val" id="benchAvgGoals">0.00 골</span>
+                    </div>
+                    <div class="bench-stat-row">
+                        <span>승/무/패 분포</span>
+                        <span class="bench-stat-val" id="benchWDL">0% / 0% / 0%</span>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.78rem; color: var(--text-muted);">최다 빈출 스코어 Top 5:</div>
+                    <div class="score-pills" id="benchTopScores"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toastMsg">복사되었습니다!</div>
+
+    <!-- 핵심 스크립트 로드 -->
+    <script src="teamsData.js"></script>
+    <script src="tactics.js"></script>
+    <script src="matchTuning.js"></script>
+    <script src="deepenTactic.js"></script>
+
+    <script>
+        // --- 1. 기본 초기화 및 옵션 채우기 ---
+        const homeSelect = document.getElementById('homeTeamSelect');
+        const awaySelect = document.getElementById('awayTeamSelect');
+        const homeTacticSelect = document.getElementById('homeTacticSelect');
+        const awayTacticSelect = document.getElementById('awayTacticSelect');
+
+        // 팀 옵션 채우기
+        const teamKeys = (typeof allTeams !== 'undefined') ? Object.keys(allTeams) : [];
+        teamKeys.forEach((key, idx) => {
+            const hOpt = new Option(key.replace(/_/g, ' '), key);
+            const aOpt = new Option(key.replace(/_/g, ' '), key);
+            homeSelect.add(hOpt);
+            awaySelect.add(aOpt);
+        });
+
+        // 기본 선택
+        if (teamKeys.length >= 2) {
+            homeSelect.value = teamKeys[0]; // 바르셀로나
+            awaySelect.value = teamKeys[1]; // 레알_마드리드
+        }
+
+        // 전술 옵션 채우기
+        const tacticsList = [
+            { key: 'possession', label: '점유율 축구 (Possession)' },
+            { key: 'gegenpress', label: '게겐프레싱 (Gegenpress)' },
+            { key: 'tikitaka', label: '티키타카 (Tiki-Taka)' },
+            { key: 'counter', label: '역습 (Counter-Attack)' },
+            { key: 'catenaccio', label: '카테나치오 (Catenaccio)' },
+            { key: 'parkBus', label: '텐백 (Park the Bus)' },
+            { key: 'twoLine', label: '두 줄 수비 (Two Line)' },
+            { key: 'longBall', label: '롱 볼 (Long Ball)' },
+            { key: 'totalFootball', label: '토탈 풋볼 (Total Football)' }
+        ];
+
+        tacticsList.forEach(t => {
+            homeTacticSelect.add(new Option(t.label, t.key));
+            awayTacticSelect.add(new Option(t.label, t.key));
+        });
+        homeTacticSelect.value = 'gegenpress';
+        awayTacticSelect.value = 'counter';
+
+        // --- 2. 스쿼드 생성 헬퍼 ---
+        function buildSquad(teamKey) {
+            if (typeof allTeams === 'undefined' || !allTeams[teamKey]) return null;
+            const players = allTeams[teamKey].players || [];
+            const gk = players.filter(p => p.position === 'GK').sort((a,b) => b.rating - a.rating)[0] || { name: '골키퍼', position: 'GK', rating: 75, condition: 100 };
+            const df = players.filter(p => p.position === 'DF').sort((a,b) => b.rating - a.rating).slice(0, 4);
+            const mf = players.filter(p => p.position === 'MF').sort((a,b) => b.rating - a.rating).slice(0, 3);
+            const fw = players.filter(p => p.position === 'FW').sort((a,b) => b.rating - a.rating).slice(0, 3);
+            return {
+                gk: { ...gk, condition: 100 },
+                df: df.map(p => ({ ...p, condition: 100 })),
+                mf: mf.map(p => ({ ...p, condition: 100 })),
+                fw: fw.map(p => ({ ...p, condition: 100 }))
+            };
+        }
+
+        // --- 3. 실시간 튜닝 슬라이더 동기화 ---
+        if (typeof window.MatchTuning === 'undefined') {
+            window.MatchTuning = {
+                goalMultiplier: 0.85,
+                maxGoalChance: 0.30,
+                minGoalChance: 0.02,
+                shotFrequencyMultiplier: 0.80,
+                longShotSuppression: 0.65,
+                gkSaveMultiplier: 1.25,
+                defenseBlockChance: 0.25,
+                awayHostilityFactor: 1.0,
+                panicDurationMinutes: 3,
+                aiLowScorePreference: 0.70,
+                aiMaxTeamGoals: 4
+            };
+        }
+
+        const sliders = [
+            'goalMultiplier', 'maxGoalChance', 'shotFrequencyMultiplier',
+            'gkSaveMultiplier', 'defenseBlockChance', 'awayHostilityFactor'
+        ];
+
+        function syncSlidersToConfig() {
+            sliders.forEach(key => {
+                const el = document.getElementById(`slider_${key}`);
+                const valEl = document.getElementById(`val_${key}`);
+                if (el && MatchTuning[key] !== undefined) {
+                    el.value = MatchTuning[key];
+                    valEl.textContent = Number(MatchTuning[key]).toFixed(2);
+                }
+            });
+        }
+
+        sliders.forEach(key => {
+            const el = document.getElementById(`slider_${key}`);
+            const valEl = document.getElementById(`val_${key}`);
+            if (el) {
+                el.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    valEl.textContent = val.toFixed(2);
+                    MatchTuning[key] = val;
+                });
+            }
+        });
+
+        document.getElementById('btnResetTuning').addEventListener('click', () => {
+            MatchTuning.goalMultiplier = 0.85;
+            MatchTuning.maxGoalChance = 0.30;
+            MatchTuning.shotFrequencyMultiplier = 0.80;
+            MatchTuning.gkSaveMultiplier = 1.25;
+            MatchTuning.defenseBlockChance = 0.25;
+            MatchTuning.awayHostilityFactor = 1.0;
+            syncSlidersToConfig();
+            showToast('기본값으로 복원되었습니다.');
+        });
+
+        document.getElementById('btnCopyConfig').addEventListener('click', () => {
+            const text = `const MatchTuning = ${JSON.stringify(MatchTuning, null, 4)};`;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('클립보드에 복사되었습니다! matchTuning.js에 붙여넣기 하세요.');
+            });
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('toastMsg');
+            t.textContent = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2500);
+        }
+
+        syncSlidersToConfig();
+
+        // --- 4. 2D 캔버스 피치 렌더러 ---
+        const canvas = document.getElementById('pitchCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function renderPitch(snapshot) {
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // 잔디 배경
+            ctx.fillStyle = '#1b4d24';
+            ctx.fillRect(0, 0, w, h);
+
+            // 잔디 줄무늬
+            ctx.fillStyle = '#215c2c';
+            for (let i = 0; i < 10; i += 2) {
+                ctx.fillRect(i * (w / 10), 0, w / 10, h);
+            }
+
+            // 라인
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+            ctx.lineWidth = 2;
+
+            // 외곽선
+            ctx.strokeRect(20, 20, w - 40, h - 40);
+
+            // 하프라인 & 센터서클
+            ctx.beginPath();
+            ctx.moveTo(w / 2, 20);
+            ctx.lineTo(w / 2, h - 20);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(w / 2, h / 2, 50, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 페널티 박스 (좌)
+            ctx.strokeRect(20, (h / 2) - 80, 110, 160);
+            ctx.strokeRect(20, (h / 2) - 40, 40, 80);
+
+            // 페널티 박스 (우)
+            ctx.strokeRect(w - 130, (h / 2) - 80, 110, 160);
+            ctx.strokeRect(w - 60, (h / 2) - 40, 40, 80);
+
+            if (!snapshot || !snapshot.players) return;
+
+            // 선수 그리기
+            snapshot.players.forEach(p => {
+                const px = 20 + (p.x / 100) * (w - 40);
+                const py = 20 + (p.y / 100) * (h - 40);
+
+                const isHome = p.teamId === 'home';
+                ctx.beginPath();
+                ctx.arc(px, py, 7, 0, Math.PI * 2);
+                ctx.fillStyle = isHome ? '#e74c3c' : '#3498db';
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // 선수 이름
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(p.name, px, py - 9);
+            });
+
+            // 공 그리기
+            if (snapshot.ball) {
+                const bx = 20 + (snapshot.ball.x / 100) * (w - 40);
+                const by = 20 + (snapshot.ball.y / 100) * (h - 40);
+
+                ctx.beginPath();
+                ctx.arc(bx, by, 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffd700';
+                ctx.fill();
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+
+        renderPitch(null);
+
+        // --- 5. 1경기 실시간 시뮬레이션 엔진 연동 ---
+        let liveEngine = null;
+        let simInterval = null;
+        let simMinute = 0;
+        let simTick = 0;
+        let simSpeed = 8;
+        let isPaused = false;
+
+        document.querySelectorAll('.speed-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                simSpeed = parseInt(btn.dataset.speed);
+                if (simInterval && !isPaused) {
+                    clearInterval(simInterval);
+                    startLoop();
+                }
+            });
+        });
+
+        function appendCommentary(text, type = 'normal') {
+            const feed = document.getElementById('commentaryFeed');
+            const row = document.createElement('div');
+            row.className = `commentary-line ${type}`;
+            row.textContent = text;
+            feed.appendChild(row);
+            feed.scrollTop = feed.scrollHeight;
+        }
+
+        function startMatch() {
+            if (simInterval) clearInterval(simInterval);
+
+            const hKey = homeSelect.value;
+            const aKey = awaySelect.value;
+            const hTactic = homeTacticSelect.value;
+            const aTactic = awayTacticSelect.value;
+
+            document.getElementById('dispHomeName').textContent = hKey.replace(/_/g, ' ');
+            document.getElementById('dispAwayName').textContent = aKey.replace(/_/g, ' ');
+            document.getElementById('dispHomeTactic').textContent = hTactic;
+            document.getElementById('dispAwayTactic').textContent = aTactic;
+            document.getElementById('dispScore').textContent = '0 - 0';
+            document.getElementById('dispMinute').textContent = "0' (킥오프)";
+
+            document.getElementById('commentaryFeed').innerHTML = '';
+            appendCommentary(`[킥오프] ${hKey} vs ${aKey} 경기가 시작됩니다!`);
+
+            const s1 = buildSquad(hKey);
+            const s2 = buildSquad(aKey);
+
+            window.gameData = {
+                selectedTeam: hKey,
+                isHomeGame: true,
+                currentTactic: hTactic,
+                teamMorale: 70,
+                lineStats: {
+                    attack: { stats: { attack: 85, speed: 82, technique: 80, mentality: 80, defense: 50, physical: 75 } },
+                    midfield: { stats: { attack: 75, speed: 78, technique: 82, mentality: 80, defense: 70, physical: 77 } },
+                    defense: { stats: { attack: 50, speed: 75, technique: 75, mentality: 80, defense: 83, physical: 82 } }
+                }
+            };
+
+            liveEngine = new RealSoccerEngine(s1, s2, hTactic, aTactic);
+            liveEngine.setMatchContext({
+                stadiumInfo: { attendance: 65000, stadiumName: '홈 경기장' },
+                homeTeam: hKey,
+                awayTeam: aKey,
+                userTeam: hKey,
+                isHomeGame: true
+            });
+
+            simMinute = 0;
+            simTick = 0;
+            liveEngine._lastSimMin = -1;
+            isPaused = false;
+            startLoop();
+        }
+
+        function startLoop() {
+            const delay = Math.max(4, Math.floor(80 / simSpeed));
+            simInterval = setInterval(() => {
+                if (isPaused) return;
+
+                const isNewMinute = (simMinute !== liveEngine._lastSimMin);
+                if (isNewMinute) liveEngine._lastSimMin = simMinute;
+
+                const snapshot = liveEngine.update(simMinute, isNewMinute);
+                if (!snapshot.isCelebration && !snapshot.isSuspense) {
+                    simTick += 4;
+                    if (simTick >= 60) {
+                        simMinute++;
+                        simTick = simTick % 60;
+                    }
+                }
+                renderPitch(snapshot);
+
+                // 스코어 & 시간 업데이트
+                document.getElementById('dispMinute').textContent = `${simMinute}'`;
+                document.getElementById('dispScore').textContent = `${liveEngine.homeScore} - ${liveEngine.awayScore}`;
+
+                // 이벤트 중계
+                if (snapshot.events && snapshot.events.length) {
+                    snapshot.events.forEach(e => {
+                        if (e.type === 'goal') {
+                            appendCommentary(`⚽ [${simMinute}'] GOOOAL!! ${e.scorer} 득점! (${liveEngine.homeScore}-${liveEngine.awayScore})`, 'goal');
+                        } else if (e.type === 'tactical_change') {
+                            appendCommentary(`🚨 [${simMinute}'] ${e.desc}`, 'tactical');
+                        } else if (e.type === 'shoot') {
+                            appendCommentary(`🎯 [${simMinute}'] ${e.desc || '위협적인 슈팅!'}`, 'shoot');
+                        } else if (e.type === 'save') {
+                            appendCommentary(`🧤 [${simMinute}'] ${e.desc || '골키퍼 환상적인 선방!'}`, 'normal');
+                        } else if (e.type === 'block') {
+                            appendCommentary(`🛡️ [${simMinute}'] ${e.desc || '수비수 육탄 방어 성공!'}`, 'normal');
+                        }
+                    });
+                }
+
+                if (simMinute >= 90) {
+                    clearInterval(simInterval);
+                    appendCommentary(`[경기 종료] 최종 스코어 ${liveEngine.homeScore} - ${liveEngine.awayScore}`, 'goal');
+                    document.getElementById('dispMinute').textContent = "90' (경기 종료)";
+                }
+            }, delay);
+        }
+
+        document.getElementById('btnPlayMatch').addEventListener('click', startMatch);
+
+        document.getElementById('btnPauseMatch').addEventListener('click', () => {
+            isPaused = !isPaused;
+            document.getElementById('btnPauseMatch').textContent = isPaused ? '▶ 재개' : '⏸ 일시정지';
+        });
+
+        document.getElementById('btnInstantMatch').addEventListener('click', () => {
+            if (!liveEngine) startMatch();
+            if (simInterval) clearInterval(simInterval);
+
+            while (simMinute < 90) {
+                const isNewMinute = (simMinute !== liveEngine._lastSimMin);
+                if (isNewMinute) liveEngine._lastSimMin = simMinute;
+                const snap = liveEngine.update(simMinute, isNewMinute);
+                if (snap.events && snap.events.length) {
+                    snap.events.forEach(e => {
+                        if (e.type === 'goal') {
+                            appendCommentary(`⚽ [${simMinute}'] GOOOAL!! ${e.scorer} 득점! (${liveEngine.homeScore}-${liveEngine.awayScore})`, 'goal');
+                        }
+                    });
+                }
+                if (!snap.isCelebration && !snap.isSuspense) {
+                    simTick += 4;
+                    if (simTick >= 60) {
+                        simMinute++;
+                        simTick = simTick % 60;
+                    }
+                }
+            }
+
+            renderPitch(liveEngine.getSnapshot());
+            document.getElementById('dispMinute').textContent = "90' (즉시 완료)";
+            document.getElementById('dispScore').textContent = `${liveEngine.homeScore} - ${liveEngine.awayScore}`;
+            appendCommentary(`[경기 종료] 최종 스코어 ${liveEngine.homeScore} - ${liveEngine.awayScore}`, 'goal');
+        });
+
+        // --- 6. 대량 벤치마크 (10경기 / 50경기) ---
+        function runBatchBenchmark(matchCount) {
+            const hKey = homeSelect.value;
+            const aKey = awaySelect.value;
+            const hTactic = homeTacticSelect.value;
+            const aTactic = awayTacticSelect.value;
+
+            let totalGoals = 0;
+            let homeWins = 0;
+            let draws = 0;
+            let awayWins = 0;
+            const scoreCounts = {};
+
+            const startTime = performance.now();
+
+            for (let i = 0; i < matchCount; i++) {
+                const s1 = buildSquad(hKey);
+                const s2 = buildSquad(aKey);
+                const eng = new RealSoccerEngine(s1, s2, hTactic, aTactic);
+                eng.setMatchContext({
+                    stadiumInfo: { attendance: 65000 },
+                    homeTeam: hKey,
+                    awayTeam: aKey,
+                    userTeam: hKey,
+                    isHomeGame: true
+                });
+
+                let m = 0, sec = 0, lastM = -1;
+                while (m < 90) {
+                    const isNew = (m !== lastM);
+                    if (isNew) lastM = m;
+                    const snap = eng.update(m, isNew);
+                    if (!snap.isCelebration && !snap.isSuspense) {
+                        sec += 4;
+                        if (sec >= 60) {
+                            m++;
+                            sec = sec % 60;
+                        }
+                    }
+                }
+
+                const hs = eng.homeScore;
+                const as = eng.awayScore;
+                totalGoals += (hs + as);
+
+                if (hs > as) homeWins++;
+                else if (hs === as) draws++;
+                else awayWins++;
+
+                const scoreKey = `${hs} - ${as}`;
+                scoreCounts[scoreKey] = (scoreCounts[scoreKey] || 0) + 1;
+            }
+
+            const elapsed = (performance.now() - startTime).toFixed(0);
+
+            // 결과 통계 출력
+            document.getElementById('benchSummary').style.display = 'block';
+            document.getElementById('benchTotalMatches').textContent = `${matchCount}경기 (${elapsed}ms 소요)`;
+            document.getElementById('benchAvgGoals').textContent = `${(totalGoals / matchCount).toFixed(2)} 골 / 경기당`;
+            
+            const hwPct = ((homeWins / matchCount) * 100).toFixed(1);
+            const drPct = ((draws / matchCount) * 100).toFixed(1);
+            const awPct = ((awayWins / matchCount) * 100).toFixed(1);
+            document.getElementById('benchWDL').textContent = `홈 ${hwPct}% / 무 ${drPct}% / 원정 ${awPct}%`;
+
+            // Top 스코어 정렬
+            const sortedScores = Object.entries(scoreCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            const pillsBox = document.getElementById('benchTopScores');
+            pillsBox.innerHTML = '';
+            sortedScores.forEach(([sc, count]) => {
+                const pct = ((count / matchCount) * 100).toFixed(0);
+                const p = document.createElement('div');
+                p.className = 'score-pill';
+                p.textContent = `${sc} (${pct}%)`;
+                pillsBox.appendChild(p);
+            });
+        }
+
+        document.getElementById('btnBench10').addEventListener('click', () => runBatchBenchmark(10));
+        document.getElementById('btnBench50').addEventListener('click', () => runBatchBenchmark(50));
+    </script>
+</body>
+</html>
+

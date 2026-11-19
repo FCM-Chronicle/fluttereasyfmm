@@ -29,5 +29,5 @@ app.post('/proxy/groq', async (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 AI Proxy Server가 실행 중입니다: http://localhost:${PORT}`);
+    console.log(`AI Proxy Server가 실행 중입니다: http://localhost:${PORT}`);
 });

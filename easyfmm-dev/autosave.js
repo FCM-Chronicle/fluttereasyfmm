@@ -49,15 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!autoSaveStatus) return;
         if (isAutoSaveOn) {
             if (targetSlotNumber) {
-                autoSaveStatus.textContent = `✅ 자동 저장 켜짐 (슬롯 ${targetSlotNumber}에 저장 중)`;
-                autoSaveStatus.style.color = '#2ecc71';
+                autoSaveStatus.textContent = `[활성] 자동 저장 켜짐 (슬롯 ${targetSlotNumber}에 저장 중)`;
+                autoSaveStatus.style.color = '#A3E635';
             } else {
-                autoSaveStatus.textContent = '⚠️ 자동 저장 대기 중 (먼저 슬롯에 수동으로 한 번 저장하세요)';
-                autoSaveStatus.style.color = '#f1c40f';
+                autoSaveStatus.textContent = '[대기] 자동 저장 대기 중 (먼저 슬롯에 수동으로 한 번 저장하세요)';
+                autoSaveStatus.style.color = '#FBBF24';
             }
         } else {
             autoSaveStatus.textContent = '자동 저장이 꺼져있습니다.';
-            autoSaveStatus.style.color = '#aaa';
+            autoSaveStatus.style.color = '#94A3B8';
         }
     }
 
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function triggerAutoSave() {
         if (!isAutoSaveOn || !targetSlotNumber) return;
         
-        console.log('🔄 자동 저장 실행...');
+        console.log('자동 저장 실행...');
         // 조용한 저장 실행 (두 번째 인자로 true 전달)
         if (typeof window.saveToSlot === 'function') {
             window.saveToSlot(targetSlotNumber, true);
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             configurable: true
         });
-        console.log('💰 자금 변동 감지기가 설정되었습니다.');
+        console.log('자금 변동 감지기가 설정되었습니다.');
     }
 
     // 외부에서 호출 가능하도록 연결

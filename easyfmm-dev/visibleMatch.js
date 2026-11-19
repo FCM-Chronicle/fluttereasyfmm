@@ -10,7 +10,9 @@ class VisualUnit {
         this.x = x; 
         this.y = y;
         
-        // 목표 위치 (엔진에서 받음)
+        // 직전 틱 위치 및 목표 위치 (시간 기반 선형 프레임 보간용)
+        this.prevX = x;
+        this.prevY = y;
         this.targetX = x;
         this.targetY = y;
 
@@ -19,14 +21,20 @@ class VisualUnit {
         this.activeSkillId = null; // 현재 진행 중인 개인기 ID
         this.color = color || (teamType === 'home' ? '#e74c3c' : '#3498db'); // [수정] 전달받은 컬러 사용
         this.pulse = 0; // [신규] 공 소유 시 강조 애니메이션용
+        this.stamina = 100; // [신규] 실시간 체력 표시용
     }
 
-    // ⚫ [7. 선수 이동] 보간 (Lerp) 업데이트
-    update() {
-        // [개선] 선수들 이동 속도를 낮춰서 순간이동(휙휙)하는 느낌 방지
-        const lerpFactor = 0.12; 
-        this.x += (this.targetX - this.x) * lerpFactor;
-        this.y += (this.targetY - this.y) * lerpFactor;
+    // 시간 기반 프레임 보간(alpha: 0~1)으로 틱 간격을 60/120/144FPS에서 균일하고 부드럽게 렌더링
+    update(alpha = 1) {
+        const d = Math.hypot(this.targetX - this.prevX, this.targetY - this.prevY);
+        if (d > 28) {
+            // 킥오프/리셋 등 대규모 좌표 이동 시에는 즉시 스냅
+            this.x = this.targetX;
+            this.y = this.targetY;
+        } else {
+            this.x = this.prevX + (this.targetX - this.prevX) * alpha;
+            this.y = this.prevY + (this.targetY - this.prevY) * alpha;
+        }
 
         // [신규] 공 소유 시 맥동 효과를 위한 타이머 업데이트
         if (this.hasBall) {
@@ -68,9 +76,8 @@ class VisualUnit {
 
             switch(this.activeSkillId) {
                 case 'TACKLE':
-                    // 깊게 들어가는 슬라이딩 태클 모션 (돌진)
-                    const slideDist = Math.sin(progress * Math.PI) * (r * 3.5);
-                    px += (this.teamType === 'home' ? slideDist : -slideDist);
+                    // 좌표 강제 오프셋(순간이동 착시) 없이 제자리에서 태클 임팩트만 강조
+                    r *= (1 + Math.sin(progress * Math.PI) * 0.18);
                     break;
                 case 'MARSEILLE_TURN':
                 case 'ROULETTE':
@@ -150,7 +157,36 @@ class VisualUnit {
             ctx.restore();
         }
 
-        // [신규] 선수 이름 표시 (바둑돌 아래)
+        // [신규] 인게임 실시간 체력 게이지 (바둑돌 하단 체력바 + 체력 링)
+        const stam = Math.max(0, Math.min(100, Number.isFinite(this.stamina) ? this.stamina : 100));
+        const stamColor = stam < 45 ? '#ef4444' : (stam < 72 ? '#f59e0b' : '#22c55e');
+
+        if (stam < 96) {
+            ctx.save();
+            ctx.beginPath();
+            const startAngle = -Math.PI / 2;
+            const endAngle = startAngle + (Math.PI * 2 * (stam / 100));
+            ctx.arc(0, 0, r + 2.5, startAngle, endAngle);
+            ctx.strokeStyle = stamColor;
+            ctx.lineWidth = 2.2;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // 바둑돌 바로 아래 가로형 미니 체력바
+        const barW = 24;
+        const barH = 3.2;
+        const barX = -barW / 2;
+        const barY = r + 3;
+        ctx.save();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+        ctx.fillRect(barX - 0.5, barY - 0.5, barW + 1, barH + 1);
+        ctx.fillStyle = stamColor;
+        ctx.fillRect(barX, barY, barW * (stam / 100), barH);
+        ctx.restore();
+
+        // [신규] 선수 이름 표시 (체력바 아래)
         ctx.font = 'bold 10px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
@@ -158,11 +194,11 @@ class VisualUnit {
         // 텍스트 외곽선 (translate 외부 좌표계 기준이므로 px, py 유지)
         ctx.lineWidth = 2.5;
         ctx.strokeStyle = 'rgba(0,0,0,0.7)';
-        ctx.strokeText(this.name, 0, r + 4); // 0, r + 4로 수정
+        ctx.strokeText(this.name, 0, r + 8);
         
         // 텍스트 채우기
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(this.name, 0, r + 4); // 0, r + 4로 수정
+        ctx.fillText(this.name, 0, r + 8);
 
         ctx.restore(); // 회전/이동 컨텍스트 복구
 
@@ -181,31 +217,35 @@ class VisualUnit {
 class VisualBall {
     constructor() {
         this.x = 50; this.y = 50;
-        this.z = 0; // [신규] 시각적 높이 (가짜 3D 효과)
+        this.z = 0; // [FLR 물리 이식] 실제 3D 포물선 높이
+        this.prevX = 50; this.prevY = 50; this.prevZ = 0;
         this.targetX = 50; this.targetY = 50;
-        this.accelFactor = 0.35; // [개선] 공 속도를 대폭 상향하여 사람 속도를 따라가게 함
+        this.targetZ = 0;
+        this.accelFactor = 0.25;
         this.state = 0; // 공 상태
     }
-    update() {
-        // 가속도 효과 제거: 단순 보간(Lerp) 방식으로 변경
-        this.x += (this.targetX - this.x) * this.accelFactor;
-        this.y += (this.targetY - this.y) * this.accelFactor;
-        
-        // [신규] 공이 날아갈 때(IN_FLIGHT) 속도감에 따른 높이 효과 부여
-        if (this.state === 2) { // IN_FLIGHT
-            const dist = Math.hypot(this.targetX - this.x, this.targetY - this.y);
-            let targetZ = 0;
-            
-            // [수정] 거리가 멀 때만 공이 뜨도록 변경 (짧은 패스는 땅볼)
-            // 높이 계수도 3.0 -> 0.5로 대폭 낮춤 (폴짝거림 방지)
-            if (dist > 15) {
-                targetZ = Math.min(15, dist * 0.5); 
+    update(units, alpha = 1) {
+        // 드리블 시 볼 캐리어 발밑에 100% 동기화
+        if (this.state === 1 && units) {
+            const carrier = Object.values(units).find(u => u.hasBall);
+            if (carrier) {
+                this.x = carrier.x;
+                this.y = carrier.y;
+                this.z = 0;
+                return;
             }
-            
-            this.z += (targetZ - this.z) * 0.1;
-        } else {
-            this.z += (0 - this.z) * 0.3; // 땅으로 착지
         }
+        // 패스/슈팅/루즈볼: 직전 틱 위치(prev)에서 목표 위치(target)까지 시간 기반 선형 보간
+        const d = Math.hypot(this.targetX - this.prevX, this.targetY - this.prevY);
+        if (d > 28) {
+            this.x = this.targetX;
+            this.y = this.targetY;
+            this.z = this.targetZ;
+            return;
+        }
+        this.x = this.prevX + (this.targetX - this.prevX) * alpha;
+        this.y = this.prevY + (this.targetY - this.prevY) * alpha;
+        this.z = this.prevZ + (this.targetZ - this.prevZ) * alpha;
     }
     draw(ctx, width, height) {
         const isPortrait = height > width;
@@ -221,21 +261,23 @@ class VisualBall {
         const scale = Math.min(width, height);
         const r = Math.max(2.5, scale * 0.010); 
         
-        // [신규] 그림자 (땅에 고정)
+        // [FLR 물리 이식] 입체 그림자 (고도가 높을수록 그림자가 옅어지고 자연스럽게 번짐)
+        const shadowScale = 1 + (this.z * 0.04);
+        const shadowAlpha = Math.max(0.06, 0.35 - (this.z * 0.022));
         ctx.beginPath();
-        ctx.ellipse(px, py + r * 0.5, r * 0.8, r * 0.4, 0, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.ellipse(px, py + r * 0.5, r * 0.8 * shadowScale, r * 0.4 * shadowScale, 0, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,0,0,${shadowAlpha})`;
         ctx.fill();
 
-        // [신규] 공 본체 (Z축 적용)
-        const visualY = py - (this.z * (height / 100) * 0.5); // 화면 비율 고려
+        // [FLR 물리 이식] 공 본체 높이 적용 (포물선 궤적)
+        const visualY = py - (this.z * (height / 100) * 0.85);
 
         ctx.beginPath();
         ctx.arc(px, visualY, r, 0, Math.PI * 2);
         ctx.fillStyle = '#fff';
         ctx.fill();
         ctx.strokeStyle = '#000';
-        ctx.lineWidth = 1.5; // 외곽선 조금 더 진하게
+        ctx.lineWidth = 1.5;
         ctx.stroke();
     }
 }
@@ -251,6 +293,9 @@ class MatchVisualizer {
         this.height = 0;
         this.storedSpeed = null; // [신규] 패스 딜레이 대응을 위한 속도 저장
         this.grassPattern = null; // [신규] 잔디 텍스처 패턴
+        this.pitchCache = null; // 정적 경기장 배경 오프스크린 캐시
+        this.lastSyncTime = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+        this.syncInterval = 80; // 엔진 기본 틱 간격(80ms)에 자동 적응
     }
 
     createGrassPattern() {
@@ -299,34 +344,55 @@ class MatchVisualizer {
 
     // 엔진에서 온 데이터로 동기화
     sync(snapshot) {
-        // [수정] 공 상태 업데이트
-        this.ball.state = snapshot.ball.state; // 0:LOOSE, 1:CONTROLLED, 2:IN_FLIGHT
-
-        // [수정] 상태 기반 속도 제어 (이벤트 기반보다 더 정확함)
-        if (snapshot.ball.state === 2) { 
-            // IN_FLIGHT (패스, 슛) - 빠르고 직선적인 움직임
-            this.ball.accelFactor = 0.25; // 훨씬 빠르게 엔진 위치를 따라가 부메랑 효과 제거
-        } else if (snapshot.ball.state === 1) { 
-            // CONTROLLED (드리블) - 선수 발에 붙어다님
-            this.ball.accelFactor = 0.9; // 드리블 시에는 즉각적으로 따라붙음
-        } else {
-            // LOOSE / DEAD - 자연스러운 감속
-            this.ball.accelFactor = 0.2;
+        const now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+        const elapsed = now - this.lastSyncTime;
+        if (elapsed >= 16 && elapsed <= 220) {
+            this.syncInterval = this.syncInterval * 0.65 + elapsed * 0.35;
         }
+        this.lastSyncTime = now;
 
-        // 공 위치 업데이트
-        this.ball.targetX = snapshot.ball.x;
-        this.ball.targetY = snapshot.ball.y;
-
-        // 선수 위치 업데이트
+        // 1) 선수 위치 업데이트 (현재 렌더 위치를 prev로 저장해 끊김 없는 연속 보간)
         snapshot.players.forEach(pData => {
             const unit = this.units[pData.id];
             if (unit) {
+                unit.prevX = unit.x;
+                unit.prevY = unit.y;
                 unit.targetX = pData.x;
                 unit.targetY = pData.y;
                 unit.hasBall = pData.hasBall;
+                if (pData.stamina !== undefined) unit.stamina = pData.stamina;
             }
         });
+
+        // 2) 공 상태 및 탄도학 동기화
+        this.ball.state = snapshot.ball.state; // 0:DEAD, 1:CONTROLLED, 2:IN_FLIGHT, 3:LOOSE
+        this.ball.prevX = this.ball.x;
+        this.ball.prevY = this.ball.y;
+        this.ball.prevZ = this.ball.z;
+
+        if (snapshot.ball.state === 1) { 
+            // CONTROLLED (드리블) - 볼 캐리어 발밑에 동기화
+            const carrierUnit = Object.values(this.units).find(u => u.hasBall);
+            if (carrierUnit) {
+                this.ball.targetX = carrierUnit.targetX;
+                this.ball.targetY = carrierUnit.targetY;
+                this.ball.targetZ = 0;
+            } else {
+                this.ball.targetX = snapshot.ball.x;
+                this.ball.targetY = snapshot.ball.y;
+                this.ball.targetZ = 0;
+            }
+        } else if (snapshot.ball.state === 2) { 
+            // IN_FLIGHT (패스, 슛, 롱볼)
+            this.ball.targetX = snapshot.ball.x;
+            this.ball.targetY = snapshot.ball.y;
+            this.ball.targetZ = Number.isFinite(snapshot.ball.z) ? snapshot.ball.z : 0;
+        } else {
+            // LOOSE / DEAD
+            this.ball.targetX = snapshot.ball.x;
+            this.ball.targetY = snapshot.ball.y;
+            this.ball.targetZ = 0;
+        }
     }
 
     resize() {
@@ -336,6 +402,7 @@ class MatchVisualizer {
         this.canvas.height = rect.height;
         this.width = rect.width;
         this.height = rect.height;
+        this.pitchCache = null; // 리사이즈 시 잔디/라인 캐시 재생성
     }
 
     start() {
@@ -347,22 +414,37 @@ class MatchVisualizer {
 
     animate() {
         if (!this.isRunning) return;
+
+        const now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+        const interval = Math.max(16, this.syncInterval || 80);
+        const alpha = Math.max(0, Math.min(1, (now - this.lastSyncTime) / interval));
         
         this.ctx.clearRect(0, 0, this.width, this.height);
         this.drawPitch();
 
-        // 업데이트 & 그리기
+        // 시간 기반 보간 업데이트 & 그리기
         Object.values(this.units).forEach(u => {
-            u.update();
+            u.update(alpha);
             u.draw(this.ctx, this.width, this.height);
         });
-        this.ball.update();
+        this.ball.update(this.units, alpha);
         this.ball.draw(this.ctx, this.width, this.height);
 
         requestAnimationFrame(() => this.animate());
     }
 
     drawPitch() {
+        if (this.width <= 0 || this.height <= 0) return;
+        if (this.pitchCache && this.pitchCache.width === this.width && this.pitchCache.height === this.height) {
+            this.ctx.drawImage(this.pitchCache, 0, 0);
+            return;
+        }
+
+        const cache = document.createElement('canvas');
+        cache.width = this.width;
+        cache.height = this.height;
+        const pCtx = cache.getContext('2d');
+
         const numStripes = 12;
         const isPortrait = this.height > this.width;
         
@@ -370,71 +452,64 @@ class MatchVisualizer {
         if (isPortrait) {
             const stripeHeight = this.height / numStripes;
             for (let i = 0; i < numStripes; i++) {
-                this.ctx.fillStyle = i % 2 === 0 ? '#27ae60' : '#2ecc71';
-                this.ctx.fillRect(0, i * stripeHeight, this.width, stripeHeight + 1);
+                pCtx.fillStyle = i % 2 === 0 ? '#27ae60' : '#2ecc71';
+                pCtx.fillRect(0, i * stripeHeight, this.width, stripeHeight + 1);
             }
         } else {
             const stripeWidth = this.width / numStripes;
             for (let i = 0; i < numStripes; i++) {
-                this.ctx.fillStyle = i % 2 === 0 ? '#27ae60' : '#2ecc71';
-                this.ctx.fillRect(i * stripeWidth, 0, stripeWidth + 1, this.height);
+                pCtx.fillStyle = i % 2 === 0 ? '#27ae60' : '#2ecc71';
+                pCtx.fillRect(i * stripeWidth, 0, stripeWidth + 1, this.height);
             }
         }
 
         // [신규] 잔디 텍스처 오버레이
         if (!this.grassPattern) this.grassPattern = this.createGrassPattern();
-        this.ctx.fillStyle = this.grassPattern;
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        pCtx.fillStyle = this.grassPattern;
+        pCtx.fillRect(0, 0, this.width, this.height);
         
-        this.ctx.strokeStyle = '#ffffff';
-        this.ctx.lineWidth = 2;
+        pCtx.strokeStyle = '#ffffff';
+        pCtx.lineWidth = 2;
         
         // 테두리
-        this.ctx.strokeRect(this.width * 0.05, this.height * 0.05, this.width * 0.9, this.height * 0.9);
+        pCtx.strokeRect(this.width * 0.05, this.height * 0.05, this.width * 0.9, this.height * 0.9);
         
         if (isPortrait) {
-            // 중앙선 (가로)
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.width * 0.05, this.height / 2);
-            this.ctx.lineTo(this.width * 0.95, this.height / 2);
-            this.ctx.stroke();
+            pCtx.beginPath();
+            pCtx.moveTo(this.width * 0.05, this.height / 2);
+            pCtx.lineTo(this.width * 0.95, this.height / 2);
+            pCtx.stroke();
             
-            // 센터 서클
-            this.ctx.beginPath();
-            this.ctx.arc(this.width / 2, this.height / 2, this.width * 0.15, 0, Math.PI * 2);
-            this.ctx.stroke();
+            pCtx.beginPath();
+            pCtx.arc(this.width / 2, this.height / 2, this.width * 0.15, 0, Math.PI * 2);
+            pCtx.stroke();
             
-            // 페널티 박스 (상하)
-            this.ctx.strokeRect(this.width * 0.25, this.height * 0.05, this.width * 0.5, this.height * 0.15);
-            this.ctx.strokeRect(this.width * 0.25, this.height * 0.8, this.width * 0.5, this.height * 0.15);
+            pCtx.strokeRect(this.width * 0.25, this.height * 0.05, this.width * 0.5, this.height * 0.15);
+            pCtx.strokeRect(this.width * 0.25, this.height * 0.8, this.width * 0.5, this.height * 0.15);
 
-            // 골대 그리기 (상하)
-            this.ctx.lineWidth = 3;
-            this.ctx.strokeRect(this.width * 0.44, this.height * 0.02, this.width * 0.12, this.height * 0.03);
-            this.ctx.strokeRect(this.width * 0.44, this.height * 0.95, this.width * 0.12, this.height * 0.03);
+            pCtx.lineWidth = 3;
+            pCtx.strokeRect(this.width * 0.44, this.height * 0.02, this.width * 0.12, this.height * 0.03);
+            pCtx.strokeRect(this.width * 0.44, this.height * 0.95, this.width * 0.12, this.height * 0.03);
         } else {
-            // 중앙선 (세로)
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.width / 2, this.height * 0.05);
-            this.ctx.lineTo(this.width / 2, this.height * 0.95);
-            this.ctx.stroke();
+            pCtx.beginPath();
+            pCtx.moveTo(this.width / 2, this.height * 0.05);
+            pCtx.lineTo(this.width / 2, this.height * 0.95);
+            pCtx.stroke();
             
-            // 센터 서클
-            this.ctx.beginPath();
-            this.ctx.arc(this.width / 2, this.height / 2, this.height * 0.15, 0, Math.PI * 2);
-            this.ctx.stroke();
+            pCtx.beginPath();
+            pCtx.arc(this.width / 2, this.height / 2, this.height * 0.15, 0, Math.PI * 2);
+            pCtx.stroke();
             
-            // 페널티 박스 (좌우)
-            this.ctx.strokeRect(this.width * 0.05, this.height * 0.25, this.width * 0.15, this.height * 0.5);
-            this.ctx.strokeRect(this.width * 0.8, this.height * 0.25, this.width * 0.15, this.height * 0.5);
+            pCtx.strokeRect(this.width * 0.05, this.height * 0.25, this.width * 0.15, this.height * 0.5);
+            pCtx.strokeRect(this.width * 0.8, this.height * 0.25, this.width * 0.15, this.height * 0.5);
 
-            // 골대 그리기 (좌우)
-            this.ctx.lineWidth = 3;
-            this.ctx.strokeRect(this.width * 0.02, this.height * 0.44, this.width * 0.03, this.height * 0.12);
-            this.ctx.strokeRect(this.width * 0.95, this.height * 0.44, this.width * 0.03, this.height * 0.12);
+            pCtx.lineWidth = 3;
+            pCtx.strokeRect(this.width * 0.02, this.height * 0.44, this.width * 0.03, this.height * 0.12);
+            pCtx.strokeRect(this.width * 0.95, this.height * 0.44, this.width * 0.03, this.height * 0.12);
         }
-        
-        this.ctx.lineWidth = 2; // 원래 두께로 복구
+
+        this.pitchCache = cache;
+        this.ctx.drawImage(this.pitchCache, 0, 0);
     }
 }
 

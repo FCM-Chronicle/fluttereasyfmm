@@ -1,0 +1,10 @@
+# Environment variables (API keys must NEVER be committed)
+.env
+.env.*
+!.env.example
+
+# Vercel local cache
+.vercel
+
+# Dependencies
+node_modules/
